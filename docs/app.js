@@ -1,4 +1,4 @@
-// === Grade scale (you can tweak scores/labels as needed) ===
+// === Grade scale ===
 const GRADES = [
   { score: 10.0, code: "GM",    label: "Gem Mint",               short: "10.0 GM" },
   { score: 9.9,  code: "MT",    label: "Mint",                   short: "9.9 MT" },
@@ -117,10 +117,10 @@ const PAGE_TONE_RULES = {
 };
 
 const INTERIOR_TEAR_RULES = {
-  none:       { key: "none",       label: "No Tears",                            deduction: 0.0, max_score: 9.8 },
-  small:      { key: "small",      label: "Small Tears",                         deduction: 1.0, max_score: 8.5 },
-  multiple:   { key: "multiple",   label: "Multiple Tears / Small Pieces",       deduction: 2.5, max_score: 6.0 },
-  big_missing:{ key: "big_missing",label: "Big Tears / Pieces Missing",          deduction: 4.0, max_score: 3.0 }
+  none:        { key: "none",        label: "No Tears",                            deduction: 0.0, max_score: 9.8 },
+  small:       { key: "small",       label: "Small Tears",                         deduction: 1.0, max_score: 8.5 },
+  multiple:    { key: "multiple",    label: "Multiple Tears / Small Pieces",       deduction: 2.5, max_score: 6.0 },
+  big_missing: { key: "big_missing", label: "Big Tears / Pieces Missing",          deduction: 4.0, max_score: 3.0 }
 };
 
 const INTERIOR_STAIN_RULES = {
@@ -128,6 +128,52 @@ const INTERIOR_STAIN_RULES = {
   small:    { key: "small",    label: "Small Marks / Light Stains",    deduction: 0.5, max_score: 9.0 },
   moderate: { key: "moderate", label: "Moderate Staining / Writing",   deduction: 1.5, max_score: 7.0 },
   heavy:    { key: "heavy",    label: "Heavy Staining / Water Damage", deduction: 3.0, max_score: 4.0 }
+};
+
+// === Marvel Value Stamp / coupon rules ===
+// NOTE: 'na' means not applicable (no stamp for this issue).
+const STAMP_RULES = {
+  na: {
+    key: "na",
+    label: "No Stamp / Not Applicable",
+    deduction: 0.0,
+    max_score: 10.0
+  },
+  intact: {
+    key: "intact",
+    label: "Stamp Intact",
+    deduction: 0.0,
+    max_score: 9.8
+  },
+  missing: {
+    key: "missing",
+    label: "Stamp Missing / Clipped",
+    deduction: 4.0,
+    max_score: 2.0        // treat as incomplete
+  },
+  replaced: {
+    key: "replaced",
+    label: "Stamp Replaced / Married",
+    deduction: 3.0,
+    max_score: 3.0
+  },
+  unsure: {
+    key: "unsure",
+    label: "Stamp Status Unsure",
+    deduction: 2.0,
+    max_score: 4.0
+  }
+};
+
+// === Very small lookup table of known stamp issues ===
+// You can expand this list over time.
+const VALUE_STAMP_INDEX = {
+  // Example entries:
+  "the incredible hulk#181": true,
+  "incredible hulk#181": true,
+  "hulk#181": true,
+  "amazing spider-man#129": true
+  // Add more as needed...
 };
 
 // Helper: convert numeric score into a grade row from GRADES
@@ -148,12 +194,52 @@ function computeSection(baseScore, deduction, maxScore) {
   return { raw, score };
 }
 
+// Helper: normalize (title, issue) to lookup key
+function makeStampKey(title, issue) {
+  return `${title}`.trim().toLowerCase() + "#" + `${issue}`.trim().toLowerCase();
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("grading-form");
   const resultDiv = document.getElementById("result");
 
+  const titleInput = document.getElementById("comic_title");
+  const issueInput = document.getElementById("comic_issue");
+  const stampFieldset = document.getElementById("stamp-fieldset");
+  const stampHint = document.getElementById("stamp-hint");
+
+  let stampApplies = false;
+
+  function updateStampLookup() {
+    const title = titleInput.value.trim();
+    const issue = issueInput.value.trim();
+
+    if (!title || !issue) {
+      stampApplies = false;
+      stampFieldset.style.display = "none";
+      stampHint.textContent = "";
+      return;
+    }
+
+    const key = makeStampKey(title, issue);
+    if (VALUE_STAMP_INDEX[key]) {
+      stampApplies = true;
+      stampFieldset.style.display = "block";
+      stampHint.textContent = "This issue is known to include a value stamp or coupon. Please answer the question below.";
+    } else {
+      stampApplies = false;
+      stampFieldset.style.display = "none";
+      stampHint.textContent = "No value stamp or coupon is listed for this issue in the current lookup table.";
+    }
+  }
+
+  if (titleInput && issueInput) {
+    titleInput.addEventListener("input", updateStampLookup);
+    issueInput.addEventListener("input", updateStampLookup);
+  }
+
   form.addEventListener("submit", (e) => {
-    e.preventDefault(); // stop page reload
+    e.preventDefault();
 
     const baseScore = 10.0;
 
@@ -165,7 +251,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const backCornerChoice  = form.elements["back_corner"].value;
 
     const frontGlossChoice  = form.elements["front_gloss"].value;
-    const frontUVChoice     = form.elements["front_uv"]."].value;
+    const frontUVChoice     = form.elements["front_uv"].value;
     const frontColorChoice  = form.elements["front_color"].value;
 
     const backGlossChoice   = form.elements["back_gloss"].value;
@@ -173,8 +259,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const backColorChoice   = form.elements["back_color"].value;
 
     const pageToneChoice    = form.elements["page_tone"].value;
-    const interiorTearChoice   = form.elements["interior_tears"].value;
-    const interiorStainChoice  = form.elements["interior_stains"].value;
+    const interiorTearChoice= form.elements["interior_tears"].value;
+    const interiorStainChoice = form.elements["interior_stains"].value;
+
+    let stampRule = STAMP_RULES.na;
+    if (stampApplies) {
+      const stampChoice = form.elements["value_stamp"].value;
+      stampRule = STAMP_RULES[stampChoice] || STAMP_RULES.na;
+    }
 
     const spineRule        = SPINE_RULES.find(r => r.id === spineChoice);
     const frontCoverRule   = SEVERITY_RULES[frontCoverChoice];
@@ -198,7 +290,7 @@ document.addEventListener("DOMContentLoaded", () => {
         !frontCornerRule || !backCornerRule ||
         !frontGlossRule || !frontUVRule || !frontColorRule ||
         !backGlossRule || !backUVRule || !backColorRule ||
-        !pageToneRule || !interiorTearRule || !interiorStainRule) {
+        !pageToneRule || !interiorTearRule || !interiorStainRule || !stampRule) {
       resultDiv.innerHTML = "<p>Something went wrong – one or more rules were not found.</p>";
       return;
     }
@@ -221,6 +313,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const pageToneDeduction     = pageToneRule.deduction || 0;
     const interiorTearDeduction = interiorTearRule.deduction || 0;
     const interiorStainDeduction= interiorStainRule.deduction || 0;
+
+    const stampDeduction        = stampRule.deduction || 0;
 
     // === Section scores (for display) ===
     const spineSec     = computeSection(baseScore, spineDeduction, spineRule.max_score);
@@ -265,12 +359,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const interiorStainSec   = computeSection(baseScore, interiorStainDeduction, interiorStainRule.max_score);
     const interiorStainGrade = pickGrade(GRADES, interiorStainSec.score);
 
-    // Combined interior system (for debug/feel)
-    const interiorSysDeduction = pageToneDeduction + interiorTearDeduction + interiorStainDeduction;
+    const stampSec   = computeSection(baseScore, stampDeduction, stampRule.max_score);
+    const stampGrade = pickGrade(GRADES, stampSec.score);
+
+    // Combined interior system (for display)
+    const interiorSysDeduction = pageToneDeduction + interiorTearDeduction + interiorStainDeduction + stampDeduction;
     const interiorSysMax = Math.min(
       pageToneRule.max_score,
       interiorTearRule.max_score,
-      interiorStainRule.max_score
+      interiorStainRule.max_score,
+      stampRule.max_score
     );
     const interiorSysSec   = computeSection(baseScore, interiorSysDeduction, interiorSysMax);
     const interiorSysGrade = pickGrade(GRADES, interiorSysSec.score);
@@ -283,7 +381,8 @@ document.addEventListener("DOMContentLoaded", () => {
       frontGlossDeduction + backGlossDeduction +
       frontUVDeduction + backUVDeduction +
       frontColorDeduction + backColorDeduction +
-      pageToneDeduction + interiorTearDeduction + interiorStainDeduction
+      pageToneDeduction + interiorTearDeduction + interiorStainDeduction +
+      stampDeduction
     );
 
     const overallRaw = baseScore - totalDeduction;
@@ -302,13 +401,14 @@ document.addEventListener("DOMContentLoaded", () => {
       backColorRule.max_score,
       pageToneRule.max_score,
       interiorTearRule.max_score,
-      interiorStainRule.max_score
+      interiorStainRule.max_score,
+      stampRule.max_score
     );
 
     const overallScore = Math.min(overallRaw, overallMax);
     const overallGrade = pickGrade(GRADES, overallScore);
 
-    // === Presentation grade (front view only: no interior) ===
+    // === Presentation grade (front view only: no interior, no stamp) ===
     const frontPresentationDeduction = (
       spineDeduction +
       frontCoverDeduction +
@@ -351,18 +451,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let presentationNote = "";
     if (frontVisibleDeduction === 0 && backVisibleDeduction === 0 && spineDeduction === 0) {
-      presentationNote = "Spine, covers, corners, and color all present near perfect – presentation matches the true grade (interior included).";
+      presentationNote = "Spine, covers, corners, and color all present near perfect – presentation matches the true grade (interior and stamp included).";
     } else if (frontVisibleDeduction > 0 && backVisibleDeduction === 0) {
       presentationNote = "Most visible wear is on the front (cover, corners, or color/gloss) and spine – what you see from the front matches the true technical grade.";
     } else if (frontVisibleDeduction === 0 && backVisibleDeduction > 0) {
-      presentationNote = "Most visible wear is on the back – from the front, the book presents stronger than the true technical grade (interior wear may also be a factor).";
+      presentationNote = "Most visible wear is on the back – from the front, the book presents stronger than the true technical grade (interior or stamp issues may also be a factor).";
     } else {
-      presentationNote = "Both front and back show wear – interior condition may further lower the technical grade beyond what you see from the front.";
+      presentationNote = "Both front and back show wear – interior condition and stamp status may further lower the technical grade beyond what you see from the front.";
     }
 
     // === Output ===
     resultDiv.innerHTML = `
-      <h2>Estimated Grades (Spine + Cover + Corners + Color/Gloss/UV + Interior)</h2>
+      <h2>Estimated Grades (Full Beta)</h2>
 
       <p><strong>Overall / True Grade:</strong> 
         ${overallGrade.short} (${overallGrade.label})
@@ -406,6 +506,9 @@ document.addEventListener("DOMContentLoaded", () => {
         <li><strong>Interior Stains / Marks:</strong> 
           ${interiorStainGrade.short} (${interiorStainGrade.label}) – ${interiorStainRule.label}
         </li>
+        <li><strong>Stamp / Coupon Status:</strong> 
+          ${stampGrade.short} (${stampGrade.label}) – ${stampRule.label}
+        </li>
         <li><strong>Combined Interior (overall):</strong> 
           ${interiorSysGrade.short} (${interiorSysGrade.label})
         </li>
@@ -424,6 +527,7 @@ document.addEventListener("DOMContentLoaded", () => {
         Page Tone-only: ${pageToneSec.score.toFixed(1)},
         Interior Tears-only: ${interiorTearSec.score.toFixed(1)},
         Interior Stains-only: ${interiorStainSec.score.toFixed(1)},
+        Stamp-only: ${stampSec.score.toFixed(1)},
         Combined Interior-only: ${interiorSysSec.score.toFixed(1)}
       </small></p>
     `;
