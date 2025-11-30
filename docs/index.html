@@ -2,16 +2,17 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Sinto Graves – Comic Spine Grading Tool (Beta)</title>
+  <title>Sinto Graves – Comic Grading Tool (Spine + Cover Beta)</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <h1>Sinto Graves Comic Grading – Spine Beta</h1>
-  <p>Answer a few questions about your comic's spine to get a rough grade estimate.</p>
+  <h1>Sinto Graves Comic Grading – Spine + Cover Beta</h1>
+  <p>Answer a few questions about your comic's spine and cover to get a rough grade estimate.</p>
 
-  <form id="spine-form">
+  <form id="grading-form">
+    <!-- Spine section (edge look) -->
     <fieldset>
-      <legend>Spine Condition</legend>
+      <legend>Spine / Edge Condition</legend>
 
       <label>
         <input type="radio" name="spine" value="spine_near_perfect" checked />
@@ -39,6 +40,51 @@
       </label>
     </fieldset>
 
+    <!-- Cover severity section -->
+    <fieldset>
+      <legend>Overall Cover Condition (Front + Back)</legend>
+
+      <label>
+        <input type="radio" name="cover" value="cover_near_perfect" checked />
+        Near perfect – flat, clean, only the lightest signs of handling
+      </label><br/>
+
+      <label>
+        <input type="radio" name="cover" value="cover_light_wear" />
+        Light wear – a few tiny ticks, faint bends, light edge wear, no major creases
+      </label><br/>
+
+      <label>
+        <input type="radio" name="cover" value="cover_moderate_wear" />
+        Moderate wear – several ticks or small creases, some color break, noticeable but not trashed
+      </label><br/>
+
+      <label>
+        <input type="radio" name="cover" value="cover_heavy_wear" />
+        Heavy wear – big creases, strong color breaks, obvious wear or small pieces missing
+      </label>
+    </fieldset>
+
+    <!-- Where the visible defects are -->
+    <fieldset>
+      <legend>Where are most of the visible cover defects?</legend>
+
+      <label>
+        <input type="radio" name="cover_location" value="back_only" checked />
+        Mostly on the back cover – front presents clean at a glance
+      </label><br/>
+
+      <label>
+        <input type="radio" name="cover_location" value="front_only" />
+        Mostly on the front cover
+      </label><br/>
+
+      <label>
+        <input type="radio" name="cover_location" value="both" />
+        On both front and back covers
+      </label>
+    </fieldset>
+
     <button type="submit">Estimate Grade</button>
   </form>
 
@@ -47,3 +93,4 @@
   <script src="app.js"></script>
 </body>
 </html>
+
