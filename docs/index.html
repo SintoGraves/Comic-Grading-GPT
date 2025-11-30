@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Sinto Graves – Comic Spine Grading Tool (Beta)</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <h1>Sinto Graves Comic Grading – Spine Beta</h1>
+  <p>Answer a few questions about your comic's spine to get a rough grade estimate.</p>
+
+  <form id="spine-form">
+    <fieldset>
+      <legend>Spine Condition</legend>
+
+      <label>
+        <input type="radio" name="spine" value="spine_near_perfect" checked />
+        Near perfect – no visible stress lines, no roll, no splits, staples clean
+      </label><br/>
+
+      <label>
+        <input type="radio" name="spine" value="spine_minor_stress" />
+        1–2 tiny stress lines, no color break, no roll, no splits
+      </label><br/>
+
+      <label>
+        <input type="radio" name="spine" value="spine_multiple_stress_color_break" />
+        Multiple stress lines with color break
+      </label><br/>
+
+      <label>
+        <input type="radio" name="spine" value="spine_small_split" />
+        Small spine split under 1/4 inch
+      </label><br/>
+
+      <label>
+        <input type="radio" name="spine" value="spine_large_split_or_roll" />
+        Spine roll or split over 1 inch
+      </label>
+    </fieldset>
+
+    <button type="submit">Estimate Grade</button>
+  </form>
+
+  <section id="result" style="margin-top:1.5rem;"></section>
+
+  <script src="app.js"></script>
+</body>
+</html>
