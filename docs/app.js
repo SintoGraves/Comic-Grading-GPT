@@ -1,6 +1,7 @@
 async function loadData() {
-  const gradesRes = await fetch("/Comic-Grading-GPT/data/grades.json");
-  const spineRes  = await fetch("/Comic-Grading-GPT/data/spine_rules.json");
+  // these paths are relative to docs/index.html
+  const gradesRes = await fetch("data/grades.json");
+  const spineRes  = await fetch("data/spine_rules.json");
 
   const grades = await gradesRes.json();
   const spineRules = await spineRes.json();
@@ -43,8 +44,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     resultDiv.innerHTML = `
       <h2>Estimated Spine Grade</h2>
       <p><strong>${grade.short}</strong> (${grade.label})</p>
-      <p><em>Rule applied:</em> ${rule.description}</p>
-      <p><small>Score: ${finalScore.toFixed(1)}</small></p>
+      <p><em>Spine rule applied:</em> ${rule.description}</p>
+      <p><small>Numeric estimate: ${finalScore.toFixed(1)}</small></p>
     `;
   });
 });
