@@ -144,6 +144,146 @@
       </label>
     </fieldset>
 
+    <!-- Color / Gloss / UV section -->
+    <fieldset>
+      <legend>Color, Gloss &amp; UV Exposure</legend>
+
+      <!-- Front: Color / Gloss / UV -->
+      <p><strong>Front Cover Color &amp; Gloss:</strong></p>
+
+      <label>
+        <input type="radio" name="front_gloss" value="near" checked />
+        <strong>Near Perfect:</strong> Rich, vibrant color with high gloss. No sun shadow, no visible fading.
+      </label><br/>
+
+      <label>
+        <input type="radio" name="front_gloss" value="light" />
+        <strong>Slight Loss:</strong> Small drop in gloss or very mild color dulling, visible mostly under angled light.
+      </label><br/>
+
+      <label>
+        <input type="radio" name="front_gloss" value="moderate" />
+        <strong>Moderate Loss:</strong> Noticeable dulling of gloss and color; cover no longer looks “fresh.”
+      </label><br/>
+
+      <label>
+        <input type="radio" name="front_gloss" value="heavy" />
+        <strong>Heavy Loss:</strong> Gloss mostly gone, colors look flat or chalky.
+      </label>
+
+      <p style="margin-top:0.75rem;"><strong>Front UV Fading / Sun Shadow:</strong></p>
+
+      <label>
+        <input type="radio" name="front_uv" value="none" checked />
+        <strong>No UV Fade:</strong> No sun shadow, no obvious fading.
+      </label><br/>
+
+      <label>
+        <input type="radio" name="front_uv" value="light" />
+        <strong>Light UV:</strong> Slight lightening of colors or a faint tan line; still attractive overall.
+      </label><br/>
+
+      <label>
+        <input type="radio" name="front_uv" value="moderate" />
+        <strong>Moderate UV:</strong> Clear loss of color saturation, visible fade or sun line.
+      </label><br/>
+
+      <label>
+        <input type="radio" name="front_uv" value="heavy" />
+        <strong>Heavy UV:</strong> Strong bleaching, washed-out colors, obvious sun shadow or uneven tone.
+      </label>
+
+      <p style="margin-top:0.75rem;"><strong>Front Color Uniformity:</strong></p>
+
+      <label>
+        <input type="radio" name="front_color" value="clean" checked />
+        <strong>Clean:</strong> Even, consistent color with no blotching, spotting, or discoloration.
+      </label><br/>
+
+      <label>
+        <input type="radio" name="front_color" value="slight" />
+        <strong>Slight Variation:</strong> Minor uneven areas, very light spotting or discoloration.
+      </label><br/>
+
+      <label>
+        <input type="radio" name="front_color" value="moderate" />
+        <strong>Moderate Variation:</strong> Noticeable uneven color, spotting, or light staining.
+      </label><br/>
+
+      <label>
+        <input type="radio" name="front_color" value="heavy" />
+        <strong>Heavy Variation:</strong> Strong discoloration, blotchy areas, obvious staining or darkening.
+      </label>
+
+
+      <!-- Back: Color / Gloss / UV -->
+      <p style="margin-top:1.25rem;"><strong>Back Cover Color &amp; Gloss:</strong></p>
+
+      <label>
+        <input type="radio" name="back_gloss" value="near" checked />
+        <strong>Near Perfect:</strong> Good gloss and color, no obvious fading.
+      </label><br/>
+
+      <label>
+        <input type="radio" name="back_gloss" value="light" />
+        <strong>Slight Loss:</strong> Mild gloss or color dulling, visible on close inspection.
+      </label><br/>
+
+      <label>
+        <input type="radio" name="back_gloss" value="moderate" />
+        <strong>Moderate Loss:</strong> Clear gloss loss and muted color.
+      </label><br/>
+
+      <label>
+        <input type="radio" name="back_gloss" value="heavy" />
+        <strong>Heavy Loss:</strong> Very dull surface, washed-out color.
+      </label>
+
+      <p style="margin-top:0.75rem;"><strong>Back UV Fading / Sun Shadow:</strong></p>
+
+      <label>
+        <input type="radio" name="back_uv" value="none" checked />
+        <strong>No UV Fade:</strong> No significant fading or tan line.
+      </label><br/>
+
+      <label>
+        <input type="radio" name="back_uv" value="light" />
+        <strong>Light UV:</strong> Slight lightening or faint sun shadow.
+      </label><br/>
+
+      <label>
+        <input type="radio" name="back_uv" value="moderate" />
+        <strong>Moderate UV:</strong> Noticeable fade or tan line.
+      </label><br/>
+
+      <label>
+        <input type="radio" name="back_uv" value="heavy" />
+        <strong>Heavy UV:</strong> Strong bleaching or uneven UV damage.
+      </label>
+
+      <p style="margin-top:0.75rem;"><strong>Back Color Uniformity:</strong></p>
+
+      <label>
+        <input type="radio" name="back_color" value="clean" checked />
+        <strong>Clean:</strong> Even color with no spotting or major discoloration.
+      </label><br/>
+
+      <label>
+        <input type="radio" name="back_color" value="slight" />
+        <strong>Slight Variation:</strong> Small areas of uneven tone or light spotting.
+      </label><br/>
+
+      <label>
+        <input type="radio" name="back_color" value="moderate" />
+        <strong>Moderate Variation:</strong> Clear uneven color or spotting in several areas.
+      </label><br/>
+
+      <label>
+        <input type="radio" name="back_color" value="heavy" />
+        <strong>Heavy Variation:</strong> Strong discoloration, staining, or blotchy areas.
+      </label>
+    </fieldset>
+    
     <button type="submit">Estimate Grade</button>
   </form>
 
