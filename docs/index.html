@@ -10,6 +10,50 @@
   <p>Answer a few questions about your comic's spine, cover, and corners to get a rough grade estimate.</p>
 
   <form id="grading-form">
+   
+       <!-- Book information -->
+    <fieldset>
+      <legend>Comic Information</legend>
+
+      <label>
+        Title:
+        <input type="text" id="comic_title" name="comic_title" placeholder="e.g., Incredible Hulk" />
+      </label><br/>
+
+      <label>
+        Issue #:
+        <input type="text" id="comic_issue" name="comic_issue" placeholder="e.g., 181" />
+      </label>
+
+      <p id="stamp-hint" class="hint" style="margin-top:0.5rem;"></p>
+    </fieldset>
+
+    <!-- Marvel Value Stamp / Coupon (shown only when applicable) -->
+    <fieldset id="stamp-fieldset" style="display:none;">
+      <legend>Marvel Value Stamp / Coupon</legend>
+      <p>This issue is known to include a value stamp or coupon. Is it intact?</p>
+
+      <label>
+        <input type="radio" name="value_stamp" value="intact" checked />
+        <strong>Intact:</strong> Stamp / coupon area is present, uncut, and complete.
+      </label><br/>
+
+      <label>
+        <input type="radio" name="value_stamp" value="missing" />
+        <strong>Missing / Clipped:</strong> Stamp or coupon has been cut out or removed.
+      </label><br/>
+
+      <label>
+        <input type="radio" name="value_stamp" value="replaced" />
+        <strong>Replaced / Married:</strong> Stamp or coupon area is filled in (taped in, different page, or obviously added).
+      </label><br/>
+
+      <label>
+        <input type="radio" name="value_stamp" value="unsure" />
+        <strong>Unsure:</strong> Cannot verify from this copy.
+      </label>
+    </fieldset>
+ 
     <!-- Spine section (edge look) -->
     <fieldset>
       <legend>Spine / Edge Condition</legend>
