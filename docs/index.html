@@ -40,9 +40,12 @@
       </label>
     </fieldset>
 
-    <!-- Cover severity section -->
+        <!-- Cover severity + location section -->
     <fieldset>
-      <legend>Overall Cover Condition (Front + Back)</legend>
+      <legend>Cover Condition (Front & Back)</legend>
+
+      <!-- Overall cover condition -->
+      <p><strong>Overall Cover Condition:</strong></p>
 
       <label>
         <input type="radio" name="cover" value="cover_near_perfect" checked />
@@ -63,34 +66,20 @@
         <input type="radio" name="cover" value="cover_heavy_wear" />
         Heavy wear – big creases, strong color breaks, obvious wear or small pieces missing
       </label>
-    </fieldset>
 
-    <!-- Where the visible defects are -->
-    <fieldset>
-      <legend>Where are most of the visible cover defects?</legend>
+      <!-- Where those defects are visible -->
+      <p style="margin-top:0.75rem;"><strong>Where are most of the visible cover defects?</strong></p>
 
       <label>
         <input type="radio" name="cover_location" value="back_only" checked />
-        Mostly on the back cover – front presents clean at a glance
-      </label><br/>
-
-      <label>
+        Back cover
+      </label>
+      <label style="margin-left:1rem;">
         <input type="radio" name="cover_location" value="front_only" />
-        Mostly on the front cover
-      </label><br/>
-
-      <label>
+        Front cover
+      </label>
+      <label style="margin-left:1rem;">
         <input type="radio" name="cover_location" value="both" />
-        On both front and back covers
+        Both front and back
       </label>
     </fieldset>
-
-    <button type="submit">Estimate Grade</button>
-  </form>
-
-  <section id="result" style="margin-top:1.5rem;"></section>
-
-  <script src="app.js"></script>
-</body>
-</html>
-
