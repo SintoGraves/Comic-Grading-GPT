@@ -1,4 +1,4 @@
-// === Grade scale (same core scale, you can tweak later) ===
+// === Grade scale (you can tweak scores/labels as needed) ===
 const GRADES = [
   { score: 10.0, code: "GM",    label: "Gem Mint",               short: "10.0 GM" },
   { score: 9.9,  code: "MT",    label: "Mint",                   short: "9.9 MT" },
@@ -57,37 +57,39 @@ const SPINE_RULES = [
   }
 ];
 
-// === Cover severity rules (front + back combined, not location) ===
-const COVER_RULES = [
-  {
-    id: "cover_near_perfect",
-    description: "Near perfect – flat, clean, only the lightest signs of handling",
-    max_score: 9.8,
-    deduction: 0.0
+// === Cover severity rules used for BOTH front and back ===
+// You can tweak deductions / caps to match your Excel.
+const COVER_SEVERITY = {
+  near: {
+    key: "near",
+    label: "Near Perfect",
+    deduction: 0.0,
+    max_score: 9.8
   },
-  {
-    id: "cover_light_wear",
-    description: "Light wear – a few tiny ticks, faint bends, light edge wear, no major creases",
-    max_score: 9.0,
-    deduction: 0.8
+  light: {
+    key: "light",
+    label: "Light Wear",
+    deduction: 0.8,
+    max_score: 9.0
   },
-  {
-    id: "cover_moderate_wear",
-    description: "Moderate wear – several ticks or small creases, some color break, noticeable but not trashed",
-    max_score: 7.5,
-    deduction: 2.0
+  moderate: {
+    key: "moderate",
+    label: "Moderate Wear",
+    deduction: 2.0,
+    max_score: 7.5
   },
-  {
-    id: "cover_heavy_wear",
-    description: "Heavy wear – big creases, strong color breaks, obvious wear or small pieces missing",
-    max_score: 5.0,
-    deduction: 4.0
+  heavy: {
+    key: "heavy",
+    label: "Heavy Wear",
+    deduction: 4.0,
+    max_score: 5.0
   }
-];
+};
 
+// Helper: convert numeric score into a grade row from GRADES
 function pickGrade(grades, score) {
-  // choose the highest grade whose score is <= given score
-  let best = grades[grades.length - 1]; // default to lowest
+  // Default to lowest in case score is very low
+  let best = grades[grades.length - 1];
   for (const g of grades) {
     if (score >= g.score && g.score >= best.score) {
       best = g;
@@ -100,19 +102,18 @@ document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("grading-form");
   const resultDiv = document.getElementById("result");
 
-  const coverNearPerfect = COVER_RULES.find(r => r.id === "cover_near_perfect");
-
   form.addEventListener("submit", (e) => {
     e.preventDefault(); // stop page reload
 
     const spineChoice = form.elements["spine"].value;
-    const coverChoice = form.elements["cover"].value;
-    const coverLoc    = form.elements["cover_location"].value;
+    const frontChoice = form.elements["front_cover"].value;
+    const backChoice  = form.elements["back_cover"].value;
 
     const spineRule = SPINE_RULES.find(r => r.id === spineChoice);
-    const coverRule = COVER_RULES.find(r => r.id === coverChoice);
+    const frontRule = COVER_SEVERITY[frontChoice];
+    const backRule  = COVER_SEVERITY[backChoice];
 
-    if (!spineRule || !coverRule) {
+    if (!spineRule || !frontRule || !backRule) {
       resultDiv.innerHTML = "<p>Something went wrong – rule not found.</p>";
       return;
     }
@@ -121,63 +122,50 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // === Section scores ===
     const spineDeduction = spineRule.deduction || 0;
-    const coverDeduction = coverRule.deduction || 0;
+    const frontDeduction = frontRule.deduction || 0;
+    const backDeduction  = backRule.deduction || 0;
 
     const spineOnlyRaw   = baseScore - spineDeduction;
     const spineOnlyScore = Math.min(spineOnlyRaw, spineRule.max_score);
     const spineOnlyGrade = pickGrade(GRADES, spineOnlyScore);
 
-    const coverOnlyRaw   = baseScore - coverDeduction;
-    const coverOnlyScore = Math.min(coverOnlyRaw, coverRule.max_score);
-    const coverOnlyGrade = pickGrade(GRADES, coverOnlyScore);
+    const frontOnlyRaw   = baseScore - frontDeduction;
+    const frontOnlyScore = Math.min(frontOnlyRaw, frontRule.max_score);
+    const frontOnlyGrade = pickGrade(GRADES, frontOnlyScore);
 
-    // === Overall / true grade (front + back + spine) ===
-    const overallRaw = baseScore - (spineDeduction + coverDeduction);
+    const backOnlyRaw    = baseScore - backDeduction;
+    const backOnlyScore  = Math.min(backOnlyRaw, backRule.max_score);
+    const backOnlyGrade  = pickGrade(GRADES, backOnlyScore);
+
+    // === Overall / true grade (spine + front + back) ===
+    const overallRaw = baseScore - (spineDeduction + frontDeduction + backDeduction);
     const overallScore = Math.min(
       overallRaw,
       spineRule.max_score,
-      coverRule.max_score
+      frontRule.max_score,
+      backRule.max_score
     );
     const overallGrade = pickGrade(GRADES, overallScore);
 
-    // === Presentation grade (front view only) ===
-    const coverHasRealWear = coverDeduction > 0;
-
-    let frontCoverDeduction = 0;
-    let frontCoverMaxScore  = coverRule.max_score; // default
-
-    if (!coverHasRealWear) {
-      // No real wear anywhere: presentation == overall
-      frontCoverDeduction = 0;
-      frontCoverMaxScore  = coverRule.max_score;
-    } else if (coverLoc === "back_only") {
-      // All the wear is on the back: front looks near perfect
-      frontCoverDeduction = 0;
-      frontCoverMaxScore  = coverNearPerfect ? coverNearPerfect.max_score : 9.8;
-    } else {
-      // front_only or both: front sees the full cover wear
-      frontCoverDeduction = coverDeduction;
-      frontCoverMaxScore  = coverRule.max_score;
-    }
-
-    const presentationRaw = baseScore - (spineDeduction + frontCoverDeduction);
+    // === Presentation grade (front view only: spine + FRONT cover) ===
+    const presentationRaw = baseScore - (spineDeduction + frontDeduction);
     const presentationScore = Math.min(
       presentationRaw,
       spineRule.max_score,
-      frontCoverMaxScore
+      frontRule.max_score
     );
     const presentationGrade = pickGrade(GRADES, presentationScore);
 
-    // Explanatory note
+    // Build an explanatory note for presentation
     let presentationNote = "";
-    if (!coverHasRealWear) {
-      presentationNote = "Cover has no significant wear – presentation matches the true grade.";
-    } else if (coverLoc === "back_only") {
-      presentationNote = "Most visible defects are on the back cover – from the front, the book presents stronger than the overall grade.";
-    } else if (coverLoc === "front_only") {
-      presentationNote = "Most defects are on the front cover – what you see from the front matches the true grade.";
+    if (frontDeduction === 0 && backDeduction === 0) {
+      presentationNote = "Spine and covers are near perfect – presentation matches the true grade.";
+    } else if (frontDeduction > 0 && backDeduction === 0) {
+      presentationNote = "Most visible wear is on the front cover and spine – what you see from the front matches the true grade.";
+    } else if (frontDeduction === 0 && backDeduction > 0) {
+      presentationNote = "Most visible wear is on the back cover – from the front, the book presents stronger than the overall grade.";
     } else {
-      presentationNote = "Defects are on both front and back covers – front view still shows the main wear.";
+      presentationNote = "Both front and back covers show wear – front view still reflects most of the overall condition.";
     }
 
     // === Output ===
@@ -196,15 +184,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
       <h3>Section Grades</h3>
       <ul>
-        <li><strong>Spine / Edge:</strong> ${spineOnlyGrade.short} (${spineOnlyGrade.label}) – ${spineRule.description}</li>
-        <li><strong>Cover (overall, front + back):</strong> ${coverOnlyGrade.short} (${coverOnlyGrade.label}) – ${coverRule.description}</li>
+        <li><strong>Spine / Edge:</strong> 
+          ${spineOnlyGrade.short} (${spineOnlyGrade.label}) – ${spineRule.description}
+        </li>
+        <li><strong>Front Cover:</strong> 
+          ${frontOnlyGrade.short} (${frontOnlyGrade.label}) – ${frontRule.label}
+        </li>
+        <li><strong>Back Cover:</strong> 
+          ${backOnlyGrade.short} (${backOnlyGrade.label}) – ${backRule.label}
+        </li>
       </ul>
 
       <p><small>
         Internal scores – Overall: ${overallScore.toFixed(1)}, 
         Presentation: ${presentationScore.toFixed(1)}, 
         Spine-only: ${spineOnlyScore.toFixed(1)}, 
-        Cover-only: ${coverOnlyScore.toFixed(1)}
+        Front-only: ${frontOnlyScore.toFixed(1)}, 
+        Back-only: ${backOnlyScore.toFixed(1)}
       </small></p>
     `;
   });
