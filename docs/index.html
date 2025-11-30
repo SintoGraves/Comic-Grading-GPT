@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Sinto Graves – Comic Grading Tool (Beta)</title>
+  <title>Sinto Graves – Comic Grading Tool (Spine + Cover + Corners Beta)</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <h1>Sinto Graves Comic Grading Beta</h1>
-  <p>Answer a few questions about your comic's spine and cover to get a rough grade estimate.</p>
+  <h1>Sinto Graves Comic Grading – Spine + Cover + Corners Beta</h1>
+  <p>Answer a few questions about your comic's spine, cover, and corners to get a rough grade estimate.</p>
 
   <form id="grading-form">
     <!-- Spine section (edge look) -->
@@ -40,46 +40,113 @@
       </label>
     </fieldset>
 
-        <!-- Cover severity + location section -->
+    <!-- Cover section: separate Front + Back grading -->
     <fieldset>
-      <legend>Cover Condition (Front & Back)</legend>
+      <legend>Cover Condition (Front &amp; Back)</legend>
 
-      <!-- Overall cover condition -->
-      <p><strong>Overall Cover Condition:</strong></p>
+      <!-- Front cover severity -->
+      <p><strong>Front Cover Condition:</strong></p>
 
       <label>
-        <input type="radio" name="cover" value="cover_near_perfect" checked />
-        Near perfect – flat, clean, only the lightest signs of handling
+        <input type="radio" name="front_cover" value="near" checked />
+        Near Perfect
       </label><br/>
 
       <label>
-        <input type="radio" name="cover" value="cover_light_wear" />
-        Light wear – a few tiny ticks, faint bends, light edge wear, no major creases
+        <input type="radio" name="front_cover" value="light" />
+        Light Wear
       </label><br/>
 
       <label>
-        <input type="radio" name="cover" value="cover_moderate_wear" />
-        Moderate wear – several ticks or small creases, some color break, noticeable but not trashed
+        <input type="radio" name="front_cover" value="moderate" />
+        Moderate Wear
       </label><br/>
 
       <label>
-        <input type="radio" name="cover" value="cover_heavy_wear" />
-        Heavy wear – big creases, strong color breaks, obvious wear or small pieces missing
+        <input type="radio" name="front_cover" value="heavy" />
+        Heavy Wear
       </label>
 
-      <!-- Where those defects are visible -->
-      <p style="margin-top:0.75rem;"><strong>Where are most of the visible cover defects?</strong></p>
+      <!-- Back cover severity -->
+      <p style="margin-top:1rem;"><strong>Back Cover Condition:</strong></p>
 
       <label>
-        <input type="radio" name="cover_location" value="back_only" checked />
-        Back cover
-      </label>
-      <label style="margin-left:1rem;">
-        <input type="radio" name="cover_location" value="front_only" />
-        Front cover
-      </label>
-      <label style="margin-left:1rem;">
-        <input type="radio" name="cover_location" value="both" />
-        Both front and back
+        <input type="radio" name="back_cover" value="near" checked />
+        Near Perfect
+      </label><br/>
+
+      <label>
+        <input type="radio" name="back_cover" value="light" />
+        Light Wear
+      </label><br/>
+
+      <label>
+        <input type="radio" name="back_cover" value="moderate" />
+        Moderate Wear
+      </label><br/>
+
+      <label>
+        <input type="radio" name="back_cover" value="heavy" />
+        Heavy Wear
       </label>
     </fieldset>
+
+    <!-- Corners section: separate Front + Back grading -->
+    <fieldset>
+      <legend>Corner Condition (Front &amp; Back)</legend>
+
+      <!-- Front corners -->
+      <p><strong>Front Corners:</strong></p>
+
+      <label>
+        <input type="radio" name="front_corner" value="near" checked />
+        Near Perfect
+      </label><br/>
+
+      <label>
+        <input type="radio" name="front_corner" value="light" />
+        Light Wear
+      </label><br/>
+
+      <label>
+        <input type="radio" name="front_corner" value="moderate" />
+        Moderate Wear
+      </label><br/>
+
+      <label>
+        <input type="radio" name="front_corner" value="heavy" />
+        Heavy Wear
+      </label>
+
+      <!-- Back corners -->
+      <p style="margin-top:1rem;"><strong>Back Corners:</strong></p>
+
+      <label>
+        <input type="radio" name="back_corner" value="near" checked />
+        Near Perfect
+      </label><br/>
+
+      <label>
+        <input type="radio" name="back_corner" value="light" />
+        Light Wear
+      </label><br/>
+
+      <label>
+        <input type="radio" name="back_corner" value="moderate" />
+        Moderate Wear
+      </label><br/>
+
+      <label>
+        <input type="radio" name="back_corner" value="heavy" />
+        Heavy Wear
+      </label>
+    </fieldset>
+
+    <button type="submit">Estimate Grade</button>
+  </form>
+
+  <section id="result" style="margin-top:1.5rem;"></section>
+
+  <script src="app.js"></script>
+</body>
+</html>
