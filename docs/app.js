@@ -87,24 +87,47 @@ const SEVERITY_RULES = {
 
 // === Color / Gloss rules ===
 const GLOSS_RULES = {
-  near:     { key: "near",     label: "Near Perfect Gloss/Color", deduction: 0.0, max_score: 9.8 },
-  light:    { key: "light",    label: "Slight Loss of Gloss/Color", deduction: 0.5, max_score: 9.0 },
-  moderate: { key: "moderate", label: "Moderate Loss of Gloss/Color", deduction: 1.5, max_score: 8.0 },
-  heavy:    { key: "heavy",    label: "Heavy Loss of Gloss/Color", deduction: 3.0, max_score: 6.0 }
+  near:     { key: "near",     label: "Near Perfect Gloss/Color",       deduction: 0.0, max_score: 9.8 },
+  light:    { key: "light",    label: "Slight Loss of Gloss/Color",     deduction: 0.5, max_score: 9.0 },
+  moderate: { key: "moderate", label: "Moderate Loss of Gloss/Color",   deduction: 1.5, max_score: 8.0 },
+  heavy:    { key: "heavy",    label: "Heavy Loss of Gloss/Color",      deduction: 3.0, max_score: 6.0 }
 };
 
 const UV_RULES = {
-  none:     { key: "none",     label: "No UV Fade", deduction: 0.0, max_score: 10.0 },
-  light:    { key: "light",    label: "Light UV Fade", deduction: 1.0, max_score: 8.8 },
-  moderate: { key: "moderate", label: "Moderate UV Fade", deduction: 2.0, max_score: 7.5 },
-  heavy:    { key: "heavy",    label: "Heavy UV Fade", deduction: 3.0, max_score: 5.0 }
+  none:     { key: "none",     label: "No UV Fade",                    deduction: 0.0, max_score: 10.0 },
+  light:    { key: "light",    label: "Light UV Fade",                 deduction: 1.0, max_score: 8.8 },
+  moderate: { key: "moderate", label: "Moderate UV Fade",              deduction: 2.0, max_score: 7.5 },
+  heavy:    { key: "heavy",    label: "Heavy UV Fade",                 deduction: 3.0, max_score: 5.0 }
 };
 
 const COLOR_RULES = {
-  clean:    { key: "clean",    label: "Clean Color", deduction: 0.0, max_score: 9.8 },
-  slight:   { key: "slight",   label: "Slight Variation", deduction: 0.5, max_score: 9.0 },
-  moderate: { key: "moderate", label: "Moderate Variation", deduction: 1.5, max_score: 7.5 },
-  heavy:    { key: "heavy",    label: "Heavy Variation", deduction: 3.0, max_score: 5.0 }
+  clean:    { key: "clean",    label: "Clean Color",                   deduction: 0.0, max_score: 9.8 },
+  slight:   { key: "slight",   label: "Slight Color Variation",        deduction: 0.5, max_score: 9.0 },
+  moderate: { key: "moderate", label: "Moderate Color Variation",      deduction: 1.5, max_score: 7.5 },
+  heavy:    { key: "heavy",    label: "Heavy Color Variation",         deduction: 3.0, max_score: 5.0 }
+};
+
+// === Interior page rules ===
+const PAGE_TONE_RULES = {
+  white:    { key: "white",    label: "White / OW-W",  deduction: 0.0, max_score: 9.8 },
+  offwhite: { key: "offwhite", label: "Off-White",     deduction: 0.5, max_score: 9.0 },
+  cream:    { key: "cream",    label: "Cream",         deduction: 1.5, max_score: 7.5 },
+  tan:      { key: "tan",      label: "Tan",           deduction: 3.0, max_score: 5.0 },
+  brittle:  { key: "brittle",  label: "Brittle",       deduction: 5.0, max_score: 3.0 }
+};
+
+const INTERIOR_TEAR_RULES = {
+  none:       { key: "none",       label: "No Tears",                            deduction: 0.0, max_score: 9.8 },
+  small:      { key: "small",      label: "Small Tears",                         deduction: 1.0, max_score: 8.5 },
+  multiple:   { key: "multiple",   label: "Multiple Tears / Small Pieces",       deduction: 2.5, max_score: 6.0 },
+  big_missing:{ key: "big_missing",label: "Big Tears / Pieces Missing",          deduction: 4.0, max_score: 3.0 }
+};
+
+const INTERIOR_STAIN_RULES = {
+  none:     { key: "none",     label: "No Stains",                     deduction: 0.0, max_score: 9.8 },
+  small:    { key: "small",    label: "Small Marks / Light Stains",    deduction: 0.5, max_score: 9.0 },
+  moderate: { key: "moderate", label: "Moderate Staining / Writing",   deduction: 1.5, max_score: 7.0 },
+  heavy:    { key: "heavy",    label: "Heavy Staining / Water Damage", deduction: 3.0, max_score: 4.0 }
 };
 
 // Helper: convert numeric score into a grade row from GRADES
@@ -118,7 +141,7 @@ function pickGrade(grades, score) {
   return best;
 }
 
-// Helper: compute a section's score & grade from base, deduction, and cap
+// Helper: compute a section's score from base, deduction, and cap
 function computeSection(baseScore, deduction, maxScore) {
   const raw = baseScore - deduction;
   const score = Math.min(raw, maxScore);
@@ -142,12 +165,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const backCornerChoice  = form.elements["back_corner"].value;
 
     const frontGlossChoice  = form.elements["front_gloss"].value;
-    const frontUVChoice     = form.elements["front_uv"].value;
+    const frontUVChoice     = form.elements["front_uv"]."].value;
     const frontColorChoice  = form.elements["front_color"].value;
 
     const backGlossChoice   = form.elements["back_gloss"].value;
     const backUVChoice      = form.elements["back_uv"].value;
     const backColorChoice   = form.elements["back_color"].value;
+
+    const pageToneChoice    = form.elements["page_tone"].value;
+    const interiorTearChoice   = form.elements["interior_tears"].value;
+    const interiorStainChoice  = form.elements["interior_stains"].value;
 
     const spineRule        = SPINE_RULES.find(r => r.id === spineChoice);
     const frontCoverRule   = SEVERITY_RULES[frontCoverChoice];
@@ -163,10 +190,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const backUVRule       = UV_RULES[backUVChoice];
     const backColorRule    = COLOR_RULES[backColorChoice];
 
+    const pageToneRule     = PAGE_TONE_RULES[pageToneChoice];
+    const interiorTearRule = INTERIOR_TEAR_RULES[interiorTearChoice];
+    const interiorStainRule= INTERIOR_STAIN_RULES[interiorStainChoice];
+
     if (!spineRule || !frontCoverRule || !backCoverRule ||
         !frontCornerRule || !backCornerRule ||
         !frontGlossRule || !frontUVRule || !frontColorRule ||
-        !backGlossRule || !backUVRule || !backColorRule) {
+        !backGlossRule || !backUVRule || !backColorRule ||
+        !pageToneRule || !interiorTearRule || !interiorStainRule) {
       resultDiv.innerHTML = "<p>Something went wrong – one or more rules were not found.</p>";
       return;
     }
@@ -186,6 +218,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const backUVDeduction       = backUVRule.deduction || 0;
     const backColorDeduction    = backColorRule.deduction || 0;
 
+    const pageToneDeduction     = pageToneRule.deduction || 0;
+    const interiorTearDeduction = interiorTearRule.deduction || 0;
+    const interiorStainDeduction= interiorStainRule.deduction || 0;
+
     // === Section scores (for display) ===
     const spineSec     = computeSection(baseScore, spineDeduction, spineRule.max_score);
     const spineGrade   = pickGrade(GRADES, spineSec.score);
@@ -202,7 +238,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const backCornerSec   = computeSection(baseScore, backCornerDeduction, backCornerRule.max_score);
     const backCornerGrade = pickGrade(GRADES, backCornerSec.score);
 
-    // Color/Gloss/UV as combined section scores (front/back)
     const frontColorSysDeduction = frontGlossDeduction + frontUVDeduction + frontColorDeduction;
     const frontColorSysMax = Math.min(
       frontGlossRule.max_score,
@@ -221,6 +256,25 @@ document.addEventListener("DOMContentLoaded", () => {
     const backColorSysSec   = computeSection(baseScore, backColorSysDeduction, backColorSysMax);
     const backColorSysGrade = pickGrade(GRADES, backColorSysSec.score);
 
+    const pageToneSec   = computeSection(baseScore, pageToneDeduction, pageToneRule.max_score);
+    const pageToneGrade = pickGrade(GRADES, pageToneSec.score);
+
+    const interiorTearSec   = computeSection(baseScore, interiorTearDeduction, interiorTearRule.max_score);
+    const interiorTearGrade = pickGrade(GRADES, interiorTearSec.score);
+
+    const interiorStainSec   = computeSection(baseScore, interiorStainDeduction, interiorStainRule.max_score);
+    const interiorStainGrade = pickGrade(GRADES, interiorStainSec.score);
+
+    // Combined interior system (for debug/feel)
+    const interiorSysDeduction = pageToneDeduction + interiorTearDeduction + interiorStainDeduction;
+    const interiorSysMax = Math.min(
+      pageToneRule.max_score,
+      interiorTearRule.max_score,
+      interiorStainRule.max_score
+    );
+    const interiorSysSec   = computeSection(baseScore, interiorSysDeduction, interiorSysMax);
+    const interiorSysGrade = pickGrade(GRADES, interiorSysSec.score);
+
     // === Overall / true grade (everything counted) ===
     const totalDeduction = (
       spineDeduction +
@@ -228,7 +282,8 @@ document.addEventListener("DOMContentLoaded", () => {
       frontCornerDeduction + backCornerDeduction +
       frontGlossDeduction + backGlossDeduction +
       frontUVDeduction + backUVDeduction +
-      frontColorDeduction + backColorDeduction
+      frontColorDeduction + backColorDeduction +
+      pageToneDeduction + interiorTearDeduction + interiorStainDeduction
     );
 
     const overallRaw = baseScore - totalDeduction;
@@ -244,13 +299,16 @@ document.addEventListener("DOMContentLoaded", () => {
       frontUVRule.max_score,
       backUVRule.max_score,
       frontColorRule.max_score,
-      backColorRule.max_score
+      backColorRule.max_score,
+      pageToneRule.max_score,
+      interiorTearRule.max_score,
+      interiorStainRule.max_score
     );
 
     const overallScore = Math.min(overallRaw, overallMax);
     const overallGrade = pickGrade(GRADES, overallScore);
 
-    // === Presentation grade (front view only: spine + front-facing defects) ===
+    // === Presentation grade (front view only: no interior) ===
     const frontPresentationDeduction = (
       spineDeduction +
       frontCoverDeduction +
@@ -274,7 +332,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const presentationScore = Math.min(presentationRaw, presentationMax);
     const presentationGrade = pickGrade(GRADES, presentationScore);
 
-    // Visible wear for explanation (front vs back)
+    // Visible wear for explanation (front vs back; interior is hidden)
     const frontVisibleDeduction = (
       frontCoverDeduction +
       frontCornerDeduction +
@@ -293,18 +351,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let presentationNote = "";
     if (frontVisibleDeduction === 0 && backVisibleDeduction === 0 && spineDeduction === 0) {
-      presentationNote = "Spine, covers, corners, and color all present near perfect – presentation matches the true grade.";
+      presentationNote = "Spine, covers, corners, and color all present near perfect – presentation matches the true grade (interior included).";
     } else if (frontVisibleDeduction > 0 && backVisibleDeduction === 0) {
-      presentationNote = "Most visible wear is on the front (cover, corners, or color/gloss) and spine – what you see from the front matches the true grade.";
+      presentationNote = "Most visible wear is on the front (cover, corners, or color/gloss) and spine – what you see from the front matches the true technical grade.";
     } else if (frontVisibleDeduction === 0 && backVisibleDeduction > 0) {
-      presentationNote = "Most visible wear is on the back – from the front, the book presents stronger than the true technical grade.";
+      presentationNote = "Most visible wear is on the back – from the front, the book presents stronger than the true technical grade (interior wear may also be a factor).";
     } else {
-      presentationNote = "Both front and back show wear – front view still reflects much of the overall condition.";
+      presentationNote = "Both front and back show wear – interior condition may further lower the technical grade beyond what you see from the front.";
     }
 
     // === Output ===
     resultDiv.innerHTML = `
-      <h2>Estimated Grades (Spine + Cover + Corners + Color/Gloss/UV)</h2>
+      <h2>Estimated Grades (Spine + Cover + Corners + Color/Gloss/UV + Interior)</h2>
 
       <p><strong>Overall / True Grade:</strong> 
         ${overallGrade.short} (${overallGrade.label})
@@ -339,6 +397,18 @@ document.addEventListener("DOMContentLoaded", () => {
         <li><strong>Back Color / Gloss / UV:</strong> 
           ${backColorSysGrade.short} (${backColorSysGrade.label})
         </li>
+        <li><strong>Interior Page Tone:</strong> 
+          ${pageToneGrade.short} (${pageToneGrade.label}) – ${pageToneRule.label}
+        </li>
+        <li><strong>Interior Tears / Pieces Missing:</strong> 
+          ${interiorTearGrade.short} (${interiorTearGrade.label}) – ${interiorTearRule.label}
+        </li>
+        <li><strong>Interior Stains / Marks:</strong> 
+          ${interiorStainGrade.short} (${interiorStainGrade.label}) – ${interiorStainRule.label}
+        </li>
+        <li><strong>Combined Interior (overall):</strong> 
+          ${interiorSysGrade.short} (${interiorSysGrade.label})
+        </li>
       </ul>
 
       <p><small>
@@ -350,7 +420,11 @@ document.addEventListener("DOMContentLoaded", () => {
         Front Corners-only: ${frontCornerSec.score.toFixed(1)}, 
         Back Corners-only: ${backCornerSec.score.toFixed(1)},
         Front Color/Gloss/UV-only: ${frontColorSysSec.score.toFixed(1)},
-        Back Color/Gloss/UV-only: ${backColorSysSec.score.toFixed(1)}
+        Back Color/Gloss/UV-only: ${backColorSysSec.score.toFixed(1)},
+        Page Tone-only: ${pageToneSec.score.toFixed(1)},
+        Interior Tears-only: ${interiorTearSec.score.toFixed(1)},
+        Interior Stains-only: ${interiorStainSec.score.toFixed(1)},
+        Combined Interior-only: ${interiorSysSec.score.toFixed(1)}
       </small></p>
     `;
   });
