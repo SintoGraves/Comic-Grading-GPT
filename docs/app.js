@@ -1,8 +1,6 @@
 async function loadData() {
-  const [gradesRes, spineRes] = await Promise.all([
-    fetch("../data/grades.json"),
-    fetch("../data/spine_rules.json")
-  ]);
+  const gradesRes = await fetch("/comic-grading-gpt/data/grades.json");
+  const spineRes  = await fetch("/comic-grading-gpt/data/spine_rules.json");
 
   const grades = await gradesRes.json();
   const spineRules = await spineRes.json();
@@ -10,7 +8,6 @@ async function loadData() {
 }
 
 function pickGrade(grades, score) {
-  // pick the highest grade with score <= currentScore (or closest under)
   let best = grades[grades.length - 1];
   for (const g of grades) {
     if (score >= g.score && g.score >= best.score) {
@@ -46,8 +43,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     resultDiv.innerHTML = `
       <h2>Estimated Spine Grade</h2>
       <p><strong>${grade.short}</strong> (${grade.label})</p>
-      <p><em>Spine rule applied:</em> ${rule.description}</p>
-      <p><small>Numeric estimate: ${finalScore.toFixed(1)} (internal score)</small></p>
+      <p><em>Rule applied:</em> ${rule.description}</p>
+      <p><small>Score: ${finalScore.toFixed(1)}</small></p>
     `;
   });
 });
