@@ -27,39 +27,38 @@ const GRADES = [
 const SPINE_RULES = [
   {
     id: "spine_near_perfect",
-    description: "Near perfect – no visible stress lines, no roll, no splits, staples clean",
+    description: "Near perfect – no visible stress lines, no roll, no splits, staples clean and tight.",
     max_score: 9.6,
     deduction: 0.0
   },
   {
     id: "spine_minor_stress",
-    description: "1–2 tiny stress lines, no color break, no roll, no splits",
+    description: "1–2 tiny stress lines, no color break, no roll, no splits.",
     max_score: 9.0,
     deduction: 0.6
   },
   {
     id: "spine_multiple_stress_color_break",
-    description: "Multiple spine stress lines with color break",
+    description: "Multiple spine stress lines with color break.",
     max_score: 6.0,
     deduction: 3.0
   },
   {
     id: "spine_small_split",
-    description: "Small spine split under 1/4 inch",
+    description: "Small spine split under 1/4 inch.",
     max_score: 6.5,
     deduction: 3.0
   },
   {
     id: "spine_large_split_or_roll",
-    description: "Spine roll or split over 1 inch",
+    description: "Spine roll or split over 1 inch.",
     max_score: 3.0,
     deduction: 6.0
   }
 ];
 
-// === Cover severity rules used for BOTH front and back ===
-// You can tweak deductions / caps to match your Excel.
-const COVER_SEVERITY = {
+// === Severity rules used for cover + corners ===
+const SEVERITY_RULES = {
   near: {
     key: "near",
     label: "Near Perfect",
@@ -86,9 +85,30 @@ const COVER_SEVERITY = {
   }
 };
 
+// === Color / Gloss rules ===
+const GLOSS_RULES = {
+  near:     { key: "near",     label: "Near Perfect Gloss/Color", deduction: 0.0, max_score: 9.8 },
+  light:    { key: "light",    label: "Slight Loss of Gloss/Color", deduction: 0.5, max_score: 9.0 },
+  moderate: { key: "moderate", label: "Moderate Loss of Gloss/Color", deduction: 1.5, max_score: 8.0 },
+  heavy:    { key: "heavy",    label: "Heavy Loss of Gloss/Color", deduction: 3.0, max_score: 6.0 }
+};
+
+const UV_RULES = {
+  none:     { key: "none",     label: "No UV Fade", deduction: 0.0, max_score: 10.0 },
+  light:    { key: "light",    label: "Light UV Fade", deduction: 1.0, max_score: 8.8 },
+  moderate: { key: "moderate", label: "Moderate UV Fade", deduction: 2.0, max_score: 7.5 },
+  heavy:    { key: "heavy",    label: "Heavy UV Fade", deduction: 3.0, max_score: 5.0 }
+};
+
+const COLOR_RULES = {
+  clean:    { key: "clean",    label: "Clean Color", deduction: 0.0, max_score: 9.8 },
+  slight:   { key: "slight",   label: "Slight Variation", deduction: 0.5, max_score: 9.0 },
+  moderate: { key: "moderate", label: "Moderate Variation", deduction: 1.5, max_score: 7.5 },
+  heavy:    { key: "heavy",    label: "Heavy Variation", deduction: 3.0, max_score: 5.0 }
+};
+
 // Helper: convert numeric score into a grade row from GRADES
 function pickGrade(grades, score) {
-  // Default to lowest in case score is very low
   let best = grades[grades.length - 1];
   for (const g of grades) {
     if (score >= g.score && g.score >= best.score) {
@@ -98,6 +118,13 @@ function pickGrade(grades, score) {
   return best;
 }
 
+// Helper: compute a section's score & grade from base, deduction, and cap
+function computeSection(baseScore, deduction, maxScore) {
+  const raw = baseScore - deduction;
+  const score = Math.min(raw, maxScore);
+  return { raw, score };
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("grading-form");
   const resultDiv = document.getElementById("result");
@@ -105,72 +132,179 @@ document.addEventListener("DOMContentLoaded", () => {
   form.addEventListener("submit", (e) => {
     e.preventDefault(); // stop page reload
 
-    const spineChoice = form.elements["spine"].value;
-    const frontChoice = form.elements["front_cover"].value;
-    const backChoice  = form.elements["back_cover"].value;
+    const baseScore = 10.0;
 
-    const spineRule = SPINE_RULES.find(r => r.id === spineChoice);
-    const frontRule = COVER_SEVERITY[frontChoice];
-    const backRule  = COVER_SEVERITY[backChoice];
+    // === Read choices ===
+    const spineChoice       = form.elements["spine"].value;
+    const frontCoverChoice  = form.elements["front_cover"].value;
+    const backCoverChoice   = form.elements["back_cover"].value;
+    const frontCornerChoice = form.elements["front_corner"].value;
+    const backCornerChoice  = form.elements["back_corner"].value;
 
-    if (!spineRule || !frontRule || !backRule) {
-      resultDiv.innerHTML = "<p>Something went wrong – rule not found.</p>";
+    const frontGlossChoice  = form.elements["front_gloss"].value;
+    const frontUVChoice     = form.elements["front_uv"].value;
+    const frontColorChoice  = form.elements["front_color"].value;
+
+    const backGlossChoice   = form.elements["back_gloss"].value;
+    const backUVChoice      = form.elements["back_uv"].value;
+    const backColorChoice   = form.elements["back_color"].value;
+
+    const spineRule        = SPINE_RULES.find(r => r.id === spineChoice);
+    const frontCoverRule   = SEVERITY_RULES[frontCoverChoice];
+    const backCoverRule    = SEVERITY_RULES[backCoverChoice];
+    const frontCornerRule  = SEVERITY_RULES[frontCornerChoice];
+    const backCornerRule   = SEVERITY_RULES[backCornerChoice];
+
+    const frontGlossRule   = GLOSS_RULES[frontGlossChoice];
+    const frontUVRule      = UV_RULES[frontUVChoice];
+    const frontColorRule   = COLOR_RULES[frontColorChoice];
+
+    const backGlossRule    = GLOSS_RULES[backGlossChoice];
+    const backUVRule       = UV_RULES[backUVChoice];
+    const backColorRule    = COLOR_RULES[backColorChoice];
+
+    if (!spineRule || !frontCoverRule || !backCoverRule ||
+        !frontCornerRule || !backCornerRule ||
+        !frontGlossRule || !frontUVRule || !frontColorRule ||
+        !backGlossRule || !backUVRule || !backColorRule) {
+      resultDiv.innerHTML = "<p>Something went wrong – one or more rules were not found.</p>";
       return;
     }
 
-    const baseScore = 10.0;
+    // === Individual deductions ===
+    const spineDeduction        = spineRule.deduction || 0;
+    const frontCoverDeduction   = frontCoverRule.deduction || 0;
+    const backCoverDeduction    = backCoverRule.deduction || 0;
+    const frontCornerDeduction  = frontCornerRule.deduction || 0;
+    const backCornerDeduction   = backCornerRule.deduction || 0;
 
-    // === Section scores ===
-    const spineDeduction = spineRule.deduction || 0;
-    const frontDeduction = frontRule.deduction || 0;
-    const backDeduction  = backRule.deduction || 0;
+    const frontGlossDeduction   = frontGlossRule.deduction || 0;
+    const frontUVDeduction      = frontUVRule.deduction || 0;
+    const frontColorDeduction   = frontColorRule.deduction || 0;
 
-    const spineOnlyRaw   = baseScore - spineDeduction;
-    const spineOnlyScore = Math.min(spineOnlyRaw, spineRule.max_score);
-    const spineOnlyGrade = pickGrade(GRADES, spineOnlyScore);
+    const backGlossDeduction    = backGlossRule.deduction || 0;
+    const backUVDeduction       = backUVRule.deduction || 0;
+    const backColorDeduction    = backColorRule.deduction || 0;
 
-    const frontOnlyRaw   = baseScore - frontDeduction;
-    const frontOnlyScore = Math.min(frontOnlyRaw, frontRule.max_score);
-    const frontOnlyGrade = pickGrade(GRADES, frontOnlyScore);
+    // === Section scores (for display) ===
+    const spineSec     = computeSection(baseScore, spineDeduction, spineRule.max_score);
+    const spineGrade   = pickGrade(GRADES, spineSec.score);
 
-    const backOnlyRaw    = baseScore - backDeduction;
-    const backOnlyScore  = Math.min(backOnlyRaw, backRule.max_score);
-    const backOnlyGrade  = pickGrade(GRADES, backOnlyScore);
+    const frontCoverSec   = computeSection(baseScore, frontCoverDeduction, frontCoverRule.max_score);
+    const frontCoverGrade = pickGrade(GRADES, frontCoverSec.score);
 
-    // === Overall / true grade (spine + front + back) ===
-    const overallRaw = baseScore - (spineDeduction + frontDeduction + backDeduction);
-    const overallScore = Math.min(
-      overallRaw,
-      spineRule.max_score,
-      frontRule.max_score,
-      backRule.max_score
+    const backCoverSec   = computeSection(baseScore, backCoverDeduction, backCoverRule.max_score);
+    const backCoverGrade = pickGrade(GRADES, backCoverSec.score);
+
+    const frontCornerSec   = computeSection(baseScore, frontCornerDeduction, frontCornerRule.max_score);
+    const frontCornerGrade = pickGrade(GRADES, frontCornerSec.score);
+
+    const backCornerSec   = computeSection(baseScore, backCornerDeduction, backCornerRule.max_score);
+    const backCornerGrade = pickGrade(GRADES, backCornerSec.score);
+
+    // Color/Gloss/UV as combined section scores (front/back)
+    const frontColorSysDeduction = frontGlossDeduction + frontUVDeduction + frontColorDeduction;
+    const frontColorSysMax = Math.min(
+      frontGlossRule.max_score,
+      frontUVRule.max_score,
+      frontColorRule.max_score
     );
+    const frontColorSysSec   = computeSection(baseScore, frontColorSysDeduction, frontColorSysMax);
+    const frontColorSysGrade = pickGrade(GRADES, frontColorSysSec.score);
+
+    const backColorSysDeduction = backGlossDeduction + backUVDeduction + backColorDeduction;
+    const backColorSysMax = Math.min(
+      backGlossRule.max_score,
+      backUVRule.max_score,
+      backColorRule.max_score
+    );
+    const backColorSysSec   = computeSection(baseScore, backColorSysDeduction, backColorSysMax);
+    const backColorSysGrade = pickGrade(GRADES, backColorSysSec.score);
+
+    // === Overall / true grade (everything counted) ===
+    const totalDeduction = (
+      spineDeduction +
+      frontCoverDeduction + backCoverDeduction +
+      frontCornerDeduction + backCornerDeduction +
+      frontGlossDeduction + backGlossDeduction +
+      frontUVDeduction + backUVDeduction +
+      frontColorDeduction + backColorDeduction
+    );
+
+    const overallRaw = baseScore - totalDeduction;
+
+    const overallMax = Math.min(
+      spineRule.max_score,
+      frontCoverRule.max_score,
+      backCoverRule.max_score,
+      frontCornerRule.max_score,
+      backCornerRule.max_score,
+      frontGlossRule.max_score,
+      backGlossRule.max_score,
+      frontUVRule.max_score,
+      backUVRule.max_score,
+      frontColorRule.max_score,
+      backColorRule.max_score
+    );
+
+    const overallScore = Math.min(overallRaw, overallMax);
     const overallGrade = pickGrade(GRADES, overallScore);
 
-    // === Presentation grade (front view only: spine + FRONT cover) ===
-    const presentationRaw = baseScore - (spineDeduction + frontDeduction);
-    const presentationScore = Math.min(
-      presentationRaw,
-      spineRule.max_score,
-      frontRule.max_score
+    // === Presentation grade (front view only: spine + front-facing defects) ===
+    const frontPresentationDeduction = (
+      spineDeduction +
+      frontCoverDeduction +
+      frontCornerDeduction +
+      frontGlossDeduction +
+      frontUVDeduction +
+      frontColorDeduction
     );
+
+    const presentationRaw = baseScore - frontPresentationDeduction;
+
+    const presentationMax = Math.min(
+      spineRule.max_score,
+      frontCoverRule.max_score,
+      frontCornerRule.max_score,
+      frontGlossRule.max_score,
+      frontUVRule.max_score,
+      frontColorRule.max_score
+    );
+
+    const presentationScore = Math.min(presentationRaw, presentationMax);
     const presentationGrade = pickGrade(GRADES, presentationScore);
 
-    // Build an explanatory note for presentation
+    // Visible wear for explanation (front vs back)
+    const frontVisibleDeduction = (
+      frontCoverDeduction +
+      frontCornerDeduction +
+      frontGlossDeduction +
+      frontUVDeduction +
+      frontColorDeduction
+    );
+
+    const backVisibleDeduction = (
+      backCoverDeduction +
+      backCornerDeduction +
+      backGlossDeduction +
+      backUVDeduction +
+      backColorDeduction
+    );
+
     let presentationNote = "";
-    if (frontDeduction === 0 && backDeduction === 0) {
-      presentationNote = "Spine and covers are near perfect – presentation matches the true grade.";
-    } else if (frontDeduction > 0 && backDeduction === 0) {
-      presentationNote = "Most visible wear is on the front cover and spine – what you see from the front matches the true grade.";
-    } else if (frontDeduction === 0 && backDeduction > 0) {
-      presentationNote = "Most visible wear is on the back cover – from the front, the book presents stronger than the overall grade.";
+    if (frontVisibleDeduction === 0 && backVisibleDeduction === 0 && spineDeduction === 0) {
+      presentationNote = "Spine, covers, corners, and color all present near perfect – presentation matches the true grade.";
+    } else if (frontVisibleDeduction > 0 && backVisibleDeduction === 0) {
+      presentationNote = "Most visible wear is on the front (cover, corners, or color/gloss) and spine – what you see from the front matches the true grade.";
+    } else if (frontVisibleDeduction === 0 && backVisibleDeduction > 0) {
+      presentationNote = "Most visible wear is on the back – from the front, the book presents stronger than the true technical grade.";
     } else {
-      presentationNote = "Both front and back covers show wear – front view still reflects most of the overall condition.";
+      presentationNote = "Both front and back show wear – front view still reflects much of the overall condition.";
     }
 
     // === Output ===
     resultDiv.innerHTML = `
-      <h2>Estimated Grades (Spine + Cover Beta)</h2>
+      <h2>Estimated Grades (Spine + Cover + Corners + Color/Gloss/UV)</h2>
 
       <p><strong>Overall / True Grade:</strong> 
         ${overallGrade.short} (${overallGrade.label})
@@ -185,22 +319,38 @@ document.addEventListener("DOMContentLoaded", () => {
       <h3>Section Grades</h3>
       <ul>
         <li><strong>Spine / Edge:</strong> 
-          ${spineOnlyGrade.short} (${spineOnlyGrade.label}) – ${spineRule.description}
+          ${spineGrade.short} (${spineGrade.label}) – ${spineRule.description}
         </li>
-        <li><strong>Front Cover:</strong> 
-          ${frontOnlyGrade.short} (${frontOnlyGrade.label}) – ${frontRule.label}
+        <li><strong>Front Cover (physical wear):</strong> 
+          ${frontCoverGrade.short} (${frontCoverGrade.label}) – ${frontCoverRule.label}
         </li>
-        <li><strong>Back Cover:</strong> 
-          ${backOnlyGrade.short} (${backOnlyGrade.label}) – ${backRule.label}
+        <li><strong>Back Cover (physical wear):</strong> 
+          ${backCoverGrade.short} (${backCoverGrade.label}) – ${backCoverRule.label}
+        </li>
+        <li><strong>Front Corners:</strong> 
+          ${frontCornerGrade.short} (${frontCornerGrade.label}) – ${frontCornerRule.label}
+        </li>
+        <li><strong>Back Corners:</strong> 
+          ${backCornerGrade.short} (${backCornerGrade.label}) – ${backCornerRule.label}
+        </li>
+        <li><strong>Front Color / Gloss / UV:</strong> 
+          ${frontColorSysGrade.short} (${frontColorSysGrade.label})
+        </li>
+        <li><strong>Back Color / Gloss / UV:</strong> 
+          ${backColorSysGrade.short} (${backColorSysGrade.label})
         </li>
       </ul>
 
       <p><small>
         Internal scores – Overall: ${overallScore.toFixed(1)}, 
         Presentation: ${presentationScore.toFixed(1)}, 
-        Spine-only: ${spineOnlyScore.toFixed(1)}, 
-        Front-only: ${frontOnlyScore.toFixed(1)}, 
-        Back-only: ${backOnlyScore.toFixed(1)}
+        Spine-only: ${spineSec.score.toFixed(1)}, 
+        Front Cover-only: ${frontCoverSec.score.toFixed(1)}, 
+        Back Cover-only: ${backCoverSec.score.toFixed(1)},
+        Front Corners-only: ${frontCornerSec.score.toFixed(1)}, 
+        Back Corners-only: ${backCornerSec.score.toFixed(1)},
+        Front Color/Gloss/UV-only: ${frontColorSysSec.score.toFixed(1)},
+        Back Color/Gloss/UV-only: ${backColorSysSec.score.toFixed(1)}
       </small></p>
     `;
   });
