@@ -1,6 +1,6 @@
 async function loadData() {
-  const gradesRes = await fetch("/comic-grading-gpt/data/grades.json");
-  const spineRes  = await fetch("/comic-grading-gpt/data/spine_rules.json");
+  const gradesRes = await fetch("/Comic-Grading-GPT/data/grades.json");
+  const spineRes  = await fetch("/Comic-Grading-GPT/data/spine_rules.json");
 
   const grades = await gradesRes.json();
   const spineRules = await spineRes.json();
