@@ -1,4 +1,4 @@
-// Inline grade scale
+// === Grade scale (same core scale, you can tweak later) ===
 const GRADES = [
   { score: 10.0, code: "GM",    label: "Gem Mint",               short: "10.0 GM" },
   { score: 9.9,  code: "MT",    label: "Mint",                   short: "9.9 MT" },
@@ -23,7 +23,7 @@ const GRADES = [
   { score: 0.5,  code: "PR",    label: "Poor",                   short: "0.5 PR" }
 ];
 
-// Simple spine rules
+// === Spine rules (edge look) ===
 const SPINE_RULES = [
   {
     id: "spine_near_perfect",
@@ -57,6 +57,34 @@ const SPINE_RULES = [
   }
 ];
 
+// === Cover severity rules (front + back combined, not location) ===
+const COVER_RULES = [
+  {
+    id: "cover_near_perfect",
+    description: "Near perfect – flat, clean, only the lightest signs of handling",
+    max_score: 9.8,
+    deduction: 0.0
+  },
+  {
+    id: "cover_light_wear",
+    description: "Light wear – a few tiny ticks, faint bends, light edge wear, no major creases",
+    max_score: 9.0,
+    deduction: 0.8
+  },
+  {
+    id: "cover_moderate_wear",
+    description: "Moderate wear – several ticks or small creases, some color break, noticeable but not trashed",
+    max_score: 7.5,
+    deduction: 2.0
+  },
+  {
+    id: "cover_heavy_wear",
+    description: "Heavy wear – big creases, strong color breaks, obvious wear or small pieces missing",
+    max_score: 5.0,
+    deduction: 4.0
+  }
+];
+
 function pickGrade(grades, score) {
   // choose the highest grade whose score is <= given score
   let best = grades[grades.length - 1]; // default to lowest
@@ -69,31 +97,92 @@ function pickGrade(grades, score) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("spine-form");
+  const form = document.getElementById("grading-form");
   const resultDiv = document.getElementById("result");
 
   form.addEventListener("submit", (e) => {
     e.preventDefault(); // stop page reload
 
-    const chosen = form.elements["spine"].value;
-    const rule = SPINE_RULES.find(r => r.id === chosen);
+    const spineChoice = form.elements["spine"].value;
+    const coverChoice = form.elements["cover"].value;
+    const coverLoc    = form.elements["cover_location"].value;
 
-    if (!rule) {
+    const spineRule = SPINE_RULES.find(r => r.id === spineChoice);
+    const coverRule = COVER_RULES.find(r => r.id === coverChoice);
+
+    if (!spineRule || !coverRule) {
       resultDiv.innerHTML = "<p>Something went wrong – rule not found.</p>";
       return;
     }
 
+    // 1) Technical / structural score (spine + cover combined)
     const baseScore = 10.0;
-    const rawScore = baseScore - (rule.deduction || 0);
-    const finalScore = Math.min(rule.max_score, rawScore);
 
-    const grade = pickGrade(GRADES, finalScore);
+    const totalDeduction = (spineRule.deduction || 0) + (coverRule.deduction || 0);
+    const rawScore = baseScore - totalDeduction;
+
+    const techScore = Math.min(
+      spineRule.max_score,
+      coverRule.max_score,
+      rawScore
+    );
+
+    const techGrade = pickGrade(GRADES, techScore);
+
+    // 2) Presentation adjustment based on cover location
+    //    (spine is an edge view, so location is driven by cover only)
+    let presentationScore = techScore;
+    let presentationNote  = "";
+
+    const coverHasRealWear = coverRule.deduction > 0;
+
+    if (!coverHasRealWear) {
+      // Near perfect cover: what you see is what it is
+      presentationScore = techScore;
+      presentationNote  = "Cover presents the same as the technical grade – no significant front or back defects.";
+    } else if (coverLoc === "back_only") {
+      presentationScore = Math.min(10.0, techScore + 0.7);
+      presentationNote  = "Most visible wear is on the back cover – front presents stronger than the full technical grade.";
+    } else if (coverLoc === "both") {
+      presentationScore = Math.min(10.0, techScore + 0.3);
+      presentationNote  = "Wear is on both front and back, but overall presentation may look slightly better at a glance than the raw technical grade.";
+    } else {
+      // front_only or anything else: what you see is what it is
+      presentationScore = techScore;
+      presentationNote  = "Most visible wear is on the front cover – presentation matches the technical grade.";
+    }
+
+    const presGrade = pickGrade(GRADES, presentationScore);
+
+    // 3) Optional: show component estimates for spine and cover alone
+    const spineOnlyScore = Math.min(spineRule.max_score, baseScore - (spineRule.deduction || 0));
+    const coverOnlyScore = Math.min(coverRule.max_score, baseScore - (coverRule.deduction || 0));
+    const spineOnlyGrade = pickGrade(GRADES, spineOnlyScore);
+    const coverOnlyGrade = pickGrade(GRADES, coverOnlyScore);
 
     resultDiv.innerHTML = `
-      <h2>Estimated Spine Grade</h2>
-      <p><strong>${grade.short}</strong> (${grade.label})</p>
-      <p><em>Spine rule applied:</em> ${rule.description}</p>
-      <p><small>Internal numeric estimate: ${finalScore.toFixed(1)}</small></p>
+      <h2>Estimated Grade (Spine + Cover Beta)</h2>
+
+      <p><strong>Overall Technical Grade:</strong> ${techGrade.short} (${techGrade.label})</p>
+
+      <p><strong>Presentation (How it looks at a glance):</strong> 
+        ${presGrade.short} (${presGrade.label})
+      </p>
+
+      <p><em>${presentationNote}</em></p>
+
+      <h3>Breakdown</h3>
+      <ul>
+        <li><strong>Spine / Edge:</strong> ${spineOnlyGrade.short} (${spineOnlyGrade.label}) – ${spineRule.description}</li>
+        <li><strong>Cover (structural):</strong> ${coverOnlyGrade.short} (${coverOnlyGrade.label}) – ${coverRule.description}</li>
+      </ul>
+
+      <p><small>
+        Internal scores – Technical: ${techScore.toFixed(1)}, 
+        Presentation: ${presentationScore.toFixed(1)}, 
+        Spine-only: ${spineOnlyScore.toFixed(1)}, 
+        Cover-only: ${coverOnlyScore.toFixed(1)}
+      </small></p>
     `;
   });
 });
