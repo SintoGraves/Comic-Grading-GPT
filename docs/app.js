@@ -1,0 +1,53 @@
+async function loadData() {
+  const [gradesRes, spineRes] = await Promise.all([
+    fetch("../data/grades.json"),
+    fetch("../data/spine_rules.json")
+  ]);
+
+  const grades = await gradesRes.json();
+  const spineRules = await spineRes.json();
+  return { grades, spineRules };
+}
+
+function pickGrade(grades, score) {
+  // pick the highest grade with score <= currentScore (or closest under)
+  let best = grades[grades.length - 1];
+  for (const g of grades) {
+    if (score >= g.score && g.score >= best.score) {
+      best = g;
+    }
+  }
+  return best;
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
+  const { grades, spineRules } = await loadData();
+
+  const form = document.getElementById("spine-form");
+  const resultDiv = document.getElementById("result");
+
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const chosen = form.elements["spine"].value;
+    const rule = spineRules.find(r => r.id === chosen);
+
+    if (!rule) {
+      resultDiv.innerHTML = "<p>Something went wrong – rule not found.</p>";
+      return;
+    }
+
+    const baseScore = 10.0;
+    const rawScore = baseScore - (rule.deduction || 0);
+    const finalScore = Math.min(rule.max_score, rawScore);
+
+    const grade = pickGrade(grades, finalScore);
+
+    resultDiv.innerHTML = `
+      <h2>Estimated Spine Grade</h2>
+      <p><strong>${grade.short}</strong> (${grade.label})</p>
+      <p><em>Spine rule applied:</em> ${rule.description}</p>
+      <p><small>Numeric estimate: ${finalScore.toFixed(1)} (internal score)</small></p>
+    `;
+  });
+});
