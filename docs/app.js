@@ -100,6 +100,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("grading-form");
   const resultDiv = document.getElementById("result");
 
+  const coverNearPerfect = COVER_RULES.find(r => r.id === "cover_near_perfect");
+
   form.addEventListener("submit", (e) => {
     e.preventDefault(); // stop page reload
 
@@ -115,70 +117,91 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // 1) Technical / structural score (spine + cover combined)
     const baseScore = 10.0;
 
-    const totalDeduction = (spineRule.deduction || 0) + (coverRule.deduction || 0);
-    const rawScore = baseScore - totalDeduction;
+    // === Section scores ===
+    const spineDeduction = spineRule.deduction || 0;
+    const coverDeduction = coverRule.deduction || 0;
 
-    const techScore = Math.min(
-      spineRule.max_score,
-      coverRule.max_score,
-      rawScore
-    );
-
-    const techGrade = pickGrade(GRADES, techScore);
-
-    // 2) Presentation adjustment based on cover location
-    //    (spine is an edge view, so location is driven by cover only)
-    let presentationScore = techScore;
-    let presentationNote  = "";
-
-    const coverHasRealWear = coverRule.deduction > 0;
-
-    if (!coverHasRealWear) {
-      // Near perfect cover: what you see is what it is
-      presentationScore = techScore;
-      presentationNote  = "Cover presents the same as the technical grade – no significant front or back defects.";
-    } else if (coverLoc === "back_only") {
-      presentationScore = Math.min(10.0, techScore + 0.7);
-      presentationNote  = "Most visible wear is on the back cover – front presents stronger than the full technical grade.";
-    } else if (coverLoc === "both") {
-      presentationScore = Math.min(10.0, techScore + 0.3);
-      presentationNote  = "Wear is on both front and back, but overall presentation may look slightly better at a glance than the raw technical grade.";
-    } else {
-      // front_only or anything else: what you see is what it is
-      presentationScore = techScore;
-      presentationNote  = "Most visible wear is on the front cover – presentation matches the technical grade.";
-    }
-
-    const presGrade = pickGrade(GRADES, presentationScore);
-
-    // 3) Optional: show component estimates for spine and cover alone
-    const spineOnlyScore = Math.min(spineRule.max_score, baseScore - (spineRule.deduction || 0));
-    const coverOnlyScore = Math.min(coverRule.max_score, baseScore - (coverRule.deduction || 0));
+    const spineOnlyRaw   = baseScore - spineDeduction;
+    const spineOnlyScore = Math.min(spineOnlyRaw, spineRule.max_score);
     const spineOnlyGrade = pickGrade(GRADES, spineOnlyScore);
+
+    const coverOnlyRaw   = baseScore - coverDeduction;
+    const coverOnlyScore = Math.min(coverOnlyRaw, coverRule.max_score);
     const coverOnlyGrade = pickGrade(GRADES, coverOnlyScore);
 
+    // === Overall / true grade (front + back + spine) ===
+    const overallRaw = baseScore - (spineDeduction + coverDeduction);
+    const overallScore = Math.min(
+      overallRaw,
+      spineRule.max_score,
+      coverRule.max_score
+    );
+    const overallGrade = pickGrade(GRADES, overallScore);
+
+    // === Presentation grade (front view only) ===
+    const coverHasRealWear = coverDeduction > 0;
+
+    let frontCoverDeduction = 0;
+    let frontCoverMaxScore  = coverRule.max_score; // default
+
+    if (!coverHasRealWear) {
+      // No real wear anywhere: presentation == overall
+      frontCoverDeduction = 0;
+      frontCoverMaxScore  = coverRule.max_score;
+    } else if (coverLoc === "back_only") {
+      // All the wear is on the back: front looks near perfect
+      frontCoverDeduction = 0;
+      frontCoverMaxScore  = coverNearPerfect ? coverNearPerfect.max_score : 9.8;
+    } else {
+      // front_only or both: front sees the full cover wear
+      frontCoverDeduction = coverDeduction;
+      frontCoverMaxScore  = coverRule.max_score;
+    }
+
+    const presentationRaw = baseScore - (spineDeduction + frontCoverDeduction);
+    const presentationScore = Math.min(
+      presentationRaw,
+      spineRule.max_score,
+      frontCoverMaxScore
+    );
+    const presentationGrade = pickGrade(GRADES, presentationScore);
+
+    // Explanatory note
+    let presentationNote = "";
+    if (!coverHasRealWear) {
+      presentationNote = "Cover has no significant wear – presentation matches the true grade.";
+    } else if (coverLoc === "back_only") {
+      presentationNote = "Most visible defects are on the back cover – from the front, the book presents stronger than the overall grade.";
+    } else if (coverLoc === "front_only") {
+      presentationNote = "Most defects are on the front cover – what you see from the front matches the true grade.";
+    } else {
+      presentationNote = "Defects are on both front and back covers – front view still shows the main wear.";
+    }
+
+    // === Output ===
     resultDiv.innerHTML = `
-      <h2>Estimated Grade (Spine + Cover Beta)</h2>
+      <h2>Estimated Grades (Spine + Cover Beta)</h2>
 
-      <p><strong>Overall Technical Grade:</strong> ${techGrade.short} (${techGrade.label})</p>
+      <p><strong>Overall / True Grade:</strong> 
+        ${overallGrade.short} (${overallGrade.label})
+      </p>
 
-      <p><strong>Presentation (How it looks at a glance):</strong> 
-        ${presGrade.short} (${presGrade.label})
+      <p><strong>Presentation Grade (front view only):</strong> 
+        ${presentationGrade.short} (${presentationGrade.label})
       </p>
 
       <p><em>${presentationNote}</em></p>
 
-      <h3>Breakdown</h3>
+      <h3>Section Grades</h3>
       <ul>
         <li><strong>Spine / Edge:</strong> ${spineOnlyGrade.short} (${spineOnlyGrade.label}) – ${spineRule.description}</li>
-        <li><strong>Cover (structural):</strong> ${coverOnlyGrade.short} (${coverOnlyGrade.label}) – ${coverRule.description}</li>
+        <li><strong>Cover (overall, front + back):</strong> ${coverOnlyGrade.short} (${coverOnlyGrade.label}) – ${coverRule.description}</li>
       </ul>
 
       <p><small>
-        Internal scores – Technical: ${techScore.toFixed(1)}, 
+        Internal scores – Overall: ${overallScore.toFixed(1)}, 
         Presentation: ${presentationScore.toFixed(1)}, 
         Spine-only: ${spineOnlyScore.toFixed(1)}, 
         Cover-only: ${coverOnlyScore.toFixed(1)}
