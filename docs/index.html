@@ -328,80 +328,103 @@
     </fieldset>
 
     <!-- Interior pages section -->
-    <fieldset>
-      <legend>Interior Pages</legend>
+<fieldset>
+  <legend>Interior Pages</legend>
 
-      <p><strong>Page Color / Tone:</strong></p>
+  <p><strong>Page Color / Tone:</strong></p>
 
-      <label>
-        <input type="radio" name="page_tone" value="white" checked />
-        <strong>White / Off-White to White:</strong> Bright pages, minimal aging, no major darkening.
-      </label><br/>
+  <label>
+    <input type="radio" name="page_tone" value="white" checked />
+    <strong>White:</strong> Bright pages, minimal aging.
+    <span class="swatch" style="background:#FFFFFF;"></span>
+  </label><br/>
 
-      <label>
-        <input type="radio" name="page_tone" value="offwhite" />
-        <strong>Off-White:</strong> Light, even aging; still clean and readable.
-      </label><br/>
+  <label>
+    <input type="radio" name="page_tone" value="off_white_white" />
+    <strong>Off-White to White:</strong> Very light natural aging.
+    <span class="swatch" style="background:#F8F3E8;"></span>
+  </label><br/>
 
-      <label>
-        <input type="radio" name="page_tone" value="cream" />
-        <strong>Cream:</strong> Noticeable aging and darkening, but pages remain flexible.
-      </label><br/>
+  <label>
+    <input type="radio" name="page_tone" value="offwhite" />
+    <strong>Off-White:</strong> Noticeable but clean aging.
+    <span class="swatch" style="background:#EFE3CC;"></span>
+  </label><br/>
 
-      <label>
-        <input type="radio" name="page_tone" value="tan" />
-        <strong>Tan:</strong> Heavier aging, darker tone, starting to feel dry or fragile.
-      </label><br/>
+  <label>
+    <input type="radio" name="page_tone" value="cream_offwhite" />
+    <strong>Cream to Off-White:</strong> Warm tone, early oxidation.
+    <span class="swatch" style="background:#E6D7B8;"></span>
+  </label><br/>
 
-      <label>
-        <input type="radio" name="page_tone" value="brittle" />
-        <strong>Brittle:</strong> Very dark, dry pages that chip or crack easily.
-      </label>
+  <label>
+    <input type="radio" name="page_tone" value="cream" />
+    <strong>Cream:</strong> Aging clearly visible, still flexible.
+    <span class="swatch" style="background:#DCC89E;"></span>
+  </label><br/>
 
-      <p style="margin-top:1rem;"><strong>Interior Tears / Pieces Missing:</strong></p>
+  <label>
+    <input type="radio" name="page_tone" value="light_tan" />
+    <strong>Light Tan:</strong> Noticeable oxidation with brown tint.
+    <span class="swatch" style="background:#C2A87A;"></span>
+  </label><br/>
 
-      <label>
-        <input type="radio" name="interior_tears" value="none" checked />
-        <strong>No Tears:</strong> No tears or missing pieces on interior story pages.
-      </label><br/>
+  <label>
+    <input type="radio" name="page_tone" value="tan" />
+    <strong>Tan:</strong> Heavy oxidation, dry feel starting.
+    <span class="swatch" style="background:#A98558;"></span>
+  </label><br/>
 
-      <label>
-        <input type="radio" name="interior_tears" value="small" />
-        <strong>Small Tears:</strong> Small edge tears or nicks that do not affect story.
-      </label><br/>
+  <label>
+    <input type="radio" name="page_tone" value="brittle" />
+    <strong>Brittle:</strong> Very dark, fragile pages that can crack or chip.
+    <span class="swatch" style="background:#8B5E3C;"></span>
+  </label>
 
-      <label>
-        <input type="radio" name="interior_tears" value="multiple" />
-        <strong>Multiple Tears:</strong> Several tears or small pieces missing, but story is complete.
-      </label><br/>
+  <p style="margin-top:1rem;"><strong>Interior Tears / Pieces Missing:</strong></p>
 
-      <label>
-        <input type="radio" name="interior_tears" value="big_missing" />
-        <strong>Big Tears / Pieces Missing:</strong> Large tears or chunks missing from interior pages.
-      </label>
+  <label>
+    <input type="radio" name="interior_tears" value="none" checked />
+    <strong>No Tears:</strong> No tears or missing pieces on interior story pages.
+  </label><br/>
 
-      <p style="margin-top:1rem;"><strong>Interior Stains / Marks:</strong></p>
+  <label>
+    <input type="radio" name="interior_tears" value="small" />
+    <strong>Small Tears:</strong> Small edge tears or nicks that do not affect story.
+  </label><br/>
 
-      <label>
-        <input type="radio" name="interior_stains" value="none" checked />
-        <strong>No Stains:</strong> Clean pages, no markings or water spots.
-      </label><br/>
+  <label>
+    <input type="radio" name="interior_tears" value="multiple" />
+    <strong>Multiple Tears:</strong> Several tears or small pieces missing, but story is complete.
+  </label><br/>
 
-      <label>
-        <input type="radio" name="interior_stains" value="small" />
-        <strong>Small Marks:</strong> Small pencil marks, light spots, or tiny stains.
-      </label><br/>
+  <label>
+    <input type="radio" name="interior_tears" value="big_missing" />
+    <strong>Big Tears / Pieces Missing:</strong> Large tears or chunks missing from interior pages.
+  </label>
 
-      <label>
-        <input type="radio" name="interior_stains" value="moderate" />
-        <strong>Moderate Staining:</strong> Noticeable stains or marks on a few pages.
-      </label><br/>
+  <p style="margin-top:1rem;"><strong>Interior Stains / Marks:</strong></p>
 
-      <label>
-        <input type="radio" name="interior_stains" value="heavy" />
-        <strong>Heavy Staining / Writing:</strong> Large stains, water damage, or heavy writing in the book.
-      </label>
-    </fieldset>
+  <label>
+    <input type="radio" name="interior_stains" value="none" checked />
+    <strong>No Stains:</strong> Clean pages, no markings or water spots.
+  </label><br/>
+
+  <label>
+    <input type="radio" name="interior_stains" value="small" />
+    <strong>Small Marks:</strong> Small pencil marks, light spots, or tiny stains.
+  </label><br/>
+
+  <label>
+    <input type="radio" name="interior_stains" value="moderate" />
+    <strong>Moderate Staining:</strong> Noticeable stains or marks on a few pages.
+  </label><br/>
+
+  <label>
+    <input type="radio" name="interior_stains" value="heavy" />
+    <strong>Heavy Staining / Writing:</strong> Large stains, water damage, or heavy writing in the book.
+  </label>
+</fieldset>
     
     <button type="submit">Estimate Grade</button>
   </form>
