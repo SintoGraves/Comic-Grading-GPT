@@ -159,17 +159,65 @@ const PAGE_TONE_RULES = {
   }
 };
 const INTERIOR_TEAR_RULES = {
-  none:        { key: "none",        label: "No Tears",                            deduction: 0.0, max_score: 9.8 },
-  small:       { key: "small",       label: "Small Tears",                         deduction: 1.0, max_score: 8.5 },
-  multiple:    { key: "multiple",    label: "Multiple Tears / Small Pieces",       deduction: 2.5, max_score: 6.0 },
-  big_missing: { key: "big_missing", label: "Big Tears / Pieces Missing",          deduction: 4.0, max_score: 3.0 }
+  none: {
+    key: "none",
+    label: "No Tears",
+    description: "No tears or pieces missing on interior story pages.",
+    deduction: 0.0,
+    max_score: 10.0        // can still hit top grades
+  },
+  small: {
+    key: "small",
+    label: "Small Tears",
+    description: "Tiny edge tears (about 1/4\" or less), no piece out, story completely unaffected.",
+    deduction: 0.3,
+    max_score: 9.4         // like a small structural hit in an otherwise high-grade book
+  },
+  multiple: {
+    key: "multiple",
+    label: "Multiple Tears / Small Pieces",
+    description: "Several small tears or small pieces out along the margin; story and panels still fully readable.",
+    deduction: 1.2,
+    max_score: 7.5         // more than a tick: pulls book into the FN/VF–VF range
+  },
+  big_missing: {
+    key: "big_missing",
+    label: "Big Tears / Pieces Missing",
+    description: "Large tears into panels or chunks missing from story pages; significant impact to structure or readability.",
+    deduction: 3.0,
+    max_score: 3.0         // incomplete/major defect territory (GD/FR range)
+  }
 };
 
 const INTERIOR_STAIN_RULES = {
-  none:     { key: "none",     label: "No Stains",                     deduction: 0.0, max_score: 9.8 },
-  small:    { key: "small",    label: "Small Marks / Light Stains",    deduction: 0.5, max_score: 9.0 },
-  moderate: { key: "moderate", label: "Moderate Staining / Writing",   deduction: 1.5, max_score: 7.0 },
-  heavy:    { key: "heavy",    label: "Heavy Staining / Water Damage", deduction: 3.0, max_score: 4.0 }
+  none: {
+    key: "none",
+    label: "No Stains",
+    description: "Clean pages, no staining, marks, or water spots.",
+    deduction: 0.0,
+    max_score: 10.0
+  },
+  small: {
+    key: "small",
+    label: "Small Marks / Light Stains",
+    description: "Small pencil marks, light foxing spots, or tiny stains on a few pages.",
+    deduction: 0.4,
+    max_score: 9.4        // light interior soiling but still high-grade possible
+  },
+  moderate: {
+    key: "moderate",
+    label: "Moderate Staining / Writing",
+    description: "Noticeable stains, writing, or smudges on several pages; still fully readable.",
+    deduction: 1.3,
+    max_score: 7.0        // drags into FN/VG–FN range
+  },
+  heavy: {
+    key: "heavy",
+    label: "Heavy Staining / Water Damage",
+    description: "Large stains, tide marks, or heavy writing; possible waviness from water.",
+    deduction: 3.0,
+    max_score: 4.0        // VG and below – serious eye appeal hit
+  }
 };
 
 // === Marvel Value Stamp / coupon rules ===
