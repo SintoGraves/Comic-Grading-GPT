@@ -107,6 +107,38 @@ const COLOR_RULES = {
   heavy:    { key: "heavy",    label: "Heavy Color Variation",         deduction: 3.0, max_score: 5.0 }
 };
 
+// === Cover writing / store stamp / date rules ===
+const COVER_MARK_RULES = {
+  none: {
+    key: "none",
+    label: "No Writing / Stamps",
+    description: "No writing, stamps, or dates on the cover.",
+    deduction: 0.0,
+    max_score: 10.0
+  },
+  small: {
+    key: "small",
+    label: "Small / Minor Mark",
+    description: "Tiny price or date mark, small store stamp, or initials in a corner.",
+    deduction: 0.4,
+    max_score: 9.4     // still NM-range possible
+  },
+  moderate: {
+    key: "moderate",
+    label: "Moderate Writing / Stamp",
+    description: "Noticeable writing or stamp that does not dominate the main cover art.",
+    deduction: 1.2,
+    max_score: 7.5     // FN/VF range cap
+  },
+  heavy: {
+    key: "heavy",
+    label: "Heavy Writing / Store Stamp",
+    description: "Large writing or strong store/date stamp that strongly affects eye appeal.",
+    deduction: 2.5,
+    max_score: 5.0     // VG/FN and below
+  }
+};
+
 // === Interior page rules (8-level CGC-style page tone) ===
 const PAGE_TONE_RULES = {
   white: {
