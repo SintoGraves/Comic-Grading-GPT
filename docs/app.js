@@ -107,15 +107,57 @@ const COLOR_RULES = {
   heavy:    { key: "heavy",    label: "Heavy Color Variation",         deduction: 3.0, max_score: 5.0 }
 };
 
-// === Interior page rules ===
+// === Interior page rules (8-level CGC-style page tone) ===
 const PAGE_TONE_RULES = {
-  white:    { key: "white",    label: "White / OW-W",  deduction: 0.0, max_score: 9.8 },
-  offwhite: { key: "offwhite", label: "Off-White",     deduction: 0.5, max_score: 9.0 },
-  cream:    { key: "cream",    label: "Cream",         deduction: 1.5, max_score: 7.5 },
-  tan:      { key: "tan",      label: "Tan",           deduction: 3.0, max_score: 5.0 },
-  brittle:  { key: "brittle",  label: "Brittle",       deduction: 5.0, max_score: 3.0 }
+  white: {
+    key: "white",
+    label: "White",
+    deduction: 0.0,
+    max_score: 10.0   // can still reach Gem/9.8+
+  },
+  off_white_white: {
+    key: "off_white_white",
+    label: "Off-White to White",
+    deduction: 0.1,
+    max_score: 9.8
+  },
+  offwhite: {
+    key: "offwhite",
+    label: "Off-White",
+    deduction: 0.3,
+    max_score: 9.4
+  },
+  cream_offwhite: {
+    key: "cream_offwhite",
+    label: "Cream to Off-White",
+    deduction: 0.5,
+    max_score: 8.5
+  },
+  cream: {
+    key: "cream",
+    label: "Cream",
+    deduction: 1.0,
+    max_score: 7.5
+  },
+  light_tan: {
+    key: "light_tan",
+    label: "Light Tan",
+    deduction: 1.5,
+    max_score: 6.0
+  },
+  tan: {
+    key: "tan",
+    label: "Tan",
+    deduction: 2.2,
+    max_score: 5.0
+  },
+  brittle: {
+    key: "brittle",
+    label: "Brittle",
+    deduction: 3.0,
+    max_score: 3.0
+  }
 };
-
 const INTERIOR_TEAR_RULES = {
   none:        { key: "none",        label: "No Tears",                            deduction: 0.0, max_score: 9.8 },
   small:       { key: "small",       label: "Small Tears",                         deduction: 1.0, max_score: 8.5 },
