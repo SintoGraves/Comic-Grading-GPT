@@ -82,6 +82,50 @@
         <input type="radio" name="spine" value="spine_large_split_or_roll" />
         Spine roll or split over 1 inch
       </label>
+   
+          <p style="margin-top:1rem;"><strong>Cover / Centerfold Attachment:</strong></p>
+
+      <label>
+        <input type="radio" name="struct_attach" value="intact" checked />
+        <strong>Fully Attached:</strong> Cover and centerfold firmly attached at both staples, no major pulls.
+      </label><br/>
+
+      <label>
+        <input type="radio" name="struct_attach" value="loose_one" />
+        <strong>Minor Looseness / Pull:</strong> Light staple pulls or looseness, but still attached at both staples.
+      </label><br/>
+
+      <label>
+        <input type="radio" name="struct_attach" value="detached_one" />
+        <strong>Detached at One Staple:</strong> Cover or centerfold detached at one staple, or partial spine split.
+      </label><br/>
+
+      <label>
+        <input type="radio" name="struct_attach" value="detached_both" />
+        <strong>Detached at Both / Wrap Loose:</strong> Cover or centerfold detached at both staples, or full wrap/spine split.
+      </label>
+
+      <p style="margin-top:0.75rem;"><strong>Staple Condition:</strong></p>
+
+      <label>
+        <input type="radio" name="staple_rust" value="clean" checked />
+        <strong>Clean Staples:</strong> Bright metal, no rust or discoloration.
+      </label><br/>
+
+      <label>
+        <input type="radio" name="staple_rust" value="light" />
+        <strong>Light Rust:</strong> Slight discoloration or tiny rust spots, no visible migration into paper.
+      </label><br/>
+
+      <label>
+        <input type="radio" name="staple_rust" value="moderate" />
+        <strong>Moderate Rust / Migration:</strong> Noticeable rust with small migration dots on surrounding paper.
+      </label><br/>
+
+      <label>
+        <input type="radio" name="staple_rust" value="heavy" />
+        <strong>Heavy Rust:</strong> Flaking rust, heavy migration, or staples weakened by corrosion.
+      </label>
     </fieldset>
 
     <!-- Cover section: separate Front + Back grading -->
@@ -111,6 +155,28 @@
         <strong>Heavy Wear:</strong> Large creases, strong color break, heavy scuffing, chips, tears, or missing pieces.
       </label>
 
+      <p style="margin-top:0.75rem;"><strong>Front Surface Dirt / Handling:</strong></p>
+
+      <label>
+        <input type="radio" name="front_surface" value="clean" checked />
+        <strong>Clean:</strong> No obvious dirt, fingerprints, or smudges. Looks freshly handled.
+      </label><br/>
+
+      <label>
+        <input type="radio" name="front_surface" value="light" />
+        <strong>Light Dirt:</strong> A few fingerprints, light smudges, or minor soiling that could likely clean/press out.
+      </label><br/>
+
+      <label>
+        <input type="radio" name="front_surface" value="moderate" />
+        <strong>Moderate Dirt:</strong> Noticeable overall soiling, multiple fingerprints, or light abrasion.
+      </label><br/>
+
+      <label>
+        <input type="radio" name="front_surface" value="heavy" />
+        <strong>Heavy Dirt / Abrasion:</strong> Ground-in dirt, heavy grime, or strong surface abrasion.
+      </label>
+      
       <!-- Back cover -->
       <p style="margin-top:1rem;"><strong>Back Cover Condition:</strong></p>
 
@@ -132,6 +198,28 @@
       <label>
         <input type="radio" name="back_cover" value="heavy" />
         <strong>Heavy Wear:</strong> Strong color loss, heavy creasing, bends, chips, stains, scuffing, or tears.
+      </label>
+   
+          <p style="margin-top:0.75rem;"><strong>Back Surface Dirt / Handling:</strong></p>
+
+      <label>
+        <input type="radio" name="back_surface" value="clean" checked />
+        <strong>Clean:</strong> Very little to no dirt or handling marks.
+      </label><br/>
+
+      <label>
+        <input type="radio" name="back_surface" value="light" />
+        <strong>Light Dirt:</strong> Small smudges, faint dirt or a few fingerprints.
+      </label><br/>
+
+      <label>
+        <input type="radio" name="back_surface" value="moderate" />
+        <strong>Moderate Dirt:</strong> Noticeable soiling over part of the back cover.
+      </label><br/>
+
+      <label>
+        <input type="radio" name="back_surface" value="heavy" />
+        <strong>Heavy Dirt / Abrasion:</strong> Heavy soiling, rub, or abraded areas.
       </label>
     </fieldset>
     
@@ -178,12 +266,12 @@
 
       <label>
         <input type="radio" name="back_corner" value="moderate" />
-        <strong>Moderate Wear:</strong> Visible rounding, small corner creases, minor color break, or moderate wear.
+        <strong>Moderate Wear:</strong> Visible rounding, small corner creases, minor color break, moderate wear, or a light or non–color-breaking subscription crease.
       </label><br/>
 
       <label>
         <input type="radio" name="back_corner" value="heavy" />
-        <strong>Heavy Wear:</strong> Significant rounding, tearing, deep creasing, or material loss on the corner.
+        <strong>Heavy Wear:</strong> Significant rounding, tearing, deep creasing, material loss on the corner, or full-length, color-breaking subscription crease, overhang tears, or miswrap causing edge chipping.
       </label>
     </fieldset>
    
@@ -258,6 +346,28 @@
         <strong>Heavy Variation:</strong> Strong discoloration, blotchy areas, obvious staining or darkening.
       </label>
 
+      <p style="margin-top:0.75rem;"><strong>Front Water / Moisture:</strong></p>
+
+      <label>
+        <input type="radio" name="front_water" value="none" checked />
+        <strong>None:</strong> No moisture ripples, tide marks, or water stains.
+      </label><br/>
+
+      <label>
+        <input type="radio" name="front_water" value="light" />
+        <strong>Light:</strong> Very light ripple or a tiny moisture spot with no strong staining.
+      </label><br/>
+
+      <label>
+        <input type="radio" name="front_water" value="moderate" />
+        <strong>Moderate:</strong> Visible tide mark, ripple, or localized water stain.
+      </label><br/>
+
+      <label>
+        <input type="radio" name="front_water" value="heavy" />
+        <strong>Heavy:</strong> Large tide marks, strong staining, or widespread water wrinkles.
+      </label>
+      
       <!-- Back: Color / Gloss / UV -->
       <p style="margin-top:1.25rem;"><strong>Back Cover Color &amp; Gloss:</strong></p>
 
@@ -312,17 +422,39 @@
 
       <label>
         <input type="radio" name="back_color" value="slight" />
-        <strong>Slight Variation:</strong> Small areas of uneven tone or light spotting.
+        <strong>Slight Variation:</strong> Small areas of uneven tone, light spotting, or early foxing.
       </label><br/>
 
       <label>
         <input type="radio" name="back_color" value="moderate" />
-        <strong>Moderate Variation:</strong> Clear uneven color or spotting in several areas.
+        <strong>Moderate Variation:</strong> Clear uneven color, spotting in several areas, or noticable foxing/tanning in several areas.
       </label><br/>
 
       <label>
         <input type="radio" name="back_color" value="heavy" />
-        <strong>Heavy Variation:</strong> Strong discoloration, staining, or blotchy areas.
+        <strong>Heavy Variation:</strong> Strong discoloration, staining, blotchy areas, or heavy foxing, dark spotting, or strong cover oxidation.
+      </label>
+    
+          <p style="margin-top:0.75rem;"><strong>Back Water / Moisture:</strong></p>
+
+      <label>
+        <input type="radio" name="back_water" value="none" checked />
+        <strong>None:</strong> No tide marks, ripples, or moisture stains.
+      </label><br/>
+
+      <label>
+        <input type="radio" name="back_water" value="light" />
+        <strong>Light:</strong> Small moisture area or faint rippling.
+      </label><br/>
+
+      <label>
+        <input type="radio" name="back_water" value="moderate" />
+        <strong>Moderate:</strong> Clear tide mark or moisture wrinkle area.
+      </label><br/>
+
+      <label>
+        <input type="radio" name="back_water" value="heavy" />
+        <strong>Heavy:</strong> Large/stained moisture area or heavy rippling.
       </label>
     </fieldset>
 
