@@ -27,7 +27,7 @@ const GRADES = [
 const SPINE_RULES = [
   {
     id: "spine_near_perfect",
-    description: "Near perfect – no visible stress lines, no roll, no splits, staples clean and tight.",
+    description: "Near perfect – no visible stress lines, no roll, no splits, staples clean.",
     max_score: 9.6,
     deduction: 0.0
   },
@@ -85,6 +85,90 @@ const SEVERITY_RULES = {
   }
 };
 
+// === Structural attachment ===
+const STRUCT_ATTACHMENT_RULES = {
+  intact: {
+    key: "intact",
+    label: "Cover & centerfold fully attached",
+    deduction: 0.0,
+    max_score: 9.8
+  },
+  loose_one: {
+    key: "loose_one",
+    label: "Minor looseness / pulls",
+    deduction: 0.7,
+    max_score: 8.5
+  },
+  detached_one: {
+    key: "detached_one",
+    label: "Detached at one staple or partial split",
+    deduction: 3.0,
+    max_score: 4.5
+  },
+  detached_both: {
+    key: "detached_both",
+    label: "Detached at both staples / loose wrap",
+    deduction: 5.0,
+    max_score: 2.0
+  }
+};
+
+// === Staple rust ===
+const STAPLE_RUST_RULES = {
+  clean: {
+    key: "clean",
+    label: "Clean staples",
+    deduction: 0.0,
+    max_score: 9.8
+  },
+  light: {
+    key: "light",
+    label: "Light rust, no migration",
+    deduction: 0.5,
+    max_score: 9.0
+  },
+  moderate: {
+    key: "moderate",
+    label: "Moderate rust with small migration",
+    deduction: 1.5,
+    max_score: 7.0
+  },
+  heavy: {
+    key: "heavy",
+    label: "Heavy rust / flaking / strong migration",
+    deduction: 3.0,
+    max_score: 4.0
+  }
+};
+
+// === Surface dirt / handling ===
+const SURFACE_RULES = {
+  clean: {
+    key: "clean",
+    label: "Clean surface",
+    deduction: 0.0,
+    max_score: 9.8
+  },
+  light: {
+    key: "light",
+    label: "Light dirt / smudges",
+    deduction: 0.5,
+    max_score: 9.0
+  },
+  moderate: {
+    key: "moderate",
+    label: "Moderate dirt / abrasion",
+    deduction: 1.5,
+    max_score: 7.5
+  },
+  heavy: {
+    key: "heavy",
+    label: "Heavy dirt / abrasion",
+    deduction: 3.0,
+    max_score: 5.0
+  }
+};
+
 // === Color / Gloss rules ===
 const GLOSS_RULES = {
   near:     { key: "near",     label: "Near Perfect Gloss/Color",       deduction: 0.0, max_score: 9.8 },
@@ -102,157 +186,93 @@ const UV_RULES = {
 
 const COLOR_RULES = {
   clean:    { key: "clean",    label: "Clean Color",                   deduction: 0.0, max_score: 9.8 },
-  slight:   { key: "slight",   label: "Slight Color Variation",        deduction: 0.5, max_score: 9.0 },
-  moderate: { key: "moderate", label: "Moderate Color Variation",      deduction: 1.5, max_score: 7.5 },
-  heavy:    { key: "heavy",    label: "Heavy Color Variation",         deduction: 3.0, max_score: 5.0 }
+  slight:   { key: "slight",   label: "Slight Color/Foxing Variation", deduction: 0.5, max_score: 9.0 },
+  moderate: { key: "moderate", label: "Moderate Color/Foxing Variation", deduction: 1.5, max_score: 7.5 },
+  heavy:    { key: "heavy",    label: "Heavy Color/Foxing Variation",  deduction: 3.0, max_score: 5.0 }
 };
 
-// === Cover writing / store stamp / date rules ===
-const COVER_MARK_RULES = {
+// === Water / moisture rules ===
+const WATER_RULES = {
   none: {
     key: "none",
-    label: "No Writing / Stamps",
-    description: "No writing, stamps, or dates on the cover.",
+    label: "No water or moisture defects",
     deduction: 0.0,
-    max_score: 10.0
+    max_score: 9.8
   },
-  small: {
-    key: "small",
-    label: "Small / Minor Mark",
-    description: "Tiny price or date mark, small store stamp, or initials in a corner.",
-    deduction: 0.4,
-    max_score: 9.4
+  light: {
+    key: "light",
+    label: "Light ripple / very small spot",
+    deduction: 1.0,
+    max_score: 8.0
   },
   moderate: {
     key: "moderate",
-    label: "Moderate Writing / Stamp",
-    description: "Noticeable writing or stamp that does not dominate the main cover art.",
-    deduction: 1.2,
-    max_score: 7.5
+    label: "Moderate tide mark or localized stain",
+    deduction: 2.5,
+    max_score: 6.0
   },
   heavy: {
     key: "heavy",
-    label: "Heavy Writing / Store Stamp",
-    description: "Large writing or strong store/date stamp that strongly affects eye appeal.",
-    deduction: 2.5,
-    max_score: 5.0
+    label: "Heavy water damage / large stains",
+    deduction: 4.0,
+    max_score: 3.0
   }
 };
 
-// === Interior page rules (8-level CGC-style page tone) ===
-const PAGE_TONE_RULES = {
-  white: {
-    key: "white",
-    label: "White",
+// === Cover writing / stamps / dates ===
+const COVER_MARK_RULES = {
+  none: {
+    key: "none",
+    label: "No writing or stamps on cover",
     deduction: 0.0,
-    max_score: 10.0
-  },
-  off_white_white: {
-    key: "off_white_white",
-    label: "Off-White to White",
-    deduction: 0.1,
     max_score: 9.8
   },
-  offwhite: {
-    key: "offwhite",
-    label: "Off-White",
-    deduction: 0.3,
-    max_score: 9.4
-  },
-  cream_offwhite: {
-    key: "cream_offwhite",
-    label: "Cream to Off-White",
+  small: {
+    key: "small",
+    label: "Small / minor marks",
     deduction: 0.5,
-    max_score: 8.5
-  },
-  cream: {
-    key: "cream",
-    label: "Cream",
-    deduction: 1.0,
-    max_score: 7.5
-  },
-  light_tan: {
-    key: "light_tan",
-    label: "Light Tan",
-    deduction: 1.5,
-    max_score: 6.0
-  },
-  tan: {
-    key: "tan",
-    label: "Tan",
-    deduction: 2.2,
-    max_score: 5.0
-  },
-  brittle: {
-    key: "brittle",
-    label: "Brittle",
-    deduction: 3.0,
-    max_score: 3.0
-  }
-};
-
-// Tuned interior tear rules
-const INTERIOR_TEAR_RULES = {
-  none: {
-    key: "none",
-    label: "No Tears",
-    description: "No tears or pieces missing on interior story pages.",
-    deduction: 0.0,
-    max_score: 10.0
-  },
-  small: {
-    key: "small",
-    label: "Small Tears",
-    description: "Tiny edge tears (about 1/4\" or less), no piece out, story completely unaffected.",
-    deduction: 0.3,
-    max_score: 9.4
-  },
-  multiple: {
-    key: "multiple",
-    label: "Multiple Tears / Small Pieces",
-    description: "Several small tears or small pieces out along the margin; story and panels still fully readable.",
-    deduction: 1.2,
-    max_score: 7.5
-  },
-  big_missing: {
-    key: "big_missing",
-    label: "Big Tears / Pieces Missing",
-    description: "Large tears into panels or chunks missing from story pages; significant impact to structure or readability.",
-    deduction: 3.0,
-    max_score: 3.0
-  }
-};
-
-// Tuned interior stain rules
-const INTERIOR_STAIN_RULES = {
-  none: {
-    key: "none",
-    label: "No Stains",
-    description: "Clean pages, no staining, marks, or water spots.",
-    deduction: 0.0,
-    max_score: 10.0
-  },
-  small: {
-    key: "small",
-    label: "Small Marks / Light Stains",
-    description: "Small pencil marks, light foxing spots, or tiny stains on a few pages.",
-    deduction: 0.4,
-    max_score: 9.4
+    max_score: 9.0
   },
   moderate: {
     key: "moderate",
-    label: "Moderate Staining / Writing",
-    description: "Noticeable stains, writing, or smudges on several pages; still fully readable.",
-    deduction: 1.3,
+    label: "Moderate writing / stamps",
+    deduction: 1.5,
     max_score: 7.0
   },
   heavy: {
     key: "heavy",
-    label: "Heavy Staining / Water Damage",
-    description: "Large stains, tide marks, or heavy writing; possible waviness from water.",
+    label: "Heavy writing / large stamps",
     deduction: 3.0,
-    max_score: 4.0
+    max_score: 5.0
   }
+};
+
+// === Interior page tone rules ===
+const PAGE_TONE_RULES = {
+  white:            { key: "white",            label: "White",                 deduction: 0.0, max_score: 9.8 },
+  off_white_white:  { key: "off_white_white",  label: "Off-White to White",    deduction: 0.2, max_score: 9.6 },
+  offwhite:         { key: "offwhite",         label: "Off-White",            deduction: 0.5, max_score: 9.0 },
+  cream_offwhite:   { key: "cream_offwhite",   label: "Cream to Off-White",   deduction: 1.0, max_score: 8.5 },
+  cream:            { key: "cream",            label: "Cream",                deduction: 1.5, max_score: 7.5 },
+  light_tan:        { key: "light_tan",        label: "Light Tan",            deduction: 2.5, max_score: 6.0 },
+  tan:              { key: "tan",              label: "Tan",                  deduction: 3.5, max_score: 4.0 },
+  brittle:          { key: "brittle",          label: "Brittle",              deduction: 5.0, max_score: 2.0 }
+};
+
+// === Interior tear rules ===
+const INTERIOR_TEAR_RULES = {
+  none:        { key: "none",        label: "No Tears",                       deduction: 0.0, max_score: 9.8 },
+  small:       { key: "small",       label: "Small Tears",                    deduction: 0.5, max_score: 9.0 },
+  multiple:    { key: "multiple",    label: "Multiple Tears / Small Pieces",  deduction: 2.0, max_score: 6.0 },
+  big_missing: { key: "big_missing", label: "Big Tears / Pieces Missing",     deduction: 4.0, max_score: 3.0 }
+};
+
+// === Interior stain rules ===
+const INTERIOR_STAIN_RULES = {
+  none:     { key: "none",     label: "No Stains",                     deduction: 0.0, max_score: 9.8 },
+  small:    { key: "small",    label: "Small Marks / Light Stains",    deduction: 0.5, max_score: 9.0 },
+  moderate: { key: "moderate", label: "Moderate Staining / Writing",   deduction: 1.5, max_score: 7.0 },
+  heavy:    { key: "heavy",    label: "Heavy Staining / Water Damage", deduction: 3.0, max_score: 4.0 }
 };
 
 // === Marvel Value Stamp / coupon rules ===
@@ -290,8 +310,8 @@ const STAMP_RULES = {
 };
 
 // === Lookup: issues that DO contain a Marvel Value Stamp ===
+// (Your long list – unchanged)
 const VALUE_STAMP_INDEX = {
-
   // Adventure Into Fear
   "adventure into fear#21": true,
   "adventure into fear#22": true,
@@ -805,7 +825,7 @@ const VALUE_STAMP_INDEX = {
   "worlds unknown#8": true
 };
 
-// Helper: convert numeric score into a grade row from GRADES
+// === Helper: convert numeric score into nearest grade ===
 function pickGrade(grades, score) {
   let best = grades[grades.length - 1];
   for (const g of grades) {
@@ -816,14 +836,14 @@ function pickGrade(grades, score) {
   return best;
 }
 
-// Helper: compute a section's score from base, deduction, and cap
+// === Helper: compute section from base, deduction, cap ===
 function computeSection(baseScore, deduction, maxScore) {
   const raw = baseScore - deduction;
   const score = Math.min(raw, maxScore);
   return { raw, score };
 }
 
-// Helper: normalize (title, issue) to lookup key
+// === Helper: normalize title/issue to lookup key ===
 function makeStampKey(title, issue) {
   return `${title}`.trim().toLowerCase() + "#" + `${issue}`.trim().toLowerCase();
 }
@@ -840,25 +860,27 @@ document.addEventListener("DOMContentLoaded", () => {
   let stampApplies = false;
 
   function updateStampLookup() {
-    const title = titleInput ? titleInput.value.trim() : "";
-    const issue = issueInput ? issueInput.value.trim() : "";
+    const title = titleInput.value.trim();
+    const issue = issueInput.value.trim();
 
     if (!title || !issue) {
       stampApplies = false;
-      if (stampFieldset) stampFieldset.style.display = "none";
-      if (stampHint) stampHint.textContent = "";
+      stampFieldset.style.display = "none";
+      stampHint.textContent = "";
       return;
     }
 
     const key = makeStampKey(title, issue);
     if (VALUE_STAMP_INDEX[key]) {
       stampApplies = true;
-      if (stampFieldset) stampFieldset.style.display = "block";
-      if (stampHint) stampHint.textContent = "This issue is known to include a value stamp or coupon. Please answer the question below.";
+      stampFieldset.style.display = "block";
+      stampHint.textContent =
+        "This issue is known to include a value stamp or coupon. Please answer the question below.";
     } else {
       stampApplies = false;
-      if (stampFieldset) stampFieldset.style.display = "none";
-      if (stampHint) stampHint.textContent = "No value stamp or coupon is listed for this issue in the current lookup table.";
+      stampFieldset.style.display = "none";
+      stampHint.textContent =
+        "No value stamp or coupon is listed for this issue in the current lookup table.";
     }
   }
 
@@ -872,94 +894,139 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const baseScore = 10.0;
 
-    // === Read choices ===
+    // === Read choices from form ===
     const spineChoice        = form.elements["spine"].value;
+    const structAttachChoice = form.elements["struct_attach"].value;
+    const stapleRustChoice   = form.elements["staple_rust"].value;
+
     const frontCoverChoice   = form.elements["front_cover"].value;
     const backCoverChoice    = form.elements["back_cover"].value;
+
+    const frontSurfaceChoice = form.elements["front_surface"].value;
+    const backSurfaceChoice  = form.elements["back_surface"].value;
+
     const frontCornerChoice  = form.elements["front_corner"].value;
     const backCornerChoice   = form.elements["back_corner"].value;
 
     const frontGlossChoice   = form.elements["front_gloss"].value;
     const frontUVChoice      = form.elements["front_uv"].value;
     const frontColorChoice   = form.elements["front_color"].value;
+    const frontWaterChoice   = form.elements["front_water"].value;
 
     const backGlossChoice    = form.elements["back_gloss"].value;
     const backUVChoice       = form.elements["back_uv"].value;
     const backColorChoice    = form.elements["back_color"].value;
+    const backWaterChoice    = form.elements["back_water"].value;
+
+    const coverMarksChoice   = form.elements["cover_marks"].value;
 
     const pageToneChoice     = form.elements["page_tone"].value;
     const interiorTearChoice = form.elements["interior_tears"].value;
     const interiorStainChoice= form.elements["interior_stains"].value;
 
-    const coverMarkChoice    = form.elements["cover_marks"].value;
-
     let stampRule = STAMP_RULES.na;
-    if (stampApplies && form.elements["value_stamp"]) {
+    if (stampApplies) {
       const stampChoice = form.elements["value_stamp"].value;
       stampRule = STAMP_RULES[stampChoice] || STAMP_RULES.na;
     }
 
-    const spineRule        = SPINE_RULES.find(r => r.id === spineChoice);
-    const frontCoverRule   = SEVERITY_RULES[frontCoverChoice];
-    const backCoverRule    = SEVERITY_RULES[backCoverChoice];
-    const frontCornerRule  = SEVERITY_RULES[frontCornerChoice];
-    const backCornerRule   = SEVERITY_RULES[backCornerChoice];
+    // === Map to rule objects ===
+    const spineRule         = SPINE_RULES.find(r => r.id === spineChoice);
+    const structAttachRule  = STRUCT_ATTACHMENT_RULES[structAttachChoice];
+    const stapleRustRule    = STAPLE_RUST_RULES[stapleRustChoice];
 
-    const frontGlossRule   = GLOSS_RULES[frontGlossChoice];
-    const frontUVRule      = UV_RULES[frontUVChoice];
-    const frontColorRule   = COLOR_RULES[frontColorChoice];
+    const frontCoverRule    = SEVERITY_RULES[frontCoverChoice];
+    const backCoverRule     = SEVERITY_RULES[backCoverChoice];
 
-    const backGlossRule    = GLOSS_RULES[backGlossChoice];
-    const backUVRule       = UV_RULES[backUVChoice];
-    const backColorRule    = COLOR_RULES[backColorChoice];
+    const frontSurfaceRule  = SURFACE_RULES[frontSurfaceChoice];
+    const backSurfaceRule   = SURFACE_RULES[backSurfaceChoice];
 
-    const pageToneRule     = PAGE_TONE_RULES[pageToneChoice];
-    const interiorTearRule = INTERIOR_TEAR_RULES[interiorTearChoice];
-    const interiorStainRule= INTERIOR_STAIN_RULES[interiorStainChoice];
+    const frontCornerRule   = SEVERITY_RULES[frontCornerChoice];
+    const backCornerRule    = SEVERITY_RULES[backCornerChoice];
 
-    const coverMarkRule    = COVER_MARK_RULES[coverMarkChoice];
+    const frontGlossRule    = GLOSS_RULES[frontGlossChoice];
+    const frontUVRule       = UV_RULES[frontUVChoice];
+    const frontColorRule    = COLOR_RULES[frontColorChoice];
+    const frontWaterRule    = WATER_RULES[frontWaterChoice];
 
-    if (!spineRule || !frontCoverRule || !backCoverRule ||
-        !frontCornerRule || !backCornerRule ||
-        !frontGlossRule || !frontUVRule || !frontColorRule ||
-        !backGlossRule || !backUVRule || !backColorRule ||
-        !pageToneRule || !interiorTearRule || !interiorStainRule ||
-        !stampRule || !coverMarkRule) {
+    const backGlossRule     = GLOSS_RULES[backGlossChoice];
+    const backUVRule        = UV_RULES[backUVChoice];
+    const backColorRule     = COLOR_RULES[backColorChoice];
+    const backWaterRule     = WATER_RULES[backWaterChoice];
+
+    const coverMarksRule    = COVER_MARK_RULES[coverMarksChoice];
+
+    const pageToneRule      = PAGE_TONE_RULES[pageToneChoice];
+    const interiorTearRule  = INTERIOR_TEAR_RULES[interiorTearChoice];
+    const interiorStainRule = INTERIOR_STAIN_RULES[interiorStainChoice];
+
+    if (
+      !spineRule || !structAttachRule || !stapleRustRule ||
+      !frontCoverRule || !backCoverRule ||
+      !frontSurfaceRule || !backSurfaceRule ||
+      !frontCornerRule || !backCornerRule ||
+      !frontGlossRule || !frontUVRule || !frontColorRule || !frontWaterRule ||
+      !backGlossRule || !backUVRule || !backColorRule || !backWaterRule ||
+      !coverMarksRule ||
+      !pageToneRule || !interiorTearRule || !interiorStainRule || !stampRule
+    ) {
       resultDiv.innerHTML = "<p>Something went wrong – one or more rules were not found.</p>";
       return;
     }
 
-    // === Individual deductions ===
-    const spineDeduction        = spineRule.deduction || 0;
-    const frontCoverDeduction   = frontCoverRule.deduction || 0;
-    const backCoverDeduction    = backCoverRule.deduction || 0;
-    const frontCornerDeduction  = frontCornerRule.deduction || 0;
-    const backCornerDeduction   = backCornerRule.deduction || 0;
+    // === Deductions ===
+    const spineDeduction         = spineRule.deduction || 0;
+    const structAttachDeduction  = structAttachRule.deduction || 0;
+    const stapleRustDeduction    = stapleRustRule.deduction || 0;
 
-    const frontGlossDeduction   = frontGlossRule.deduction || 0;
-    const frontUVDeduction      = frontUVRule.deduction || 0;
-    const frontColorDeduction   = frontColorRule.deduction || 0;
+    const frontCoverDeduction    = frontCoverRule.deduction || 0;
+    const backCoverDeduction     = backCoverRule.deduction || 0;
 
-    const backGlossDeduction    = backGlossRule.deduction || 0;
-    const backUVDeduction       = backUVRule.deduction || 0;
-    const backColorDeduction    = backColorRule.deduction || 0;
+    const frontSurfaceDeduction  = frontSurfaceRule.deduction || 0;
+    const backSurfaceDeduction   = backSurfaceRule.deduction || 0;
 
-    const pageToneDeduction     = pageToneRule.deduction || 0;
-    const interiorTearDeduction = interiorTearRule.deduction || 0;
-    const interiorStainDeduction= interiorStainRule.deduction || 0;
+    const frontCornerDeduction   = frontCornerRule.deduction || 0;
+    const backCornerDeduction    = backCornerRule.deduction || 0;
 
-    const coverMarkDeduction    = coverMarkRule.deduction || 0;
-    const stampDeduction        = stampRule.deduction || 0;
+    const frontGlossDeduction    = frontGlossRule.deduction || 0;
+    const frontUVDeduction       = frontUVRule.deduction || 0;
+    const frontColorDeduction    = frontColorRule.deduction || 0;
+    const frontWaterDeduction    = frontWaterRule.deduction || 0;
+
+    const backGlossDeduction     = backGlossRule.deduction || 0;
+    const backUVDeduction        = backUVRule.deduction || 0;
+    const backColorDeduction     = backColorRule.deduction || 0;
+    const backWaterDeduction     = backWaterRule.deduction || 0;
+
+    const coverMarksDeduction    = coverMarksRule.deduction || 0;
+
+    const pageToneDeduction      = pageToneRule.deduction || 0;
+    const interiorTearDeduction  = interiorTearRule.deduction || 0;
+    const interiorStainDeduction = interiorStainRule.deduction || 0;
+
+    const stampDeduction         = stampRule.deduction || 0;
 
     // === Section scores (for display) ===
     const spineSec       = computeSection(baseScore, spineDeduction, spineRule.max_score);
     const spineGrade     = pickGrade(GRADES, spineSec.score);
+
+    const structAttachSec   = computeSection(baseScore, structAttachDeduction, structAttachRule.max_score);
+    const structAttachGrade = pickGrade(GRADES, structAttachSec.score);
+
+    const stapleRustSec   = computeSection(baseScore, stapleRustDeduction, stapleRustRule.max_score);
+    const stapleRustGrade = pickGrade(GRADES, stapleRustSec.score);
 
     const frontCoverSec   = computeSection(baseScore, frontCoverDeduction, frontCoverRule.max_score);
     const frontCoverGrade = pickGrade(GRADES, frontCoverSec.score);
 
     const backCoverSec   = computeSection(baseScore, backCoverDeduction, backCoverRule.max_score);
     const backCoverGrade = pickGrade(GRADES, backCoverSec.score);
+
+    const frontSurfaceSec   = computeSection(baseScore, frontSurfaceDeduction, frontSurfaceRule.max_score);
+    const frontSurfaceGrade = pickGrade(GRADES, frontSurfaceSec.score);
+
+    const backSurfaceSec   = computeSection(baseScore, backSurfaceDeduction, backSurfaceRule.max_score);
+    const backSurfaceGrade = pickGrade(GRADES, backSurfaceSec.score);
 
     const frontCornerSec   = computeSection(baseScore, frontCornerDeduction, frontCornerRule.max_score);
     const frontCornerGrade = pickGrade(GRADES, frontCornerSec.score);
@@ -985,6 +1052,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const backColorSysSec   = computeSection(baseScore, backColorSysDeduction, backColorSysMax);
     const backColorSysGrade = pickGrade(GRADES, backColorSysSec.score);
 
+    const frontWaterSec   = computeSection(baseScore, frontWaterDeduction, frontWaterRule.max_score);
+    const frontWaterGrade = pickGrade(GRADES, frontWaterSec.score);
+
+    const backWaterSec   = computeSection(baseScore, backWaterDeduction, backWaterRule.max_score);
+    const backWaterGrade = pickGrade(GRADES, backWaterSec.score);
+
+    const coverMarksSec   = computeSection(baseScore, coverMarksDeduction, coverMarksRule.max_score);
+    const coverMarksGrade = pickGrade(GRADES, coverMarksSec.score);
+
     const pageToneSec   = computeSection(baseScore, pageToneDeduction, pageToneRule.max_score);
     const pageToneGrade = pickGrade(GRADES, pageToneSec.score);
 
@@ -997,10 +1073,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const stampSec   = computeSection(baseScore, stampDeduction, stampRule.max_score);
     const stampGrade = pickGrade(GRADES, stampSec.score);
 
-    const coverMarkSec   = computeSection(baseScore, coverMarkDeduction, coverMarkRule.max_score);
-    const coverMarkGrade = pickGrade(GRADES, coverMarkSec.score);
-
-    // Combined interior system (for display)
     const interiorSysDeduction = pageToneDeduction + interiorTearDeduction + interiorStainDeduction + stampDeduction;
     const interiorSysMax = Math.min(
       pageToneRule.max_score,
@@ -1011,15 +1083,19 @@ document.addEventListener("DOMContentLoaded", () => {
     const interiorSysSec   = computeSection(baseScore, interiorSysDeduction, interiorSysMax);
     const interiorSysGrade = pickGrade(GRADES, interiorSysSec.score);
 
-    // === Overall / true grade (everything counted) ===
+    // === Overall / true grade ===
     const totalDeduction = (
       spineDeduction +
+      structAttachDeduction +
+      stapleRustDeduction +
       frontCoverDeduction + backCoverDeduction +
+      frontSurfaceDeduction + backSurfaceDeduction +
       frontCornerDeduction + backCornerDeduction +
       frontGlossDeduction + backGlossDeduction +
       frontUVDeduction + backUVDeduction +
       frontColorDeduction + backColorDeduction +
-      coverMarkDeduction +
+      frontWaterDeduction + backWaterDeduction +
+      coverMarksDeduction +
       pageToneDeduction + interiorTearDeduction + interiorStainDeduction +
       stampDeduction
     );
@@ -1028,8 +1104,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const overallMax = Math.min(
       spineRule.max_score,
+      structAttachRule.max_score,
+      stapleRustRule.max_score,
       frontCoverRule.max_score,
       backCoverRule.max_score,
+      frontSurfaceRule.max_score,
+      backSurfaceRule.max_score,
       frontCornerRule.max_score,
       backCornerRule.max_score,
       frontGlossRule.max_score,
@@ -1038,7 +1118,9 @@ document.addEventListener("DOMContentLoaded", () => {
       backUVRule.max_score,
       frontColorRule.max_score,
       backColorRule.max_score,
-      coverMarkRule.max_score,
+      frontWaterRule.max_score,
+      backWaterRule.max_score,
+      coverMarksRule.max_score,
       pageToneRule.max_score,
       interiorTearRule.max_score,
       interiorStainRule.max_score,
@@ -1048,55 +1130,67 @@ document.addEventListener("DOMContentLoaded", () => {
     const overallScore = Math.min(overallRaw, overallMax);
     const overallGrade = pickGrade(GRADES, overallScore);
 
-    // === Presentation grade (front view only: no interior, no stamp) ===
+    // === Presentation grade (front view only) ===
     const frontPresentationDeduction = (
       spineDeduction +
+      structAttachDeduction +
+      stapleRustDeduction +
       frontCoverDeduction +
+      frontSurfaceDeduction +
       frontCornerDeduction +
       frontGlossDeduction +
       frontUVDeduction +
       frontColorDeduction +
-      coverMarkDeduction
+      frontWaterDeduction +
+      coverMarksDeduction
     );
 
     const presentationRaw = baseScore - frontPresentationDeduction;
 
     const presentationMax = Math.min(
       spineRule.max_score,
+      structAttachRule.max_score,
+      stapleRustRule.max_score,
       frontCoverRule.max_score,
+      frontSurfaceRule.max_score,
       frontCornerRule.max_score,
       frontGlossRule.max_score,
       frontUVRule.max_score,
       frontColorRule.max_score,
-      coverMarkRule.max_score
+      frontWaterRule.max_score,
+      coverMarksRule.max_score
     );
 
     const presentationScore = Math.min(presentationRaw, presentationMax);
     const presentationGrade = pickGrade(GRADES, presentationScore);
 
-    // Visible wear for explanation (front vs back; interior is hidden)
+    // === Visible wear front vs back (for explanation) ===
     const frontVisibleDeduction = (
       frontCoverDeduction +
+      frontSurfaceDeduction +
       frontCornerDeduction +
       frontGlossDeduction +
       frontUVDeduction +
       frontColorDeduction +
-      coverMarkDeduction
+      frontWaterDeduction +
+      coverMarksDeduction
     );
 
     const backVisibleDeduction = (
       backCoverDeduction +
+      backSurfaceDeduction +
       backCornerDeduction +
       backGlossDeduction +
       backUVDeduction +
-      backColorDeduction
+      backColorDeduction +
+      backWaterDeduction
     );
 
     let presentationNote = "";
     if (frontVisibleDeduction === 0 && backVisibleDeduction === 0 && spineDeduction === 0) {
       presentationNote = "Spine, covers, corners, and color all present near perfect – presentation matches the true grade (interior and stamp included).";
     } else if (frontVisibleDeduction > 0 && backVisibleDeduction === 0) {
-      presentationNote = "Most visible wear is on the front (cover, corners, color/gloss, or writing/stamps) and spine – what you see from the front matches the true technical grade.";
+      presentationNote = "Most visible wear is on the front (cover, corners, surface, or color/UV/water) and spine – what you see from the front matches the true technical grade.";
     } else if (frontVisibleDeduction === 0 && backVisibleDeduction > 0) {
       presentationNote = "Most visible wear is on the back – from the front, the book presents stronger than the true technical grade (interior or stamp issues may also be a factor).";
     } else {
@@ -1107,11 +1201,11 @@ document.addEventListener("DOMContentLoaded", () => {
     resultDiv.innerHTML = `
       <h2>Estimated Grades (Full Beta)</h2>
 
-      <p><strong>Overall / True Grade:</strong> 
+      <p><strong>Overall / True Grade:</strong>
         ${overallGrade.short} (${overallGrade.label})
       </p>
 
-      <p><strong>Presentation Grade (front view only):</strong> 
+      <p><strong>Presentation Grade (front view only):</strong>
         ${presentationGrade.short} (${presentationGrade.label})
       </p>
 
@@ -1119,58 +1213,82 @@ document.addEventListener("DOMContentLoaded", () => {
 
       <h3>Section Grades</h3>
       <ul>
-        <li><strong>Spine / Edge:</strong> 
+        <li><strong>Spine / Edge:</strong>
           ${spineGrade.short} (${spineGrade.label}) – ${spineRule.description}
         </li>
-        <li><strong>Front Cover (physical wear):</strong> 
+        <li><strong>Structural Attachment (cover / centerfold):</strong>
+          ${structAttachGrade.short} (${structAttachGrade.label}) – ${structAttachRule.label}
+        </li>
+        <li><strong>Staple Condition:</strong>
+          ${stapleRustGrade.short} (${stapleRustGrade.label}) – ${stapleRustRule.label}
+        </li>
+        <li><strong>Front Cover (physical wear):</strong>
           ${frontCoverGrade.short} (${frontCoverGrade.label}) – ${frontCoverRule.label}
         </li>
-        <li><strong>Back Cover (physical wear):</strong> 
+        <li><strong>Back Cover (physical wear):</strong>
           ${backCoverGrade.short} (${backCoverGrade.label}) – ${backCoverRule.label}
         </li>
-        <li><strong>Front Corners:</strong> 
+        <li><strong>Front Surface Dirt / Handling:</strong>
+          ${frontSurfaceGrade.short} (${frontSurfaceGrade.label}) – ${frontSurfaceRule.label}
+        </li>
+        <li><strong>Back Surface Dirt / Handling:</strong>
+          ${backSurfaceGrade.short} (${backSurfaceGrade.label}) – ${backSurfaceRule.label}
+        </li>
+        <li><strong>Front Corners:</strong>
           ${frontCornerGrade.short} (${frontCornerGrade.label}) – ${frontCornerRule.label}
         </li>
-        <li><strong>Back Corners:</strong> 
+        <li><strong>Back Corners:</strong>
           ${backCornerGrade.short} (${backCornerGrade.label}) – ${backCornerRule.label}
         </li>
-        <li><strong>Front Color / Gloss / UV:</strong> 
+        <li><strong>Front Color / Gloss / UV:</strong>
           ${frontColorSysGrade.short} (${frontColorSysGrade.label})
         </li>
-        <li><strong>Back Color / Gloss / UV:</strong> 
+        <li><strong>Back Color / Gloss / UV:</strong>
           ${backColorSysGrade.short} (${backColorSysGrade.label})
         </li>
-        <li><strong>Cover Writing / Stamps / Dates:</strong>
-          ${coverMarkGrade.short} (${coverMarkGrade.label}) – ${coverMarkRule.label}
+        <li><strong>Front Water / Moisture:</strong>
+          ${frontWaterGrade.short} (${frontWaterGrade.label}) – ${frontWaterRule.label}
         </li>
-        <li><strong>Interior Page Tone:</strong> 
+        <li><strong>Back Water / Moisture:</strong>
+          ${backWaterGrade.short} (${backWaterGrade.label}) – ${backWaterRule.label}
+        </li>
+        <li><strong>Cover Writing / Stamps / Dates:</strong>
+          ${coverMarksGrade.short} (${coverMarksGrade.label}) – ${coverMarksRule.label}
+        </li>
+        <li><strong>Interior Page Tone:</strong>
           ${pageToneGrade.short} (${pageToneGrade.label}) – ${pageToneRule.label}
         </li>
-        <li><strong>Interior Tears / Pieces Missing:</strong> 
+        <li><strong>Interior Tears / Pieces Missing:</strong>
           ${interiorTearGrade.short} (${interiorTearGrade.label}) – ${interiorTearRule.label}
         </li>
-        <li><strong>Interior Stains / Marks:</strong> 
+        <li><strong>Interior Stains / Marks:</strong>
           ${interiorStainGrade.short} (${interiorStainGrade.label}) – ${interiorStainRule.label}
         </li>
-        <li><strong>Stamp / Coupon Status:</strong> 
+        <li><strong>Stamp / Coupon Status:</strong>
           ${stampGrade.short} (${stampGrade.label}) – ${stampRule.label}
         </li>
-        <li><strong>Combined Interior (overall):</strong> 
+        <li><strong>Combined Interior (overall):</strong>
           ${interiorSysGrade.short} (${interiorSysGrade.label})
         </li>
       </ul>
 
       <p><small>
-        Internal scores – Overall: ${overallScore.toFixed(1)}, 
-        Presentation: ${presentationScore.toFixed(1)}, 
-        Spine-only: ${spineSec.score.toFixed(1)}, 
-        Front Cover-only: ${frontCoverSec.score.toFixed(1)}, 
+        Internal scores – Overall: ${overallScore.toFixed(1)},
+        Presentation: ${presentationScore.toFixed(1)},
+        Spine-only: ${spineSec.score.toFixed(1)},
+        Structural Attachment-only: ${structAttachSec.score.toFixed(1)},
+        Staple-only: ${stapleRustSec.score.toFixed(1)},
+        Front Cover-only: ${frontCoverSec.score.toFixed(1)},
         Back Cover-only: ${backCoverSec.score.toFixed(1)},
-        Front Corners-only: ${frontCornerSec.score.toFixed(1)}, 
+        Front Surface-only: ${frontSurfaceSec.score.toFixed(1)},
+        Back Surface-only: ${backSurfaceSec.score.toFixed(1)},
+        Front Corners-only: ${frontCornerSec.score.toFixed(1)},
         Back Corners-only: ${backCornerSec.score.toFixed(1)},
         Front Color/Gloss/UV-only: ${frontColorSysSec.score.toFixed(1)},
         Back Color/Gloss/UV-only: ${backColorSysSec.score.toFixed(1)},
-        Cover Marks-only: ${coverMarkSec.score.toFixed(1)},
+        Front Water-only: ${frontWaterSec.score.toFixed(1)},
+        Back Water-only: ${backWaterSec.score.toFixed(1)},
+        Cover Marks-only: ${coverMarksSec.score.toFixed(1)},
         Page Tone-only: ${pageToneSec.score.toFixed(1)},
         Interior Tears-only: ${interiorTearSec.score.toFixed(1)},
         Interior Stains-only: ${interiorStainSec.score.toFixed(1)},
