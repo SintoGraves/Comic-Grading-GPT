@@ -29,3 +29,20 @@ button {
   margin-left: 0.4rem;
   vertical-align: middle;
 }
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  #result, #result * {
+    visibility: visible;
+  }
+
+  #result {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+}
