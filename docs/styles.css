@@ -30,19 +30,33 @@ button {
   vertical-align: middle;
 }
 
+/* ===========================
+   PRINT-ONLY RULES
+   =========================== */
 @media print {
+
+  /* Hide EVERYTHING */
   body * {
     visibility: hidden;
   }
 
+  /* Show ONLY the results section */
   #result, #result * {
     visibility: visible;
   }
 
+  /* Position the results section at the top of print page */
   #result {
     position: absolute;
     left: 0;
     top: 0;
     width: 100%;
+  }
+
+  /* Style the printed header */
+  #result h2 {
+    margin-top: 0;
+    font-size: 1.5rem;
+    font-weight: bold;
   }
 }
