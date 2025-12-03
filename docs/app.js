@@ -1224,7 +1224,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // === Output ===
     resultDiv.innerHTML = `
-      <h2>Estimated Grades (Full Beta)</h2>
+      <h2>${titleInput.value.trim()} #${issueInput.value.trim()} — Estimated Grades</h2>
 
       <p><strong>Overall / True Grade:</strong>
         ${overallGrade.short} (${overallGrade.label})
