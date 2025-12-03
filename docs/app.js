@@ -844,8 +844,173 @@ function computeSection(baseScore, deduction, maxScore) {
 }
 
 // === Helper: normalize title/issue to lookup key ===
+
+// Turn user-entered series names into the canonical forms used in VALUE_STAMP_INDEX.
+// You can expand this over time as you see how people actually type things in.
+function normalizeTitle(rawTitle) {
+  if (!rawTitle) return "";
+
+  let t = rawTitle.trim().toLowerCase();
+
+  // Strip common trailing punctuation but KEEP hyphens (they matter for keys)
+  t = t.replace(/[.,']/g, "");
+
+  // Collapse multiple spaces
+  t = t.replace(/\s+/g, " ");
+
+  // Drop leading "the " once
+  if (t.startsWith("the ")) {
+    t = t.slice(4);
+  }
+
+  // ---- Core hyphen / spacing cleanups ----
+
+  // Amazing Spider-Man variants
+  t = t.replace(/\bamazing spiderman\b/g, "amazing spider-man");
+  t = t.replace(/\bamazing spider man\b/g, "amazing spider-man");
+  t = t.replace(/\bthe amazing spiderman\b/g, "amazing spider-man");
+  t = t.replace(/\bthe amazing spider man\b/g, "amazing spider-man");
+
+  // Conan (sometimes "conan the barbarian" typed)
+  t = t.replace(/\bconan the barbarian\b/g, "conan");
+
+  // Ka-Zar
+  t = t.replace(/\bkazar\b/g, "ka-zar");
+  t = t.replace(/\bka zar\b/g, "ka-zar");
+
+  // Sub-Mariner
+  t = t.replace(/\bsubmariner\b/g, "sub-mariner");
+  t = t.replace(/\bsub mariner\b/g, "sub-mariner");
+
+  // Super-Villain Team-Up
+  t = t.replace(/\bsuper villain team up\b/g, "super-villain team-up");
+
+  // Marvel Two-In-One
+  t = t.replace(/\bmarvel two in one\b/g, "marvel two-in-one");
+
+  // Giant-Size (normalize space → hyphen)
+  t = t.replace(/\bgiant size\b/g, "giant-size");
+
+  // Man-Thing
+  t = t.replace(/\bman thing\b/g, "man-thing");
+
+  // Master of Kung Fu
+  t = t.replace(/\bmaster of kungfu\b/g, "master of kung fu");
+  t = t.replace(/\bmaster of kung-fu\b/g, "master of kung fu");
+
+  // Jungle Action (usually fine already, just clean up extra words if any)
+  t = t.replace(/\bjungle action starring black panther\b/g, "jungle action");
+
+  // War Is Hell (catch weird spacing/casing)
+  t = t.replace(/\bwar is hell\b/g, "war is hell");
+
+  // Werewolf by Night
+  t = t.replace(/\bwerewolfbynight\b/g, "werewolf by night");
+  t = t.replace(/\bwerewolf by the night\b/g, "werewolf by night");
+
+  // Tomb of Dracula
+  t = t.replace(/\btomb of dracula\b/g, "tomb of dracula");
+  t = t.replace(/\bthe tomb of dracula\b/g, "tomb of dracula");
+
+  // Doctor Strange (Dr. → Doctor)
+  t = t.replace(/\bdr strange\b/g, "doctor strange");
+  t = t.replace(/\bdr. strange\b/g, "doctor strange");
+
+  // Hulk: normalize any "incredible hulk" phrasing to the key "hulk"
+  t = t.replace(/\bthe incredible hulk\b/g, "hulk");
+  t = t.replace(/\bincredible hulk\b/g, "hulk");
+  t = t.replace(/\bthe hulk\b/g, "hulk");
+
+  // Thor: normalize "the mighty thor" to "thor"
+  t = t.replace(/\bthe mighty thor\b/g, "thor");
+  t = t.replace(/\bmighty thor\b/g, "thor");
+
+  // Iron Man: normalize "invincible iron man" to "iron man"
+  t = t.replace(/\bthe invincible iron man\b/g, "iron man");
+  t = t.replace(/\binvincible iron man\b/g, "iron man");
+
+  // Avengers: strip "the"
+  t = t.replace(/\bthe avengers\b/g, "avengers");
+
+  // Fantastic Four
+  t = t.replace(/\bthe fantastic four\b/g, "fantastic four");
+
+  // Captain America – usually already correct, but catch "cap america"
+  t = t.replace(/\bcap america\b/g, "captain america");
+
+  // Ghost Rider – catch "the ghost rider"
+  t = t.replace(/\bthe ghost rider\b/g, "ghost rider");
+
+  // Defenders – catch "the defenders"
+  t = t.replace(/\bthe defenders\b/g, "defenders");
+
+  // Inhumans – catch "the inhumans"
+  t = t.replace(/\bthe inhumans\b/g, "inhumans");
+
+  // Invaders – catch "the invaders"
+  t = t.replace(/\bthe invaders\b/g, "invaders");
+
+  // Power Man – normalize "luke cage" solo title variants
+  t = t.replace(/\bluke cage power man\b/g, "power man");
+  t = t.replace(/\bhero for hire\b/g, "power man"); // if someone only types the early title
+
+  // Sgt. Fury – normalize long series name down to your key
+  t = t.replace(/\bsgt fury and his howling commandos\b/g, "sgt. fury");
+  t = t.replace(/\bsgt fury\b/g, "sgt. fury");
+
+  // Son of Satan
+  t = t.replace(/\bthe son of satan\b/g, "son of satan");
+
+  // Skull the Slayer
+  t = t.replace(/\bskull the slayer\b/g, "skull the slayer");
+
+  // Creatures on the Loose
+  t = t.replace(/\bcreatures on the loose\b/g, "creatures on the loose");
+
+  // Adventure Into Fear
+  t = t.replace(/\bfear\b/g, "adventure into fear"); // some people shorten to just "Fear"
+
+  // Giant-Size Creatures / Dracula
+  t = t.replace(/\bgiant size creatures\b/g, "giant-size creatures");
+  t = t.replace(/\bgiant size dracula\b/g, "giant-size dracula");
+
+  // Marvel Feature, Marvel Premiere, Marvel Spotlight, Marvel Team-Up
+  t = t.replace(/\bmarvel feature\b/g, "marvel feature");
+  t = t.replace(/\bmarvel premiere\b/g, "marvel premiere");
+  t = t.replace(/\bmarvel spotlight\b/g, "marvel spotlight");
+  t = t.replace(/\bmarvel team up\b/g, "marvel team-up");
+  t = t.replace(/\bmarvel two in one\b/g, "marvel two-in-one");
+
+  // Supernatural Thrillers
+  t = t.replace(/\bsupernatural thriller\b/g, "supernatural thrillers");
+
+  // Worlds Unknown
+  t = t.replace(/\bworlds unknown\b/g, "worlds unknown");
+
+  // Omega
+  t = t.replace(/\bomega the unknown\b/g, "omega");
+
+  // Frankensteins Monster → Frankenstein (your key)
+  t = t.replace(/\bfrankensteins monster\b/g, "frankenstein");
+  t = t.replace(/\bthe frankenstein monster\b/g, "frankenstein");
+
+  // Strange Tales
+  t = t.replace(/\bthe strange tales\b/g, "strange tales");
+
+  // Subtle clean-up at the end: collapse spaces again (just in case)
+  t = t.replace(/\s+/g, " ").trim();
+
+  return t;
+}
+
 function makeStampKey(title, issue) {
-  return `${title}`.trim().toLowerCase() + "#" + `${issue}`.trim().toLowerCase();
+  const normTitle = normalizeTitle(title);
+
+  let normIssue = `${issue}`.trim().toLowerCase();
+  // Strip a leading "#"
+  normIssue = normIssue.replace(/^#/, "");
+
+  return normTitle + "#" + normIssue;
 }
 
 document.addEventListener("DOMContentLoaded", () => {
