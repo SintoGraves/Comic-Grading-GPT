@@ -27,8 +27,8 @@ const GRADES = [
 const SPINE_RULES = [
   {
     id: "spine_near_perfect",
-    description: "Near perfect – no visible stress lines, no roll, no splits, staples clean.",
-    max_score: 10.0,
+    description: "Tight, flat spine – no visible stress lines, no roll, no splits, staples clean.",
+    max_score: 9.8,   // was lower or 10.0 – now NM ceiling
     deduction: 0.0
   },
   {
@@ -61,11 +61,11 @@ const SPINE_RULES = [
 const SEVERITY_RULES = {
   near: {
     key: "near",
-    label: "Near Perfect",
+    label: "Near Mint (sharp, square, vibrant)",
     deduction: 0.0,
-    max_score: 10.0
+    max_score: 9.8
   },
-  light: {
+    light: {
     key: "light",
     label: "Light Wear",
     deduction: 0.8,
@@ -89,11 +89,11 @@ const SEVERITY_RULES = {
 const STRUCT_ATTACHMENT_RULES = {
   intact: {
     key: "intact",
-    label: "Cover & centerfold fully attached",
+    label: "Cover & centerfold fully attached (no staple pulls or splits)",
     deduction: 0.0,
-    max_score: 10.0
+    max_score: 9.8   // NM ceiling
   },
-  loose_one: {
+    loose_one: {
     key: "loose_one",
     label: "Minor looseness / pulls",
     deduction: 0.7,
@@ -112,16 +112,15 @@ const STRUCT_ATTACHMENT_RULES = {
     max_score: 2.0
   }
 };
-
 // === Staple rust ===
 const STAPLE_RUST_RULES = {
   clean: {
     key: "clean",
-    label: "Clean staples",
+    label: "Clean staples – bright metal, no rust or discoloration",
     deduction: 0.0,
-    max_score: 10.0
+    max_score: 9.8
   },
-  light: {
+    light: {
     key: "light",
     label: "Light rust, no migration",
     deduction: 0.5,
@@ -145,11 +144,11 @@ const STAPLE_RUST_RULES = {
 const SURFACE_RULES = {
   clean: {
     key: "clean",
-    label: "Clean surface",
+    label: "Clean surface – no visible dirt, fingerprints, or smudges",
     deduction: 0.0,
-    max_score: 10.0
+    max_score: 9.8
   },
-  light: {
+   light: {
     key: "light",
     label: "Light dirt / smudges",
     deduction: 0.5,
@@ -171,24 +170,24 @@ const SURFACE_RULES = {
 
 // === Color / Gloss rules ===
 const GLOSS_RULES = {
-  near:     { key: "near",     label: "Near Perfect Gloss/Color",       deduction: 0.0, max_score: 10.0 },
-  light:    { key: "light",    label: "Slight Loss of Gloss/Color",     deduction: 0.5, max_score: 9.0 },
-  moderate: { key: "moderate", label: "Moderate Loss of Gloss/Color",   deduction: 1.5, max_score: 8.0 },
-  heavy:    { key: "heavy",    label: "Heavy Loss of Gloss/Color",      deduction: 3.0, max_score: 6.0 }
+  near:     { key: "near",     label: "Near Mint gloss/color – vibrant, high gloss", deduction: 0.0, max_score: 9.8 },
+  light:    { key: "light",    label: "Slight Loss of Gloss/Color",                   deduction: 0.5, max_score: 9.0 },
+  moderate: { key: "moderate", label: "Moderate Loss of Gloss/Color",                 deduction: 1.5, max_score: 8.0 },
+  heavy:    { key: "heavy",    label: "Heavy Loss of Gloss/Color",                    deduction: 3.0, max_score: 6.0 }
 };
 
 const UV_RULES = {
-  none:     { key: "none",     label: "No UV Fade",                    deduction: 0.0, max_score: 10.0 },
-  light:    { key: "light",    label: "Light UV Fade",                 deduction: 1.0, max_score: 8.8 },
-  moderate: { key: "moderate", label: "Moderate UV Fade",              deduction: 2.0, max_score: 7.5 },
-  heavy:    { key: "heavy",    label: "Heavy UV Fade",                 deduction: 3.0, max_score: 5.0 }
+  none:     { key: "none",     label: "No UV fade or sun shadow", deduction: 0.0, max_score: 9.8 },
+  light:    { key: "light",    label: "Light UV Fade",             deduction: 1.0, max_score: 8.8 },
+  moderate: { key: "moderate", label: "Moderate UV Fade",          deduction: 2.0, max_score: 7.5 },
+  heavy:    { key: "heavy",    label: "Heavy UV Fade",             deduction: 3.0, max_score: 5.0 }
 };
 
 const COLOR_RULES = {
-  clean:    { key: "clean",    label: "Clean Color",                   deduction: 0.0, max_score: 10.0 },
-  slight:   { key: "slight",   label: "Slight Color/Foxing Variation", deduction: 0.5, max_score: 9.0 },
-  moderate: { key: "moderate", label: "Moderate Color/Foxing Variation", deduction: 1.5, max_score: 7.5 },
-  heavy:    { key: "heavy",    label: "Heavy Color/Foxing Variation",  deduction: 3.0, max_score: 5.0 }
+  clean:    { key: "clean",    label: "Clean, even color (no spotting or blotching)", deduction: 0.0, max_score: 9.8 },
+  slight:   { key: "slight",   label: "Slight Color/Foxing Variation",                deduction: 0.5, max_score: 9.0 },
+  moderate: { key: "moderate", label: "Moderate Color/Foxing Variation",              deduction: 1.5, max_score: 7.5 },
+  heavy:    { key: "heavy",    label: "Heavy Color/Foxing Variation",                 deduction: 3.0, max_score: 5.0 }
 };
 
 // === Water / moisture rules ===
@@ -197,9 +196,9 @@ const WATER_RULES = {
     key: "none",
     label: "No water or moisture defects",
     deduction: 0.0,
-    max_score: 10.0
+    max_score: 9.8
   },
-  light: {
+    light: {
     key: "light",
     label: "Light ripple / very small spot",
     deduction: 1.0,
@@ -223,11 +222,11 @@ const WATER_RULES = {
 const COVER_MARK_RULES = {
   none: {
     key: "none",
-    label: "No writing or stamps on cover",
+    label: "No writing, arrival codes, dates, or store stamps on cover",
     deduction: 0.0,
-    max_score: 10.0
+    max_score: 9.8
   },
-  small: {
+    small: {
     key: "small",
     label: "Small / minor marks",
     deduction: 0.5,
@@ -249,8 +248,8 @@ const COVER_MARK_RULES = {
 
 // === Interior page tone rules ===
 const PAGE_TONE_RULES = {
-  white:            { key: "white",            label: "White",                 deduction: 0.0, max_score: 10.0 },
-  off_white_white:  { key: "off_white_white",  label: "Off-White to White",    deduction: 0.2, max_score: 9.6 },
+  white:            { key: "white",            label: "White pages",              deduction: 0.0, max_score: 9.8 },
+  off_white_white:  { key: "off_white_white",  label: "Off-White to White",       deduction: 0.2, max_score: 9.6 },
   offwhite:         { key: "offwhite",         label: "Off-White",            deduction: 0.5, max_score: 9.0 },
   cream_offwhite:   { key: "cream_offwhite",   label: "Cream to Off-White",   deduction: 1.0, max_score: 8.5 },
   cream:            { key: "cream",            label: "Cream",                deduction: 1.5, max_score: 7.5 },
@@ -261,7 +260,7 @@ const PAGE_TONE_RULES = {
 
 // === Interior tear rules ===
 const INTERIOR_TEAR_RULES = {
-  none:        { key: "none",        label: "No Tears",                       deduction: 0.0, max_score: 10.0 },
+  none:        { key: "none",        label: "No interior tears or missing pieces", deduction: 0.0, max_score: 9.8 },
   small:       { key: "small",       label: "Small Tears",                    deduction: 0.5, max_score: 9.0 },
   multiple:    { key: "multiple",    label: "Multiple Tears / Small Pieces",  deduction: 2.0, max_score: 6.0 },
   big_missing: { key: "big_missing", label: "Big Tears / Pieces Missing",     deduction: 4.0, max_score: 3.0 }
@@ -269,7 +268,7 @@ const INTERIOR_TEAR_RULES = {
 
 // === Interior stain rules ===
 const INTERIOR_STAIN_RULES = {
-  none:     { key: "none",     label: "No Stains",                     deduction: 0.0, max_score: 10.0 },
+  none:     { key: "none",     label: "No interior stains or writing", deduction: 0.0, max_score: 9.8 },
   small:    { key: "small",    label: "Small Marks / Light Stains",    deduction: 0.5, max_score: 9.0 },
   moderate: { key: "moderate", label: "Moderate Staining / Writing",   deduction: 1.5, max_score: 7.0 },
   heavy:    { key: "heavy",    label: "Heavy Staining / Water Damage", deduction: 3.0, max_score: 4.0 }
@@ -279,15 +278,15 @@ const INTERIOR_STAIN_RULES = {
 const STAMP_RULES = {
   na: {
     key: "na",
-    label: "No Stamp / Not Applicable",
+    label: "No stamp / not applicable",
     deduction: 0.0,
-    max_score: 10.0
+    max_score: 10.0   // book without a stamp can still be “perfect” here
   },
   intact: {
     key: "intact",
-    label: "Stamp Intact",
+    label: "Stamp intact",
     deduction: 0.0,
-    max_score: 10.0
+    max_score: 9.8     // aligns with NM band when applicable
   },
   missing: {
     key: "missing",
