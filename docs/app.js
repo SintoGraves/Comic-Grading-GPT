@@ -28,7 +28,7 @@ const SPINE_RULES = [
   {
     id: "spine_near_perfect",
     description: "Near perfect – no visible stress lines, no roll, no splits, staples clean.",
-    max_score: 9.6,
+    max_score: 10.0,
     deduction: 0.0
   },
   {
@@ -63,7 +63,7 @@ const SEVERITY_RULES = {
     key: "near",
     label: "Near Perfect",
     deduction: 0.0,
-    max_score: 9.8
+    max_score: 10.0
   },
   light: {
     key: "light",
@@ -91,7 +91,7 @@ const STRUCT_ATTACHMENT_RULES = {
     key: "intact",
     label: "Cover & centerfold fully attached",
     deduction: 0.0,
-    max_score: 9.8
+    max_score: 10.0
   },
   loose_one: {
     key: "loose_one",
@@ -119,7 +119,7 @@ const STAPLE_RUST_RULES = {
     key: "clean",
     label: "Clean staples",
     deduction: 0.0,
-    max_score: 9.8
+    max_score: 10.0
   },
   light: {
     key: "light",
@@ -147,7 +147,7 @@ const SURFACE_RULES = {
     key: "clean",
     label: "Clean surface",
     deduction: 0.0,
-    max_score: 9.8
+    max_score: 10.0
   },
   light: {
     key: "light",
@@ -171,7 +171,7 @@ const SURFACE_RULES = {
 
 // === Color / Gloss rules ===
 const GLOSS_RULES = {
-  near:     { key: "near",     label: "Near Perfect Gloss/Color",       deduction: 0.0, max_score: 9.8 },
+  near:     { key: "near",     label: "Near Perfect Gloss/Color",       deduction: 0.0, max_score: 10.0 },
   light:    { key: "light",    label: "Slight Loss of Gloss/Color",     deduction: 0.5, max_score: 9.0 },
   moderate: { key: "moderate", label: "Moderate Loss of Gloss/Color",   deduction: 1.5, max_score: 8.0 },
   heavy:    { key: "heavy",    label: "Heavy Loss of Gloss/Color",      deduction: 3.0, max_score: 6.0 }
@@ -185,7 +185,7 @@ const UV_RULES = {
 };
 
 const COLOR_RULES = {
-  clean:    { key: "clean",    label: "Clean Color",                   deduction: 0.0, max_score: 9.8 },
+  clean:    { key: "clean",    label: "Clean Color",                   deduction: 0.0, max_score: 10.0 },
   slight:   { key: "slight",   label: "Slight Color/Foxing Variation", deduction: 0.5, max_score: 9.0 },
   moderate: { key: "moderate", label: "Moderate Color/Foxing Variation", deduction: 1.5, max_score: 7.5 },
   heavy:    { key: "heavy",    label: "Heavy Color/Foxing Variation",  deduction: 3.0, max_score: 5.0 }
@@ -197,7 +197,7 @@ const WATER_RULES = {
     key: "none",
     label: "No water or moisture defects",
     deduction: 0.0,
-    max_score: 9.8
+    max_score: 10.0
   },
   light: {
     key: "light",
@@ -225,7 +225,7 @@ const COVER_MARK_RULES = {
     key: "none",
     label: "No writing or stamps on cover",
     deduction: 0.0,
-    max_score: 9.8
+    max_score: 10.0
   },
   small: {
     key: "small",
@@ -249,7 +249,7 @@ const COVER_MARK_RULES = {
 
 // === Interior page tone rules ===
 const PAGE_TONE_RULES = {
-  white:            { key: "white",            label: "White",                 deduction: 0.0, max_score: 9.8 },
+  white:            { key: "white",            label: "White",                 deduction: 0.0, max_score: 10.0 },
   off_white_white:  { key: "off_white_white",  label: "Off-White to White",    deduction: 0.2, max_score: 9.6 },
   offwhite:         { key: "offwhite",         label: "Off-White",            deduction: 0.5, max_score: 9.0 },
   cream_offwhite:   { key: "cream_offwhite",   label: "Cream to Off-White",   deduction: 1.0, max_score: 8.5 },
@@ -261,7 +261,7 @@ const PAGE_TONE_RULES = {
 
 // === Interior tear rules ===
 const INTERIOR_TEAR_RULES = {
-  none:        { key: "none",        label: "No Tears",                       deduction: 0.0, max_score: 9.8 },
+  none:        { key: "none",        label: "No Tears",                       deduction: 0.0, max_score: 10.0 },
   small:       { key: "small",       label: "Small Tears",                    deduction: 0.5, max_score: 9.0 },
   multiple:    { key: "multiple",    label: "Multiple Tears / Small Pieces",  deduction: 2.0, max_score: 6.0 },
   big_missing: { key: "big_missing", label: "Big Tears / Pieces Missing",     deduction: 4.0, max_score: 3.0 }
@@ -269,7 +269,7 @@ const INTERIOR_TEAR_RULES = {
 
 // === Interior stain rules ===
 const INTERIOR_STAIN_RULES = {
-  none:     { key: "none",     label: "No Stains",                     deduction: 0.0, max_score: 9.8 },
+  none:     { key: "none",     label: "No Stains",                     deduction: 0.0, max_score: 10.0 },
   small:    { key: "small",    label: "Small Marks / Light Stains",    deduction: 0.5, max_score: 9.0 },
   moderate: { key: "moderate", label: "Moderate Staining / Writing",   deduction: 1.5, max_score: 7.0 },
   heavy:    { key: "heavy",    label: "Heavy Staining / Water Damage", deduction: 3.0, max_score: 4.0 }
@@ -287,7 +287,7 @@ const STAMP_RULES = {
     key: "intact",
     label: "Stamp Intact",
     deduction: 0.0,
-    max_score: 9.8
+    max_score: 10.0
   },
   missing: {
     key: "missing",
