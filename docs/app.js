@@ -858,7 +858,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const stampHint = document.getElementById("stamp-hint");
 
   let stampApplies = false;
-
+  const resetBtn = document.getElementById("reset-btn");
+  const printBtn = document.getElementById("print-btn");
+  
   function updateStampLookup() {
     const title = titleInput.value.trim();
     const issue = issueInput.value.trim();
@@ -889,6 +891,29 @@ document.addEventListener("DOMContentLoaded", () => {
     issueInput.addEventListener("input", updateStampLookup);
   }
 
+  // === Reset button: clear form, hide stamp UI, clear result ===
+  if (resetBtn) {
+    resetBtn.addEventListener("click", () => {
+      // native form reset will handle the inputs;
+      // we just need to reset our extra UI state
+      stampApplies = false;
+      if (stampFieldset) stampFieldset.style.display = "none";
+      if (stampHint) stampHint.textContent = "";
+      if (resultDiv) resultDiv.innerHTML = "";
+    });
+  }
+
+  // === Print button: print only after a result exists ===
+  if (printBtn) {
+    printBtn.addEventListener("click", () => {
+      if (!resultDiv || !resultDiv.innerHTML.trim()) {
+        alert("Please estimate a grade first, then print the results.");
+        return;
+      }
+      window.print();
+    });
+  }
+  
   form.addEventListener("submit", (e) => {
     e.preventDefault();
 
