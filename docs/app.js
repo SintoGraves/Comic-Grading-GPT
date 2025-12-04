@@ -1436,6 +1436,8 @@ const presentationGrade = pickGrade(GRADES, finalPresentationScore);
         ${presentationGrade.short} (${presentationGrade.label})
       </p>
 
+       ${gmNote ? `<p><strong>Gem Mint Note:</strong> ${gmNote}</p>` : ""}
+
       <p><em>${presentationNote}</em></p>
 
       <h3>Section Grades</h3>
