@@ -27,8 +27,8 @@ const GRADES = [
 const SPINE_RULES = [
   {
     id: "spine_near_perfect",
-    description: "Tight, flat spine – no visible stress lines, no roll, no splits, staples clean.",
-    max_score: 9.8,   // was lower or 10.0 – now NM ceiling
+    description: "Near perfect – no visible stress lines, no roll, no splits, staples clean.",
+    max_score: 9.8,    // bumped from 9.6 so perfect top-end can reach NM/MT 9.8
     deduction: 0.0
   },
   {
@@ -62,39 +62,38 @@ const SEVERITY_RULES = {
   near: {
     key: "near",
     label: "Near Perfect",
-    deduction: 0.0,   // no hit
-    max_score: 9.8    // NM/MT ceiling
+    deduction: 0.0,
+    max_score: 9.8
   },
   light: {
     key: "light",
     label: "Light Wear",
-    deduction: 0.4,   // one light flaw across the book ~ 9.6
-    max_score: 9.6
+    deduction: 0.8,
+    max_score: 9.0
   },
   moderate: {
     key: "moderate",
     label: "Moderate Wear",
-    deduction: 1.0,   // noticeable wear → often lands ~9.2–9.0 once combined
-    max_score: 9.0
+    deduction: 2.0,
+    max_score: 7.5
   },
   heavy: {
     key: "heavy",
     label: "Heavy Wear",
-    deduction: 2.0,   // obvious defects → into VF range and below
-    max_score: 8.0
+    deduction: 4.0,
+    max_score: 5.0
   }
 };
-
 
 // === Structural attachment ===
 const STRUCT_ATTACHMENT_RULES = {
   intact: {
     key: "intact",
-    label: "Cover & centerfold fully attached (no staple pulls or splits)",
+    label: "Cover & centerfold fully attached",
     deduction: 0.0,
-    max_score: 9.8   // NM ceiling
+    max_score: 9.8
   },
-    loose_one: {
+  loose_one: {
     key: "loose_one",
     label: "Minor looseness / pulls",
     deduction: 0.7,
@@ -113,15 +112,16 @@ const STRUCT_ATTACHMENT_RULES = {
     max_score: 2.0
   }
 };
+
 // === Staple rust ===
 const STAPLE_RUST_RULES = {
   clean: {
     key: "clean",
-    label: "Clean staples – bright metal, no rust or discoloration",
+    label: "Clean staples",
     deduction: 0.0,
     max_score: 9.8
   },
-    light: {
+  light: {
     key: "light",
     label: "Light rust, no migration",
     deduction: 0.5,
@@ -145,11 +145,11 @@ const STAPLE_RUST_RULES = {
 const SURFACE_RULES = {
   clean: {
     key: "clean",
-    label: "Clean surface – no visible dirt, fingerprints, or smudges",
+    label: "Clean surface",
     deduction: 0.0,
     max_score: 9.8
   },
-   light: {
+  light: {
     key: "light",
     label: "Light dirt / smudges",
     deduction: 0.5,
@@ -171,24 +171,24 @@ const SURFACE_RULES = {
 
 // === Color / Gloss rules ===
 const GLOSS_RULES = {
-  near:     { key: "near",     label: "Near Mint gloss/color – vibrant, high gloss", deduction: 0.0, max_score: 9.8 },
-  light:    { key: "light",    label: "Slight Loss of Gloss/Color",                   deduction: 0.5, max_score: 9.0 },
-  moderate: { key: "moderate", label: "Moderate Loss of Gloss/Color",                 deduction: 1.5, max_score: 8.0 },
-  heavy:    { key: "heavy",    label: "Heavy Loss of Gloss/Color",                    deduction: 3.0, max_score: 6.0 }
+  near:     { key: "near",     label: "Near Perfect Gloss/Color",       deduction: 0.0, max_score: 9.8 },
+  light:    { key: "light",    label: "Slight Loss of Gloss/Color",     deduction: 0.5, max_score: 9.0 },
+  moderate: { key: "moderate", label: "Moderate Loss of Gloss/Color",   deduction: 1.5, max_score: 8.0 },
+  heavy:    { key: "heavy",    label: "Heavy Loss of Gloss/Color",      deduction: 3.0, max_score: 6.0 }
 };
 
 const UV_RULES = {
-  none:     { key: "none",     label: "No UV fade or sun shadow", deduction: 0.0, max_score: 9.8 },
-  light:    { key: "light",    label: "Light UV Fade",             deduction: 1.0, max_score: 8.8 },
-  moderate: { key: "moderate", label: "Moderate UV Fade",          deduction: 2.0, max_score: 7.5 },
-  heavy:    { key: "heavy",    label: "Heavy UV Fade",             deduction: 3.0, max_score: 5.0 }
+  none:     { key: "none",     label: "No UV Fade",                    deduction: 0.0, max_score: 10.0 },
+  light:    { key: "light",    label: "Light UV Fade",                 deduction: 1.0, max_score: 8.8 },
+  moderate: { key: "moderate", label: "Moderate UV Fade",              deduction: 2.0, max_score: 7.5 },
+  heavy:    { key: "heavy",    label: "Heavy UV Fade",                 deduction: 3.0, max_score: 5.0 }
 };
 
 const COLOR_RULES = {
-  clean:    { key: "clean",    label: "Clean, even color (no spotting or blotching)", deduction: 0.0, max_score: 9.8 },
-  slight:   { key: "slight",   label: "Slight Color/Foxing Variation",                deduction: 0.5, max_score: 9.0 },
-  moderate: { key: "moderate", label: "Moderate Color/Foxing Variation",              deduction: 1.5, max_score: 7.5 },
-  heavy:    { key: "heavy",    label: "Heavy Color/Foxing Variation",                 deduction: 3.0, max_score: 5.0 }
+  clean:    { key: "clean",    label: "Clean Color",                     deduction: 0.0, max_score: 9.8 },
+  slight:   { key: "slight",   label: "Slight Color/Foxing Variation",   deduction: 0.5, max_score: 9.0 },
+  moderate: { key: "moderate", label: "Moderate Color/Foxing Variation", deduction: 1.5, max_score: 7.5 },
+  heavy:    { key: "heavy",    label: "Heavy Color/Foxing Variation",    deduction: 3.0, max_score: 5.0 }
 };
 
 // === Water / moisture rules ===
@@ -199,7 +199,7 @@ const WATER_RULES = {
     deduction: 0.0,
     max_score: 9.8
   },
-    light: {
+  light: {
     key: "light",
     label: "Light ripple / very small spot",
     deduction: 1.0,
@@ -223,11 +223,11 @@ const WATER_RULES = {
 const COVER_MARK_RULES = {
   none: {
     key: "none",
-    label: "No writing, arrival codes, dates, or store stamps on cover",
+    label: "No writing or stamps on cover",
     deduction: 0.0,
     max_score: 9.8
   },
-    small: {
+  small: {
     key: "small",
     label: "Small / minor marks",
     deduction: 0.5,
@@ -249,19 +249,19 @@ const COVER_MARK_RULES = {
 
 // === Interior page tone rules ===
 const PAGE_TONE_RULES = {
-  white:            { key: "white",            label: "White pages",              deduction: 0.0, max_score: 9.8 },
-  off_white_white:  { key: "off_white_white",  label: "Off-White to White",       deduction: 0.2, max_score: 9.6 },
-  offwhite:         { key: "offwhite",         label: "Off-White",            deduction: 0.5, max_score: 9.0 },
-  cream_offwhite:   { key: "cream_offwhite",   label: "Cream to Off-White",   deduction: 1.0, max_score: 8.5 },
-  cream:            { key: "cream",            label: "Cream",                deduction: 1.5, max_score: 7.5 },
-  light_tan:        { key: "light_tan",        label: "Light Tan",            deduction: 2.5, max_score: 6.0 },
-  tan:              { key: "tan",              label: "Tan",                  deduction: 3.5, max_score: 4.0 },
-  brittle:          { key: "brittle",          label: "Brittle",              deduction: 5.0, max_score: 2.0 }
+  white:            { key: "white",            label: "White",                 deduction: 0.0, max_score: 9.8 },
+  off_white_white:  { key: "off_white_white",  label: "Off-White to White",    deduction: 0.2, max_score: 9.6 },
+  offwhite:         { key: "offwhite",         label: "Off-White",             deduction: 0.5, max_score: 9.0 },
+  cream_offwhite:   { key: "cream_offwhite",   label: "Cream to Off-White",    deduction: 1.0, max_score: 8.5 },
+  cream:            { key: "cream",            label: "Cream",                 deduction: 1.5, max_score: 7.5 },
+  light_tan:        { key: "light_tan",        label: "Light Tan",             deduction: 2.5, max_score: 6.0 },
+  tan:              { key: "tan",              label: "Tan",                   deduction: 3.5, max_score: 4.0 },
+  brittle:          { key: "brittle",          label: "Brittle",               deduction: 5.0, max_score: 2.0 }
 };
 
 // === Interior tear rules ===
 const INTERIOR_TEAR_RULES = {
-  none:        { key: "none",        label: "No interior tears or missing pieces", deduction: 0.0, max_score: 9.8 },
+  none:        { key: "none",        label: "No Tears",                       deduction: 0.0, max_score: 9.8 },
   small:       { key: "small",       label: "Small Tears",                    deduction: 0.5, max_score: 9.0 },
   multiple:    { key: "multiple",    label: "Multiple Tears / Small Pieces",  deduction: 2.0, max_score: 6.0 },
   big_missing: { key: "big_missing", label: "Big Tears / Pieces Missing",     deduction: 4.0, max_score: 3.0 }
@@ -269,7 +269,7 @@ const INTERIOR_TEAR_RULES = {
 
 // === Interior stain rules ===
 const INTERIOR_STAIN_RULES = {
-  none:     { key: "none",     label: "No interior stains or writing", deduction: 0.0, max_score: 9.8 },
+  none:     { key: "none",     label: "No Stains",                     deduction: 0.0, max_score: 9.8 },
   small:    { key: "small",    label: "Small Marks / Light Stains",    deduction: 0.5, max_score: 9.0 },
   moderate: { key: "moderate", label: "Moderate Staining / Writing",   deduction: 1.5, max_score: 7.0 },
   heavy:    { key: "heavy",    label: "Heavy Staining / Water Damage", deduction: 3.0, max_score: 4.0 }
@@ -279,15 +279,15 @@ const INTERIOR_STAIN_RULES = {
 const STAMP_RULES = {
   na: {
     key: "na",
-    label: "No stamp / not applicable",
+    label: "No Stamp / Not Applicable",
     deduction: 0.0,
-    max_score: 10.0   // book without a stamp can still be “perfect” here
+    max_score: 10.0
   },
   intact: {
     key: "intact",
-    label: "Stamp intact",
+    label: "Stamp Intact",
     deduction: 0.0,
-    max_score: 9.8     // aligns with NM band when applicable
+    max_score: 9.8
   },
   missing: {
     key: "missing",
@@ -310,7 +310,6 @@ const STAMP_RULES = {
 };
 
 // === Lookup: issues that DO contain a Marvel Value Stamp ===
-// (Your long list – unchanged)
 const VALUE_STAMP_INDEX = {
   // Adventure Into Fear
   "adventure into fear#21": true,
@@ -843,170 +842,34 @@ function computeSection(baseScore, deduction, maxScore) {
   return { raw, score };
 }
 
-// === Helper: normalize title/issue to lookup key ===
-
-// Turn user-entered series names into the canonical forms used in VALUE_STAMP_INDEX.
-// You can expand this over time as you see how people actually type things in.
+// === Helper: normalize title & issue to lookup key ===
 function normalizeTitle(rawTitle) {
   if (!rawTitle) return "";
 
   let t = rawTitle.trim().toLowerCase();
 
-  // Strip common trailing punctuation but KEEP hyphens (they matter for keys)
-  t = t.replace(/[.,']/g, "");
-
-  // Collapse multiple spaces
-  t = t.replace(/\s+/g, " ");
-
-  // Drop leading "the " once
+  // Drop leading "the "
   if (t.startsWith("the ")) {
     t = t.slice(4);
   }
 
-  // ---- Core hyphen / spacing cleanups ----
+  // Collapse multiple spaces
+  t = t.replace(/\s+/g, " ");
 
-  // Amazing Spider-Man variants
-  t = t.replace(/\bamazing spiderman\b/g, "amazing spider-man");
-  t = t.replace(/\bamazing spider man\b/g, "amazing spider-man");
-  t = t.replace(/\bthe amazing spiderman\b/g, "amazing spider-man");
-  t = t.replace(/\bthe amazing spider man\b/g, "amazing spider-man");
+  // Normalize common variations for Amazing Spider-Man
+  // "amazing spiderman" → "amazing spider-man"
+  t = t.replace(/spiderman/g, "spider-man");
 
-  // Conan (sometimes "conan the barbarian" typed)
-  t = t.replace(/\bconan the barbarian\b/g, "conan");
-
-  // Ka-Zar
-  t = t.replace(/\bkazar\b/g, "ka-zar");
-  t = t.replace(/\bka zar\b/g, "ka-zar");
-
-  // Sub-Mariner
-  t = t.replace(/\bsubmariner\b/g, "sub-mariner");
-  t = t.replace(/\bsub mariner\b/g, "sub-mariner");
-
-  // Super-Villain Team-Up
-  t = t.replace(/\bsuper villain team up\b/g, "super-villain team-up");
-
-  // Marvel Two-In-One
-  t = t.replace(/\bmarvel two in one\b/g, "marvel two-in-one");
-
-  // Giant-Size (normalize space → hyphen)
-  t = t.replace(/\bgiant size\b/g, "giant-size");
-
-  // Man-Thing
-  t = t.replace(/\bman thing\b/g, "man-thing");
-
-  // Master of Kung Fu
-  t = t.replace(/\bmaster of kungfu\b/g, "master of kung fu");
-  t = t.replace(/\bmaster of kung-fu\b/g, "master of kung fu");
-
-  // Jungle Action (usually fine already, just clean up extra words if any)
-  t = t.replace(/\bjungle action starring black panther\b/g, "jungle action");
-
-  // War Is Hell (catch weird spacing/casing)
-  t = t.replace(/\bwar is hell\b/g, "war is hell");
-
-  // Werewolf by Night
-  t = t.replace(/\bwerewolfbynight\b/g, "werewolf by night");
-  t = t.replace(/\bwerewolf by the night\b/g, "werewolf by night");
-
-  // Tomb of Dracula
-  t = t.replace(/\btomb of dracula\b/g, "tomb of dracula");
-  t = t.replace(/\bthe tomb of dracula\b/g, "tomb of dracula");
-
-  // Doctor Strange (Dr. → Doctor)
-  t = t.replace(/\bdr strange\b/g, "doctor strange");
-  t = t.replace(/\bdr. strange\b/g, "doctor strange");
-
-  // Hulk: normalize any "incredible hulk" phrasing to the key "hulk"
-  t = t.replace(/\bthe incredible hulk\b/g, "hulk");
-  t = t.replace(/\bincredible hulk\b/g, "hulk");
-  t = t.replace(/\bthe hulk\b/g, "hulk");
-
-  // Thor: normalize "the mighty thor" to "thor"
-  t = t.replace(/\bthe mighty thor\b/g, "thor");
-  t = t.replace(/\bmighty thor\b/g, "thor");
-
-  // Iron Man: normalize "invincible iron man" to "iron man"
-  t = t.replace(/\bthe invincible iron man\b/g, "iron man");
-  t = t.replace(/\binvincible iron man\b/g, "iron man");
-
-  // Avengers: strip "the"
-  t = t.replace(/\bthe avengers\b/g, "avengers");
-
-  // Fantastic Four
-  t = t.replace(/\bthe fantastic four\b/g, "fantastic four");
-
-  // Captain America – usually already correct, but catch "cap america"
-  t = t.replace(/\bcap america\b/g, "captain america");
-
-  // Ghost Rider – catch "the ghost rider"
-  t = t.replace(/\bthe ghost rider\b/g, "ghost rider");
-
-  // Defenders – catch "the defenders"
-  t = t.replace(/\bthe defenders\b/g, "defenders");
-
-  // Inhumans – catch "the inhumans"
-  t = t.replace(/\bthe inhumans\b/g, "inhumans");
-
-  // Invaders – catch "the invaders"
-  t = t.replace(/\bthe invaders\b/g, "invaders");
-
-  // Power Man – normalize "luke cage" solo title variants
-  t = t.replace(/\bluke cage power man\b/g, "power man");
-  t = t.replace(/\bhero for hire\b/g, "power man"); // if someone only types the early title
-
-  // Sgt. Fury – normalize long series name down to your key
-  t = t.replace(/\bsgt fury and his howling commandos\b/g, "sgt. fury");
-  t = t.replace(/\bsgt fury\b/g, "sgt. fury");
-
-  // Son of Satan
-  t = t.replace(/\bthe son of satan\b/g, "son of satan");
-
-  // Skull the Slayer
-  t = t.replace(/\bskull the slayer\b/g, "skull the slayer");
-
-  // Creatures on the Loose
-  t = t.replace(/\bcreatures on the loose\b/g, "creatures on the loose");
-
-  // Adventure Into Fear
-  t = t.replace(/\bfear\b/g, "adventure into fear"); // some people shorten to just "Fear"
-
-  // Giant-Size Creatures / Dracula
-  t = t.replace(/\bgiant size creatures\b/g, "giant-size creatures");
-  t = t.replace(/\bgiant size dracula\b/g, "giant-size dracula");
-
-  // Marvel Feature, Marvel Premiere, Marvel Spotlight, Marvel Team-Up
-  t = t.replace(/\bmarvel feature\b/g, "marvel feature");
-  t = t.replace(/\bmarvel premiere\b/g, "marvel premiere");
-  t = t.replace(/\bmarvel spotlight\b/g, "marvel spotlight");
-  t = t.replace(/\bmarvel team up\b/g, "marvel team-up");
-  t = t.replace(/\bmarvel two in one\b/g, "marvel two-in-one");
-
-  // Supernatural Thrillers
-  t = t.replace(/\bsupernatural thriller\b/g, "supernatural thrillers");
-
-  // Worlds Unknown
-  t = t.replace(/\bworlds unknown\b/g, "worlds unknown");
-
-  // Omega
-  t = t.replace(/\bomega the unknown\b/g, "omega");
-
-  // Frankensteins Monster → Frankenstein (your key)
-  t = t.replace(/\bfrankensteins monster\b/g, "frankenstein");
-  t = t.replace(/\bthe frankenstein monster\b/g, "frankenstein");
-
-  // Strange Tales
-  t = t.replace(/\bthe strange tales\b/g, "strange tales");
-
-  // Subtle clean-up at the end: collapse spaces again (just in case)
-  t = t.replace(/\s+/g, " ").trim();
+  // Add more normalizations here over time if needed, e.g.:
+  // t = t.replace(/xmen/g, "x-men");
 
   return t;
 }
 
 function makeStampKey(title, issue) {
   const normTitle = normalizeTitle(title);
-
   let normIssue = `${issue}`.trim().toLowerCase();
+
   // Strip a leading "#"
   normIssue = normIssue.replace(/^#/, "");
 
@@ -1016,7 +879,6 @@ function makeStampKey(title, issue) {
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("grading-form");
   const resultDiv = document.getElementById("result");
-  const gmCheckbox  = document.getElementById("gm_candidate");
 
   const titleInput = document.getElementById("comic_title");
   const issueInput = document.getElementById("comic_issue");
@@ -1026,29 +888,33 @@ document.addEventListener("DOMContentLoaded", () => {
   let stampApplies = false;
   const resetBtn = document.getElementById("reset-btn");
   const printBtn = document.getElementById("print-btn");
-  
+
   function updateStampLookup() {
     const title = titleInput.value.trim();
     const issue = issueInput.value.trim();
 
     if (!title || !issue) {
       stampApplies = false;
-      stampFieldset.style.display = "none";
-      stampHint.textContent = "";
+      if (stampFieldset) stampFieldset.style.display = "none";
+      if (stampHint) stampHint.textContent = "";
       return;
     }
 
     const key = makeStampKey(title, issue);
     if (VALUE_STAMP_INDEX[key]) {
       stampApplies = true;
-      stampFieldset.style.display = "block";
-      stampHint.textContent =
-        "This issue is known to include a value stamp or coupon. Please answer the question below.";
+      if (stampFieldset) stampFieldset.style.display = "block";
+      if (stampHint) {
+        stampHint.textContent =
+          "This issue is known to include a value stamp or coupon. Please answer the question below.";
+      }
     } else {
       stampApplies = false;
-      stampFieldset.style.display = "none";
-      stampHint.textContent =
-        "No value stamp or coupon is listed for this issue in the current lookup table.";
+      if (stampFieldset) stampFieldset.style.display = "none";
+      if (stampHint) {
+        stampHint.textContent =
+          "No value stamp or coupon is listed for this issue in the current lookup table.";
+      }
     }
   }
 
@@ -1060,13 +926,11 @@ document.addEventListener("DOMContentLoaded", () => {
   // === Reset button: clear form, hide stamp UI, clear result ===
   if (resetBtn) {
     resetBtn.addEventListener("click", () => {
-      // native form reset will handle the inputs;
-      // we just need to reset our extra UI state
+      // native form reset handles form fields
       stampApplies = false;
       if (stampFieldset) stampFieldset.style.display = "none";
       if (stampHint) stampHint.textContent = "";
       if (resultDiv) resultDiv.innerHTML = "";
-      if (gmCheckbox) gmCheckbox.checked = false;   // clear GM flag
     });
   }
 
@@ -1080,7 +944,7 @@ document.addEventListener("DOMContentLoaded", () => {
       window.print();
     });
   }
-  
+
   form.addEventListener("submit", (e) => {
     e.preventDefault();
 
@@ -1320,77 +1184,41 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
     const overallScore = Math.min(overallRaw, overallMax);
+    const overallGrade = pickGrade(GRADES, overallScore);
 
-// === Presentation grade (front view only) ===
-const frontPresentationDeduction = (
-  spineDeduction +
-  structAttachDeduction +
-  stapleRustDeduction +
-  frontCoverDeduction +
-  frontSurfaceDeduction +
-  frontCornerDeduction +
-  frontGlossDeduction +
-  frontUVDeduction +
-  frontColorDeduction +
-  frontWaterDeduction +
-  coverMarksDeduction
-);
+    // === Presentation grade (front view only) ===
+    const frontPresentationDeduction = (
+      spineDeduction +
+      structAttachDeduction +
+      stapleRustDeduction +
+      frontCoverDeduction +
+      frontSurfaceDeduction +
+      frontCornerDeduction +
+      frontGlossDeduction +
+      frontUVDeduction +
+      frontColorDeduction +
+      frontWaterDeduction +
+      coverMarksDeduction
+    );
 
-const presentationRaw = baseScore - frontPresentationDeduction;
+    const presentationRaw = baseScore - frontPresentationDeduction;
 
-const presentationMax = Math.min(
-  spineRule.max_score,
-  structAttachRule.max_score,
-  stapleRustRule.max_score,
-  frontCoverRule.max_score,
-  frontSurfaceRule.max_score,
-  frontCornerRule.max_score,
-  frontGlossRule.max_score,
-  frontUVRule.max_score,
-  frontColorRule.max_score,
-  frontWaterRule.max_score,
-  coverMarksRule.max_score
-);
+    const presentationMax = Math.min(
+      spineRule.max_score,
+      structAttachRule.max_score,
+      stapleRustRule.max_score,
+      frontCoverRule.max_score,
+      frontSurfaceRule.max_score,
+      frontCornerRule.max_score,
+      frontGlossRule.max_score,
+      frontUVRule.max_score,
+      frontColorRule.max_score,
+      frontWaterRule.max_score,
+      coverMarksRule.max_score
+    );
 
-const presentationScoreBase = Math.min(presentationRaw, presentationMax);
-
-// === Gem Mint override (only if EVERYTHING is perfect) ===
-let finalOverallScore = overallScore;
-let finalPresentationScore = presentationScoreBase;
-let gmNote = "";
-
-const allZeroDeductions =
-  spineDeduction === 0 &&
-  structAttachDeduction === 0 &&
-  stapleRustDeduction === 0 &&
-  frontCoverDeduction === 0 &&
-  backCoverDeduction === 0 &&
-  frontSurfaceDeduction === 0 &&
-  backSurfaceDeduction === 0 &&
-  frontCornerDeduction === 0 &&
-  backCornerDeduction === 0 &&
-  frontGlossDeduction === 0 &&
-  backGlossDeduction === 0 &&
-  frontUVDeduction === 0 &&
-  backUVDeduction === 0 &&
-  frontColorDeduction === 0 &&
-  backColorDeduction === 0 &&
-  frontWaterDeduction === 0 &&
-  backWaterDeduction === 0 &&
-  coverMarksDeduction === 0 &&
-  pageToneDeduction === 0 &&
-  interiorTearDeduction === 0 &&
-  interiorStainDeduction === 0 &&
-  stampDeduction === 0;
-
-if (gmCheckbox && gmCheckbox.checked && allZeroDeductions) {
-  finalOverallScore = 10.0;
-  finalPresentationScore = 10.0;
-  gmNote = "You marked this as a Gem Mint candidate and every section was graded as perfect, so this tool shows a 10.0 GM estimate. Real-world grading may still call this 9.8–10.0 depending on tiny manufacturing details.";
-}
-
-const overallGrade = pickGrade(GRADES, finalOverallScore);
-const presentationGrade = pickGrade(GRADES, finalPresentationScore);
+    const presentationScore = Math.min(presentationRaw, presentationMax);
+    const presentationGrade = pickGrade(GRADES, presentationScore);
 
     // === Visible wear front vs back (for explanation) ===
     const frontVisibleDeduction = (
@@ -1425,9 +1253,16 @@ const presentationGrade = pickGrade(GRADES, finalPresentationScore);
       presentationNote = "Both front and back show wear – interior condition and stamp status may further lower the technical grade beyond what you see from the front.";
     }
 
+    // === Build display title for printing ===
+    const titleText = titleInput.value.trim();
+    const issueText = issueInput.value.trim();
+    const displayHeading = (titleText || issueText)
+      ? `${titleText || "Unknown Title"}${issueText ? " #" + issueText : ""} – Estimated Grades`
+      : "Estimated Grades";
+
     // === Output ===
     resultDiv.innerHTML = `
-      <h2>${titleInput.value.trim()} #${issueInput.value.trim()} — Estimated Grades</h2>
+      <h2>${displayHeading}</h2>
 
       <p><strong>Overall / True Grade:</strong>
         ${overallGrade.short} (${overallGrade.label})
@@ -1436,8 +1271,6 @@ const presentationGrade = pickGrade(GRADES, finalPresentationScore);
       <p><strong>Presentation Grade (front view only):</strong>
         ${presentationGrade.short} (${presentationGrade.label})
       </p>
-
-       ${gmNote ? `<p><strong>Gem Mint Note:</strong> ${gmNote}</p>` : ""}
 
       <p><em>${presentationNote}</em></p>
 
@@ -1503,8 +1336,8 @@ const presentationGrade = pickGrade(GRADES, finalPresentationScore);
       </ul>
 
       <p><small>
-        Internal scores – Overall: ${finalOverallScore.toFixed(1)},
-        Presentation: ${finalPresentationScore.toFixed(1)},
+        Internal scores – Overall: ${overallScore.toFixed(1)},
+        Presentation: ${presentationScore.toFixed(1)},
         Spine-only: ${spineSec.score.toFixed(1)},
         Structural Attachment-only: ${structAttachSec.score.toFixed(1)},
         Staple-only: ${stapleRustSec.score.toFixed(1)},
