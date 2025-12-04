@@ -535,6 +535,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const gmCandidate = gmCheckbox ? gmCheckbox.checked : false;
 
+if (gmCandidate && totalDeduction === 0) {
+  overallScore = 10.0;
+  overallGrade = pickGrade(GRADES, overallScore);
+
+  presentationScore = 10.0;
+  presentationGrade = pickGrade(GRADES, presentationScore);
+
+  gmNote = "Gem Mint override applied: all selected conditions are top-tier with no deductions.";
+}
     // === Map to rule objects ===
     const spineRule         = SPINE_RULES.find(r => r.id === spineChoice);
     const structAttachRule  = STRUCT_ATTACHMENT_RULES[structAttachChoice];
