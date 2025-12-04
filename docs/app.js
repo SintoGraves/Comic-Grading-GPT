@@ -61,29 +61,30 @@ const SPINE_RULES = [
 const SEVERITY_RULES = {
   near: {
     key: "near",
-    label: "Near Mint (sharp, square, vibrant)",
-    deduction: 0.0,
-    max_score: 9.8
+    label: "Near Perfect",
+    deduction: 0.0,   // no hit
+    max_score: 9.8    // NM/MT ceiling
   },
-    light: {
+  light: {
     key: "light",
     label: "Light Wear",
-    deduction: 0.8,
-    max_score: 9.0
+    deduction: 0.4,   // one light flaw across the book ~ 9.6
+    max_score: 9.6
   },
   moderate: {
     key: "moderate",
     label: "Moderate Wear",
-    deduction: 2.0,
-    max_score: 7.5
+    deduction: 1.0,   // noticeable wear → often lands ~9.2–9.0 once combined
+    max_score: 9.0
   },
   heavy: {
     key: "heavy",
     label: "Heavy Wear",
-    deduction: 4.0,
-    max_score: 5.0
+    deduction: 2.0,   // obvious defects → into VF range and below
+    max_score: 8.0
   }
 };
+
 
 // === Structural attachment ===
 const STRUCT_ATTACHMENT_RULES = {
