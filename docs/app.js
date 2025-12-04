@@ -1015,6 +1015,7 @@ function makeStampKey(title, issue) {
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("grading-form");
   const resultDiv = document.getElementById("result");
+  const gmCheckbox  = document.getElementById("gm_candidate");
 
   const titleInput = document.getElementById("comic_title");
   const issueInput = document.getElementById("comic_issue");
@@ -1064,6 +1065,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (stampFieldset) stampFieldset.style.display = "none";
       if (stampHint) stampHint.textContent = "";
       if (resultDiv) resultDiv.innerHTML = "";
+      if (gmCheckbox) gmCheckbox.checked = false;   // clear GM flag
     });
   }
 
@@ -1317,41 +1319,77 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
     const overallScore = Math.min(overallRaw, overallMax);
-    const overallGrade = pickGrade(GRADES, overallScore);
 
-    // === Presentation grade (front view only) ===
-    const frontPresentationDeduction = (
-      spineDeduction +
-      structAttachDeduction +
-      stapleRustDeduction +
-      frontCoverDeduction +
-      frontSurfaceDeduction +
-      frontCornerDeduction +
-      frontGlossDeduction +
-      frontUVDeduction +
-      frontColorDeduction +
-      frontWaterDeduction +
-      coverMarksDeduction
-    );
+// === Presentation grade (front view only) ===
+const frontPresentationDeduction = (
+  spineDeduction +
+  structAttachDeduction +
+  stapleRustDeduction +
+  frontCoverDeduction +
+  frontSurfaceDeduction +
+  frontCornerDeduction +
+  frontGlossDeduction +
+  frontUVDeduction +
+  frontColorDeduction +
+  frontWaterDeduction +
+  coverMarksDeduction
+);
 
-    const presentationRaw = baseScore - frontPresentationDeduction;
+const presentationRaw = baseScore - frontPresentationDeduction;
 
-    const presentationMax = Math.min(
-      spineRule.max_score,
-      structAttachRule.max_score,
-      stapleRustRule.max_score,
-      frontCoverRule.max_score,
-      frontSurfaceRule.max_score,
-      frontCornerRule.max_score,
-      frontGlossRule.max_score,
-      frontUVRule.max_score,
-      frontColorRule.max_score,
-      frontWaterRule.max_score,
-      coverMarksRule.max_score
-    );
+const presentationMax = Math.min(
+  spineRule.max_score,
+  structAttachRule.max_score,
+  stapleRustRule.max_score,
+  frontCoverRule.max_score,
+  frontSurfaceRule.max_score,
+  frontCornerRule.max_score,
+  frontGlossRule.max_score,
+  frontUVRule.max_score,
+  frontColorRule.max_score,
+  frontWaterRule.max_score,
+  coverMarksRule.max_score
+);
 
-    const presentationScore = Math.min(presentationRaw, presentationMax);
-    const presentationGrade = pickGrade(GRADES, presentationScore);
+const presentationScoreBase = Math.min(presentationRaw, presentationMax);
+
+// === Gem Mint override (only if EVERYTHING is perfect) ===
+let finalOverallScore = overallScore;
+let finalPresentationScore = presentationScoreBase;
+let gmNote = "";
+
+const allZeroDeductions =
+  spineDeduction === 0 &&
+  structAttachDeduction === 0 &&
+  stapleRustDeduction === 0 &&
+  frontCoverDeduction === 0 &&
+  backCoverDeduction === 0 &&
+  frontSurfaceDeduction === 0 &&
+  backSurfaceDeduction === 0 &&
+  frontCornerDeduction === 0 &&
+  backCornerDeduction === 0 &&
+  frontGlossDeduction === 0 &&
+  backGlossDeduction === 0 &&
+  frontUVDeduction === 0 &&
+  backUVDeduction === 0 &&
+  frontColorDeduction === 0 &&
+  backColorDeduction === 0 &&
+  frontWaterDeduction === 0 &&
+  backWaterDeduction === 0 &&
+  coverMarksDeduction === 0 &&
+  pageToneDeduction === 0 &&
+  interiorTearDeduction === 0 &&
+  interiorStainDeduction === 0 &&
+  stampDeduction === 0;
+
+if (gmCheckbox && gmCheckbox.checked && allZeroDeductions) {
+  finalOverallScore = 10.0;
+  finalPresentationScore = 10.0;
+  gmNote = "You marked this as a Gem Mint candidate and every section was graded as perfect, so this tool shows a 10.0 GM estimate. Real-world grading may still call this 9.8–10.0 depending on tiny manufacturing details.";
+}
+
+const overallGrade = pickGrade(GRADES, finalOverallScore);
+const presentationGrade = pickGrade(GRADES, finalPresentationScore);
 
     // === Visible wear front vs back (for explanation) ===
     const frontVisibleDeduction = (
@@ -1462,8 +1500,8 @@ document.addEventListener("DOMContentLoaded", () => {
       </ul>
 
       <p><small>
-        Internal scores – Overall: ${overallScore.toFixed(1)},
-        Presentation: ${presentationScore.toFixed(1)},
+        Internal scores – Overall: ${finalOverallScore.toFixed(1)},
+        Presentation: ${finalPresentationScore.toFixed(1)},
         Spine-only: ${spineSec.score.toFixed(1)},
         Structural Attachment-only: ${structAttachSec.score.toFixed(1)},
         Staple-only: ${stapleRustSec.score.toFixed(1)},
