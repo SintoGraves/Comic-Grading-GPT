@@ -28,13 +28,6 @@
       <p id="stamp-hint" class="hint" style="margin-top:0.5rem;"></p>
     </fieldset>
     
-<p style="margin-top:0.75rem;"><strong>Top Condition Check:</strong></p>
-<label>
-  <input type="checkbox" id="gm_candidate" />
-  Treat this as a possible <strong>Gem Mint (10.0)</strong> copy if every section is truly perfect
-  (tight spine, vibrant covers, clean staples, white pages, no tears, no stains, no marks).
-</label>
-
 <fieldset>
   <legend>Top Condition / Gem Mint Check</legend>
   <label>
@@ -73,10 +66,17 @@
     <fieldset>
       <legend>Spine / Edge Condition</legend>
 
-      <label>
-        <input type="radio" name="spine" value="spine_near_perfect" checked />
-        Near perfect – no visible stress lines, no roll, no splits, staples clean
-      </label><br/>
+       <label>
+    <input type="radio" name="spine" value="spine_gm_perfect" checked />
+    <strong>Perfect (GM-level):</strong> Razor-flat spine, no ticks even under strong light, no bindery tears,
+    no roll, no splits, perfectly centered clean staples.
+  </label><br/>
+
+  <label>
+    <input type="radio" name="spine" value="spine_near_perfect" />
+    Near perfect (NM-range) – flat spine, may have a micro tick or bindery imperfection visible only under close light;
+    no color breaks, no roll, no splits.
+  </label><br/>
 
       <label>
         <input type="radio" name="spine" value="spine_minor_stress" />
@@ -150,92 +150,122 @@
       <!-- Front cover -->
       <p><strong>Front Cover Condition:</strong></p>
 
-      <label>
-        <input type="radio" name="front_cover" value="near" checked />
-        <strong>Near Perfect:</strong> Flat and clean with sharp color. No ticks, creases, or noticeable wear.
-      </label><br/>
+      <p><strong>Front Cover Condition:</strong></p>
 
-      <label>
-        <input type="radio" name="front_cover" value="light" />
-        <strong>Light Wear:</strong> A few tiny spine ticks, faint stress lines, small corner bends, very light edge wear.
-      </label><br/>
+<label>
+  <input type="radio" name="front_cover" value="perfect" checked />
+  <strong>Perfect (GM-level):</strong> Absolutely flat, no visible or hidden ticks, no creases, no edge wear, no handling.
+</label><br/>
 
-      <label>
-        <input type="radio" name="front_cover" value="moderate" />
-        <strong>Moderate Wear:</strong> Several ticks, small color-breaking creases, visible handling marks, moderate edge wear.
-      </label><br/>
+<label>
+  <input type="radio" name="front_cover" value="near" />
+  <strong>Near Perfect (NM-range):</strong> Essentially sharp; may allow 1–2 micro-ticks or tiny manufacturing specks
+  under close/angled light, no obvious wear.
+</label><br/>
 
-      <label>
-        <input type="radio" name="front_cover" value="heavy" />
-        <strong>Heavy Wear:</strong> Large creases, strong color break, heavy scuffing, chips, tears, or missing pieces.
-      </label>
+<label>
+  <input type="radio" name="front_cover" value="light" />
+  <strong>Light Wear:</strong> A few tiny spine ticks, faint stress lines, small corner bends, very light edge wear.
+</label><br/>
+
+<label>
+  <input type="radio" name="front_cover" value="moderate" />
+  <strong>Moderate Wear:</strong> Several ticks, small color-breaking creases, visible handling marks, moderate edge wear.
+</label><br/>
+
+<label>
+  <input type="radio" name="front_cover" value="heavy" />
+  <strong>Heavy Wear:</strong> Large creases, strong color break, heavy scuffing, chips, tears, or missing pieces.
+</label>
 
       <p style="margin-top:0.75rem;"><strong>Front Surface Dirt / Handling:</strong></p>
 
-      <label>
-        <input type="radio" name="front_surface" value="clean" checked />
-        <strong>Clean:</strong> No obvious dirt, fingerprints, or smudges. Looks freshly handled.
-      </label><br/>
+<label>
+  <input type="radio" name="front_surface" value="perfect" checked />
+  <strong>Perfect (GM-level):</strong> Absolutely clean surface, no fingerprints, smudges, dirt, or rub.
+</label><br/>
 
-      <label>
-        <input type="radio" name="front_surface" value="light" />
-        <strong>Light Dirt:</strong> A few fingerprints, light smudges, or minor soiling that could likely clean/press out.
-      </label><br/>
+<label>
+  <input type="radio" name="front_surface" value="clean" />
+  <strong>Clean (NM-range):</strong> Looks freshly handled; any marks would be extremely faint under bright/angled light.
+</label><br/>
 
-      <label>
-        <input type="radio" name="front_surface" value="moderate" />
-        <strong>Moderate Dirt:</strong> Noticeable overall soiling, multiple fingerprints, or light abrasion.
-      </label><br/>
+<label>
+  <input type="radio" name="front_surface" value="light" />
+  <strong>Light Dirt:</strong> A few fingerprints, light smudges, or minor soiling that could likely clean/press out.
+</label><br/>
 
-      <label>
-        <input type="radio" name="front_surface" value="heavy" />
-        <strong>Heavy Dirt / Abrasion:</strong> Ground-in dirt, heavy grime, or strong surface abrasion.
-      </label>
+<label>
+  <input type="radio" name="front_surface" value="moderate" />
+  <strong>Moderate Dirt:</strong> Noticeable overall soiling, multiple fingerprints, or light abrasion.
+</label><br/>
+
+<label>
+  <input type="radio" name="front_surface" value="heavy" />
+  <strong>Heavy Dirt / Abrasion:</strong> Ground-in dirt, heavy grime, or strong surface abrasion.
+</label>
+ </fieldset>
       
       <!-- Back cover -->
-      <p style="margin-top:1rem;"><strong>Back Cover Condition:</strong></p>
+ </fieldset>     
+    <p style="margin-top:1rem;"><strong>Back Cover Condition:</strong></p>
 
-      <label>
-        <input type="radio" name="back_cover" value="near" checked />
-        <strong>Near Perfect:</strong> Bright and clean. No measurable ticks, creases, or handling wear.
-      </label><br/>
+      <p><strong>Back Cover Condition:</strong></p>
 
-      <label>
-        <input type="radio" name="back_cover" value="light" />
-        <strong>Light Wear:</strong> Faint bends, tiny ticks, small areas of surface wear.
-      </label><br/>
+<label>
+  <input type="radio" name="back_cover" value="perfect" checked />
+  <strong>Perfect (GM-level):</strong> Absolutely flat, no visible or hidden ticks, no creases, no edge wear, no handling.
+</label><br/>
 
-      <label>
-        <input type="radio" name="back_cover" value="moderate" />
-        <strong>Moderate Wear:</strong> Noticeable ticks, visible small creases, minor color break.
-      </label><br/>
+<label>
+  <input type="radio" name="back_cover" value="near" />
+  <strong>Near Perfect (NM-range):</strong> Essentially sharp; may allow 1–2 micro-ticks or tiny manufacturing specks
+  under close/angled light, no obvious wear.
+</label><br/>
 
-      <label>
-        <input type="radio" name="back_cover" value="heavy" />
-        <strong>Heavy Wear:</strong> Strong color loss, heavy creasing, bends, chips, stains, scuffing, or tears.
-      </label>
+<label>
+  <input type="radio" name="back_cover" value="light" />
+  <strong>Light Wear:</strong> A few tiny spine ticks, faint stress lines, small corner bends, very light edge wear.
+</label><br/>
+
+<label>
+  <input type="radio" name="back_cover" value="moderate" />
+  <strong>Moderate Wear:</strong> Several ticks, small color-breaking creases, visible handling marks, moderate edge wear.
+</label><br/>
+
+<label>
+  <input type="radio" name="back_cover" value="heavy" />
+  <strong>Heavy Wear:</strong> Large creases, strong color break, heavy scuffing, chips, tears, or missing pieces.
+</label>
+
    
           <p style="margin-top:0.75rem;"><strong>Back Surface Dirt / Handling:</strong></p>
 
-      <label>
-        <input type="radio" name="back_surface" value="clean" checked />
-        <strong>Clean:</strong> Very little to no dirt or handling marks.
-      </label><br/>
+<label>
+  <input type="radio" name="back_surface" value="perfect" checked />
+  <strong>Perfect (GM-level):</strong> Absolutely clean surface, no fingerprints, smudges, dirt, or rub.
+</label><br/>
 
-      <label>
-        <input type="radio" name="back_surface" value="light" />
-        <strong>Light Dirt:</strong> Small smudges, faint dirt or a few fingerprints.
-      </label><br/>
+<label>
+  <input type="radio" name="back_surface" value="clean" />
+  <strong>Clean (NM-range):</strong> Looks freshly handled; any marks would be extremely faint under bright/angled light.
+</label><br/>
 
-      <label>
-        <input type="radio" name="back_surface" value="moderate" />
-        <strong>Moderate Dirt:</strong> Noticeable soiling over part of the back cover.
-      </label><br/>
+<label>
+  <input type="radio" name="back_surface" value="light" />
+  <strong>Light Dirt:</strong> A few fingerprints, light smudges, or minor soiling that could likely clean/press out.
+</label><br/>
 
-      <label>
-        <input type="radio" name="back_surface" value="heavy" />
-        <strong>Heavy Dirt / Abrasion:</strong> Heavy soiling, rub, or abraded areas.
-      </label>
+<label>
+  <input type="radio" name="back_surface" value="moderate" />
+  <strong>Moderate Dirt:</strong> Noticeable overall soiling, multiple fingerprints, or light abrasion.
+</label><br/>
+
+<label>
+  <input type="radio" name="back_surface" value="heavy" />
+  <strong>Heavy Dirt / Abrasion:</strong> Ground-in dirt, heavy grime, or strong surface abrasion.
+</label>
+
     </fieldset>
     
     <!-- Corners section: separate Front + Back grading -->
@@ -247,9 +277,14 @@
       <p><strong>Front Corners:</strong></p>
 
       <label>
-        <input type="radio" name="front_corner" value="near" checked />
-        <strong>Near Perfect:</strong> Sharp, crisp, and clean with no rounding, blunting, bends, or color break.
-      </label><br/>
+  <input type="radio" name="front_corner" value="perfect" checked />
+  <strong>Perfect (GM-level):</strong> Razor-sharp, no rounding, no blunting, no bends, no color break, no overhang curl.
+</label><br/>
+
+<label>
+  <input type="radio" name="front_corner" value="near" />
+  <strong>Near Perfect (NM-range):</strong> Very sharp; may have microscopic softness visible only on close inspection.
+</label><br/>
 
       <label>
         <input type="radio" name="front_corner" value="light" />
@@ -270,9 +305,14 @@
       <p style="margin-top:1rem;"><strong>Back Corners:</strong></p>
 
       <label>
-        <input type="radio" name="back_corner" value="near" checked />
-        <strong>Near Perfect:</strong> Sharp, clean corners with no rounding, blunting, or visible wear.
-      </label><br/>
+  <input type="radio" name="back_corner" value="perfect" checked />
+  <strong>Perfect (GM-level):</strong> Razor-sharp, no rounding, no blunting, no bends, no color break, no overhang curl.
+</label><br/>
+
+<label>
+  <input type="radio" name="back_corner" value="near" />
+  <strong>Near Perfect (NM-range):</strong> Very sharp; may have microscopic softness visible only on close inspection.
+</label><br/>
 
       <label>
         <input type="radio" name="back_corner" value="light" />
