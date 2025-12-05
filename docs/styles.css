@@ -5,6 +5,17 @@ body {
   padding: 0 1rem;
   line-height: 1.6;
 }
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.logo {
+  max-width: 160px;
+  height: auto;
+}
 
 h1 {
   margin-bottom: 0.5rem;
