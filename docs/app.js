@@ -445,6 +445,8 @@ function makeStampKey(title, issue) {
   return normTitle + "#" + normIssue;
 }
 
+// === DOMContentLoaded ===
+
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("grading-form");
   const resultDiv = document.getElementById("result");
@@ -454,12 +456,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const stampFieldset = document.getElementById("stamp-fieldset");
   const stampHint = document.getElementById("stamp-hint");
 
-  const gmCheckbox = document.getElementById("gm_candidate");
+  const coverInput = document.getElementById("cover_image");
+  const coverPreview = document.getElementById("cover-preview");
 
   let stampApplies = false;
   const resetBtn = document.getElementById("reset-btn");
-  const printBtn = document.getElementById("print-btn");
-
+const printBtn = document.getElementById("print-btn");
+const gmCheckbox = document.getElementById("gm_candidate");  // <-- INSERT HERE
+  
   function updateStampLookup() {
     const title = titleInput.value.trim();
     const issue = issueInput.value.trim();
@@ -494,16 +498,41 @@ document.addEventListener("DOMContentLoaded", () => {
     issueInput.addEventListener("input", updateStampLookup);
   }
 
-  // === Reset button: clear form, hide stamp UI, clear result, clear GM ===
+  // === Image upload preview ===
+  if (coverInput && coverPreview) {
+    coverInput.addEventListener("change", (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) {
+        coverPreview.src = "";
+        coverPreview.style.display = "none";
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        coverPreview.src = ev.target.result;
+        coverPreview.style.display = "block";
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+  
+    // === Reset button: clear form, hide stamp UI, clear result, clear image ===
   if (resetBtn) {
     resetBtn.addEventListener("click", () => {
       stampApplies = false;
       if (stampFieldset) stampFieldset.style.display = "none";
       if (stampHint) stampHint.textContent = "";
-      if (gmCheckbox) gmCheckbox.checked = false;
       if (resultDiv) resultDiv.innerHTML = "";
+
+      if (coverInput) coverInput.value = "";
+      if (coverPreview) {
+        coverPreview.src = "";
+        coverPreview.style.display = "none";
+      }
     });
   }
+
 
   // === Print button: print only after a result exists ===
   if (printBtn) {
@@ -552,22 +581,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const interiorStainChoice= form.elements["interior_stains"].value;
 
     let stampRule = STAMP_RULES.na;
-    if (stampApplies) {
-      const stampChoice = form.elements["value_stamp"].value;
-      stampRule = STAMP_RULES[stampChoice] || STAMP_RULES.na;
-    }
-
-    const gmCandidate = gmCheckbox ? gmCheckbox.checked : false;
-
-if (gmCandidate && totalDeduction === 0) {
-  overallScore = 10.0;
-  overallGrade = pickGrade(GRADES, overallScore);
-
-  presentationScore = 10.0;
-  presentationGrade = pickGrade(GRADES, presentationScore);
-
-  gmNote = "Gem Mint override applied: all selected conditions are top-tier with no deductions.";
+if (stampApplies) {
+  const stampChoice = form.elements["value_stamp"].value;
+  stampRule = STAMP_RULES[stampChoice] || STAMP_RULES.na;
 }
+
     // === Map to rule objects ===
     const spineRule         = SPINE_RULES.find(r => r.id === spineChoice);
     const structAttachRule  = STRUCT_ATTACHMENT_RULES[structAttachChoice];
