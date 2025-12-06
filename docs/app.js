@@ -867,11 +867,13 @@ if (stampApplies) {
     }
 
     // === Build display title for printing ===
-    const titleText = titleInput.value.trim();
-    const issueText = issueInput.value.trim();
-    const displayHeading = (titleText || issueText)
-      ? `${titleText || "Unknown Title"}${issueText ? " #" + issueText : ""} – Estimated Grades`
-      : "Estimated Grades";
+const titleText = titleInput.value.trim();
+const issueText = issueInput.value.trim();
+
+// No more "Estimated Grades" in the heading text itself
+const displayHeading = (titleText || issueText)
+  ? `${titleText || "Unknown Title"}${issueText ? " #" + issueText : ""}`
+  : "Comic Book Grading Report";
 
 const coverSrc = coverPreview ? coverPreview.src : "";
     
