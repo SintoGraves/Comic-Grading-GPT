@@ -200,20 +200,28 @@ button[type="reset"]:active,
     background: #ffffff;
   }
 
-  body * {
-    visibility: hidden;
+  /* Hide everything by default… */
+  body > * {
+    display: none !important;
   }
 
-  #result,
-  #result * {
-    visibility: visible;
-  }
-
+  /* …except the result block */
   #result {
-    position: static;
+    display: block !important;
     max-width: 100%;
     margin: 0;
     font-size: 0.95rem;
+  }
+
+  #result * {
+    display: block;
+  }
+
+  /* Let inline elements like <strong>, <em>, <small> behave naturally */
+  #result strong,
+  #result em,
+  #result small {
+    display: inline;
   }
 
   /* Slightly larger heading still ok for print */
@@ -222,5 +230,6 @@ button[type="reset"]:active,
     font-weight: 700;
   }
 }
+
 
 
