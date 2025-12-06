@@ -52,29 +52,63 @@ legend {
   font-weight: 600;
 }
 
-/* Buttons */
+/* === BUTTONS (3D STYLE) === */
 button {
-  margin-top: 1rem;
-  padding: 0.5rem 1.2rem;
+  appearance: none;
+  border: none;
   cursor: pointer;
+
+  padding: 0.55rem 1.1rem;
+  margin-top: 1rem;
+  margin-right: 0.5rem;
+
   border-radius: 6px;
-  border: 1px solid #444;
-  background: #222;
-  color: #fff;
   font-size: 0.95rem;
+  font-weight: 600;
+
+  /* 3D primary style (Estimate Grade) */
+  background: linear-gradient(#4a90e2, #3572b0);
+  color: #ffffff;
+  box-shadow: 0 4px 0 #28527a;
+
+  transition:
+    transform 0.08s ease-out,
+    box-shadow 0.08s ease-out,
+    filter 0.1s ease-out;
 }
 
-button + button {
-  margin-left: 0.5rem;
+/* Hover: slight lift */
+button:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+  box-shadow: 0 5px 0 #28527a;
 }
 
-button[type="reset"] {
-  background: #f0f0f0;
+/* Active: pressed look */
+button:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 #28527a;
+}
+
+/* Secondary 3D style for Reset + Print */
+button[type="reset"],
+#print-btn {
+  background: linear-gradient(#bbbbbb, #999999);
   color: #222;
+  box-shadow: 0 4px 0 #6c6c6c;
 }
 
-button#print-btn {
-  background: #0057c2;
+button[type="reset"]:hover,
+#print-btn:hover {
+  filter: brightness(1.03);
+  transform: translateY(-1px);
+  box-shadow: 0 5px 0 #6c6c6c;
+}
+
+button[type="reset"]:active,
+#print-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 #6c6c6c;
 }
 
 /* Page tone swatch */
