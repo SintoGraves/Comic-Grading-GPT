@@ -875,7 +875,7 @@ if (stampApplies) {
 
 const coverSrc = coverPreview ? coverPreview.src : "";
     
-       // === Output ===
+           // === Output ===
     resultDiv.innerHTML = `
       <div class="print-header-row">
         <div class="print-main-meta">
@@ -965,7 +965,7 @@ const coverSrc = coverPreview ? coverPreview.src : "";
         </ul>
       </section>
 
-      <!-- Markings (Cover writing, stamps, dates) -->
+      <!-- Markings -->
       <section class="print-section">
         <h4>Markings</h4>
         <ul>
