@@ -1020,5 +1020,7 @@ const coverSrc = coverPreview ? coverPreview.src : "";
         Interior Stains-only: ${interiorStainSec.score.toFixed(1)},
         Stamp-only: ${stampSec.score.toFixed(1)},
         Combined Interior-only: ${interiorSysSec.score.toFixed(1)}
-      </small></p>
+            </small></p>
     `;
+  });   // <-- closes form.addEventListener("submit", ...)
+});     // <-- closes document.addEventListener("DOMContentLoaded", ...)
