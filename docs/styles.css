@@ -134,18 +134,66 @@ button[type="reset"]:active,
   border: 1px solid #ccc;
 }
 
-/* Image inside printed report */
+/* Header layout for printed report */
+.print-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.print-main-meta {
+  flex: 1;
+}
+
+/* Big title on the left side */
+.print-book-title {
+  margin: 0 0 0.35rem;
+  font-size: 1.6rem;
+}
+
+/* 3x4" image box on the right */
 .print-cover-wrapper {
-  margin: 0.5rem 0 1rem;
+  width: 3in;
+  height: 4in;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .print-cover {
-  max-height: 280px;
-  width: auto;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
 }
 
-/* Print: show only the report section */
+/* Optional small tweaks for notes/sections when printed */
+.presentation-note {
+  margin-top: 0.35rem;
+}
+
+.print-section {
+  margin-top: 0.85rem;
+}
+
+.print-section h4 {
+  margin: 0 0 0.25rem;
+}
+
+
+/* === PRINT LAYOUT === */
 @media print {
+
+  /* Page size and margins */
+  @page {
+    size: 8.5in 11in;
+    margin: 0.5in;
+  }
+
   body {
     margin: 0;
     padding: 0;
@@ -156,7 +204,8 @@ button[type="reset"]:active,
     visibility: hidden;
   }
 
-  #result, #result * {
+  #result,
+  #result * {
     visibility: visible;
   }
 
@@ -164,12 +213,14 @@ button[type="reset"]:active,
     position: static;
     max-width: 100%;
     margin: 0;
+    font-size: 0.95rem;
   }
 
-  #result h2 {
-    margin-top: 0;
-    font-size: 1.5rem;
-    font-weight: bold;
+  /* Slightly larger heading still ok for print */
+  #result h2.print-book-title {
+    font-size: 1.6rem;
+    font-weight: 700;
   }
 }
+
 
