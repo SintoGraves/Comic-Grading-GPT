@@ -188,7 +188,6 @@ button[type="reset"]:active,
 /* === PRINT LAYOUT === */
 @media print {
 
-  /* Page size and margins */
   @page {
     size: 8.5in 11in;
     margin: 0.5in;
@@ -200,12 +199,11 @@ button[type="reset"]:active,
     background: #ffffff;
   }
 
-  /* Hide everything by default… */
-  body > * {
+  /* Hide everything EXCEPT the result block */
+  body > *:not(#result) {
     display: none !important;
   }
 
-  /* …except the result block */
   #result {
     display: block !important;
     max-width: 100%;
@@ -213,23 +211,42 @@ button[type="reset"]:active,
     font-size: 0.95rem;
   }
 
-  #result * {
-    display: block;
+  /* Make sure the header row keeps its two-column layout */
+  .print-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.75rem;
   }
 
-  /* Let inline elements like <strong>, <em>, <small> behave naturally */
-  #result strong,
-  #result em,
-  #result small {
-    display: inline;
+  .print-main-meta {
+    flex: 1;
   }
 
-  /* Slightly larger heading still ok for print */
-  #result h2.print-book-title {
+  /* Push Section Grades down the page a bit */
+  .print-section-grades {
+    margin-top: 1.5in;  /* adjust up/down if you want more or less spacing */
+  }
+
+  /* Remove bullets from section lists */
+  .print-section ul {
+    list-style: none;
+    padding-left: 0;
+    margin-left: 0;
+  }
+
+  .print-section li + li {
+    margin-top: 0.15rem;
+  }
+
+  /* Keep title reasonably large */
+  h2.print-book-title {
     font-size: 1.6rem;
     font-weight: 700;
+    margin-bottom: 0.35rem;
   }
 }
+
 
 
 
