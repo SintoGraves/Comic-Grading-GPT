@@ -879,33 +879,36 @@ const coverSrc = coverPreview ? coverPreview.src : "";
     
            // === Output ===
     resultDiv.innerHTML = `
-      <div class="print-header-row">
-        <div class="print-main-meta">
-          <h2 class="print-book-title">${displayHeading}</h2>
+      <div class="print-header">
+        <h2 class="print-book-title">${displayHeading}</h2>
 
-          <p><strong>Overall / True Grade:</strong>
-            ${overallGrade.short} (${overallGrade.label})
-          </p>
+        <div class="print-header-row">
+          <div class="print-main-meta">
+            <p><strong>Overall / True Grade:</strong>
+              ${overallGrade.short} (${overallGrade.label})
+            </p>
 
-          <p><strong>Presentation Grade (front view only):</strong>
-            ${presentationGrade.short} (${presentationGrade.label})
-          </p>
+            <p><strong>Presentation Grade (front view only):</strong>
+              ${presentationGrade.short} (${presentationGrade.label})
+            </p>
 
-          ${gmNote ? `<p class="gm-note"><em>${gmNote}</em></p>` : ""}
+            ${gmNote ? `<p class="gm-note"><em>${gmNote}</em></p>` : ""}
 
-          <p class="presentation-note"><em>${presentationNote}</em></p>
+            <p class="presentation-note"><em>${presentationNote}</em></p>
+          </div>
+
+          ${
+            coverSrc
+              ? `<div class="print-cover-wrapper">
+                   <img class="print-cover" src="${coverSrc}" alt="Comic cover preview" />
+                 </div>`
+              : ""
+          }
         </div>
-
-        ${
-          coverSrc
-            ? `<div class="print-cover-wrapper">
-                 <img class="print-cover" src="${coverSrc}" alt="Comic cover preview" />
-               </div>`
-            : ""
-        }
       </div>
 
-      <h3>Section Grades</h3>
+      <div class="print-section-grades">
+        <h3>Section Grades</h3>
 
       <!-- Spine / Edge section -->
       <section class="print-section">
