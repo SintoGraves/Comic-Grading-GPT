@@ -585,7 +585,8 @@ if (stampApplies) {
   const stampChoice = form.elements["value_stamp"].value;
   stampRule = STAMP_RULES[stampChoice] || STAMP_RULES.na;
 }
-
+  const gmCandidate = gmCheckbox ? gmCheckbox.checked : false;
+    
     // === Map to rule objects ===
     const spineRule         = SPINE_RULES.find(r => r.id === spineChoice);
     const structAttachRule  = STRUCT_ATTACHMENT_RULES[structAttachChoice];
