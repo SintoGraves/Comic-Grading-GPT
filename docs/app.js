@@ -918,134 +918,135 @@ const displayHeading = (titleText || issueText)
   ? `${titleText || "Unknown Title"}${issueText ? " #" + issueText : ""}`
   : "Comic Book Grading Report";
 
-const coverSrc = coverPreview ? coverPreview.src : "";
-    
-   // === Output ===
-resultDiv.innerHTML = `
+    const coverSrc = coverPreview ? coverPreview.src : "";
+
+    // === Output ===
+    resultDiv.innerHTML = `
+      <!-- HEADER ROW: left = grades/meta, right = cover image -->
       <div class="print-header-row">
         <div class="print-main-meta">
           <h2 class="print-book-title">${displayHeading}</h2>
 
-        <div class="print-header-row">
-          <div class="print-main-meta">
-            <p><strong>Overall / True Grade:</strong>
-              ${overallGrade.short} (${overallGrade.label})
-            </p>
+          <p><strong>Overall / True Grade:</strong>
+            ${overallGrade.short} (${overallGrade.label})
+          </p>
 
-            <p><strong>Presentation Grade (front view only):</strong>
-              ${presentationGrade.short} (${presentationGrade.label})
-            </p>
+          <p><strong>Presentation Grade (front view only):</strong>
+            ${presentationGrade.short} (${presentationGrade.label})
+          </p>
 
-            ${gmNote ? `<p class="gm-note"><em>${gmNote}</em></p>` : ""}
+          ${gmNote ? `<p class="gm-note"><em>${gmNote}</em></p>` : ""}
 
-            <p class="presentation-note"><em>${presentationNote}</em></p>
-          </div>
-
-          ${
-            coverSrc
-              ? `<div class="print-cover-wrapper">
-                   <img class="print-cover" src="${coverSrc}" alt="Comic cover preview" />
-                 </div>`
-              : ""
-          }
+          <p class="presentation-note"><em>${presentationNote}</em></p>
         </div>
+
+        ${
+          coverSrc
+            ? `<div class="print-cover-wrapper">
+                 <img class="print-cover" src="${coverSrc}" alt="Comic cover preview" />
+               </div>`
+            : ""
+        }
       </div>
 
+      <!-- SECTION GRADES LIVE *UNDER* THE HEADER ROW -->
       <div class="print-section-grades">
         <h3>Section Grades</h3>
 
-      <!-- Spine / Edge section -->
-      <section class="print-section">
-        <h4>Spine / Edge</h4>
-        <ul>
-          <li><strong>Spine / Edge:</strong>
-            ${spineGrade.short} (${spineGrade.label}) – ${spineRule.description}
-          </li>
-          <li><strong>Cover / Centerfold Attachment:</strong>
-            ${structAttachGrade.short} (${structAttachGrade.label}) – ${structAttachRule.label}
-          </li>
-          <li><strong>Staple Condition:</strong>
-            ${stapleRustGrade.short} (${stapleRustGrade.label}) – ${stapleRustRule.label}
-          </li>
-        </ul>
-      </section>
+        <!-- Spine / Edge section -->
+        <section class="print-section">
+          <h4>Spine / Edge</h4>
+          <ul>
+            <li><strong>Spine / Edge:</strong>
+              ${spineGrade.short} (${spineGrade.label}) – ${spineRule.description}
+            </li>
+            <li><strong>Cover / Centerfold Attachment:</strong>
+              ${structAttachGrade.short} (${structAttachGrade.label}) – ${structAttachRule.label}
+            </li>
+            <li><strong>Staple Condition:</strong>
+              ${stapleRustGrade.short} (${stapleRustGrade.label}) – ${stapleRustRule.label}
+            </li>
+          </ul>
+        </section>
 
-      <!-- Cover Condition section -->
-      <section class="print-section">
-        <h4>Cover Condition</h4>
-        <ul>
-          <li><strong>Front Cover (physical wear):</strong>
-            ${frontCoverGrade.short} (${frontCoverGrade.label}) – ${frontCoverRule.label}
-          </li>
-          <li><strong>Back Cover (physical wear):</strong>
-            ${backCoverGrade.short} (${backCoverGrade.label}) – ${backCoverRule.label}
-          </li>
-          <li><strong>Front Surface Dirt / Handling:</strong>
-            ${frontSurfaceGrade.short} (${frontSurfaceGrade.label}) – ${frontSurfaceRule.label}
-          </li>
-          <li><strong>Back Surface Dirt / Handling:</strong>
-            ${backSurfaceGrade.short} (${backSurfaceGrade.label}) – ${backSurfaceRule.label}
-          </li>
-          <li><strong>Front Corners:</strong>
-            ${frontCornerGrade.short} (${frontCornerGrade.label}) – ${frontCornerRule.label}
-          </li>
-          <li><strong>Back Corners:</strong>
-            ${backCornerGrade.short} (${backCornerGrade.label}) – ${backCornerRule.label}
-          </li>
-        </ul>
-      </section>
+        <!-- Cover Condition -->
+        <section class="print-section">
+          <h4>Cover Condition</h4>
+          <ul>
+            <li><strong>Front Cover (physical wear):</strong>
+              ${frontCoverGrade.short} (${frontCoverGrade.label}) – ${frontCoverRule.label}
+            </li>
+            <li><strong>Back Cover (physical wear):</strong>
+              ${backCoverGrade.short} (${backCoverGrade.label}) – ${backCoverRule.label}
+            </li>
+            <li><strong>Front Surface Dirt / Handling:</strong>
+              ${frontSurfaceGrade.short} (${frontSurfaceGrade.label}) – ${frontSurfaceRule.label}
+            </li>
+            <li><strong>Back Surface Dirt / Handling:</strong>
+              ${backSurfaceGrade.short} (${backSurfaceGrade.label}) – ${backSurfaceRule.label}
+            </li>
+            <li><strong>Front Corners:</strong>
+              ${frontCornerGrade.short} (${frontCornerGrade.label}) – ${frontCornerRule.label}
+            </li>
+            <li><strong>Back Corners:</strong>
+              ${backCornerGrade.short} (${backCornerGrade.label}) – ${backCornerRule.label}
+            </li>
+          </ul>
+        </section>
 
-      <!-- Cover Finish (Color / Gloss / UV / Water) -->
-      <section class="print-section">
-        <h4>Cover Finish</h4>
-        <ul>
-          <li><strong>Front Color / Gloss / UV:</strong>
-            ${frontColorSysGrade.short} (${frontColorSysGrade.label})
-          </li>
-          <li><strong>Back Color / Gloss / UV:</strong>
-            ${backColorSysGrade.short} (${backColorSysGrade.label})
-          </li>
-          <li><strong>Front Water / Moisture:</strong>
-            ${frontWaterGrade.short} (${frontWaterGrade.label}) – ${frontWaterRule.label}
-          </li>
-          <li><strong>Back Water / Moisture:</strong>
-            ${backWaterGrade.short} (${backWaterGrade.label}) – ${backWaterRule.label}
-          </li>
-        </ul>
-      </section>
+        <!-- Cover Finish -->
+        <section class="print-section">
+          <h4>Cover Finish</h4>
+          <ul>
+            <li><strong>Front Color / Gloss / UV:</strong>
+              ${frontColorSysGrade.short} (${frontColorSysGrade.label})
+            </li>
+            <li><strong>Back Color / Gloss / UV:</strong>
+              ${backColorSysGrade.short} (${backColorSysGrade.label})
+            </li>
+            <li><strong>Front Water / Moisture:</strong>
+              ${frontWaterGrade.short} (${frontWaterGrade.label}) – ${frontWaterRule.label}
+            </li>
+            <li><strong>Back Water / Moisture:</strong>
+              ${backWaterGrade.short} (${backWaterGrade.label}) – ${backWaterRule.label}
+            </li>
+          </ul>
+        </section>
 
-      <!-- Markings -->
-      <section class="print-section">
-        <h4>Markings</h4>
-        <ul>
-          <li><strong>Cover Writing / Stamps / Dates:</strong>
-            ${coverMarksGrade.short} (${coverMarksGrade.label}) – ${coverMarksRule.label}
-          </li>
-        </ul>
-      </section>
+        <!-- Markings -->
+        <section class="print-section">
+          <h4>Markings</h4>
+          <ul>
+            <li><strong>Cover Writing / Stamps / Dates:</strong>
+              ${coverMarksGrade.short} (${coverMarksGrade.label}) – ${coverMarksRule.label}
+            </li>
+          </ul>
+        </section>
 
-      <!-- Interior Pages -->
-      <section class="print-section">
-        <h4>Interior Pages</h4>
-        <ul>
-          <li><strong>Page Tone:</strong>
-            ${pageToneGrade.short} (${pageToneGrade.label}) – ${pageToneRule.label}
-          </li>
-          <li><strong>Interior Tears / Pieces Missing:</strong>
-            ${interiorTearGrade.short} (${interiorTearGrade.label}) – ${interiorTearRule.label}
-          </li>
-          <li><strong>Interior Stains / Marks:</strong>
-            ${interiorStainGrade.short} (${interiorStainGrade.label}) – ${interiorStainRule.label}
-          </li>
-          <li><strong>Stamp / Coupon Status:</strong>
-            ${stampGrade.short} (${stampGrade.label}) – ${stampRule.label}
-          </li>
-          <li><strong>Combined Interior (overall):</strong>
-            ${interiorSysGrade.short} (${interiorSysGrade.label})
-          </li>
-        </ul>
-      </section>
+        <!-- Interior Pages -->
+        <section class="print-section">
+          <h4>Interior Pages</h4>
+          <ul>
+            <li><strong>Page Tone:</strong>
+              ${pageToneGrade.short} (${pageToneGrade.label}) – ${pageToneRule.label}
+            </li>
+            <li><strong>Interior Tears / Pieces Missing:</strong>
+              ${interiorTearGrade.short} (${interiorTearGrade.label}) – ${interiorTearRule.label}
+            </li>
+            <li><strong>Interior Stains / Marks:</strong>
+              ${interiorStainGrade.short} (${interiorStainGrade.label}) – ${interiorStainRule.label}
+            </li>
+            <li><strong>Stamp / Coupon Status:</strong>
+              ${stampGrade.short} (${stampGrade.label}) – ${stampRule.label}
+            </li>
+            <li><strong>Combined Interior (overall):</strong>
+              ${interiorSysGrade.short} (${interiorSysGrade.label})
+            </li>
+          </ul>
+        </section>
+      </div>
 
+      <!-- Internal Scores (still present, but hidden in print by CSS) -->
       <h3>Internal Scores</h3>
       <p><small>
         Internal scores – Overall: ${overallScore.toFixed(1)},
@@ -1069,7 +1070,5 @@ resultDiv.innerHTML = `
         Interior Stains-only: ${interiorStainSec.score.toFixed(1)},
         Stamp-only: ${stampSec.score.toFixed(1)},
         Combined Interior-only: ${interiorSysSec.score.toFixed(1)}
-            </small></p>
+      </small></p>
     `;
-  });   // <-- closes form.addEventListener("submit", ...)
-});     // <-- closes document.addEventListener("DOMContentLoaded", ...)
