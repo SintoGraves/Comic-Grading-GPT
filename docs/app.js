@@ -921,9 +921,20 @@ const displayHeading = (titleText || issueText)
 const coverSrc = coverPreview ? coverPreview.src : "";
     
            // === Output ===
+       // === Output ===
     resultDiv.innerHTML = `
-      <div class="print-header">
-        <h2 class="print-book-title">${displayHeading}</h2>
+      <div class="print-brand">
+        <img
+          src="/images/sinto-graves-logo2.png"
+          alt="Sinto Gra'Ves logo"
+          class="print-brand-logo"
+        />
+        <span>Sinto Gra'Ves (c) 2025</span>
+      </div>
+
+      <div class="print-header-row">
+        <div class="print-main-meta">
+          <h2 class="print-book-title">${displayHeading}</h2>
 
         <div class="print-header-row">
           <div class="print-main-meta">
