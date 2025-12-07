@@ -1072,3 +1072,13 @@ const displayHeading = (titleText || issueText)
         Combined Interior-only: ${interiorSysSec.score.toFixed(1)}
       </small></p>
     `;
+    
+    // Scroll the freshly-built report into view
+    if (resultDiv && resultDiv.scrollIntoView) {
+      resultDiv.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    }
+  }); // <-- keep this: closes form.addEventListener("submit", ...)
+});   // <-- and this: closes DOMContentLoaded
