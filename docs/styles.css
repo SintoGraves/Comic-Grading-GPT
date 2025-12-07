@@ -53,6 +53,7 @@ legend {
 }
 
 /* === BUTTONS (3D STYLE) === */
+
 button {
   appearance: none;
   border: none;
@@ -112,6 +113,7 @@ button[type="reset"]:active,
 }
 
 /* Page tone swatch */
+
 .swatch {
   display: inline-block;
   width: 18px;
@@ -121,7 +123,8 @@ button[type="reset"]:active,
   vertical-align: middle;
 }
 
-/* Image preview */
+/* Image preview (on-screen) */
+
 #cover-preview-wrapper {
   margin-top: 0.75rem;
 }
@@ -135,12 +138,13 @@ button[type="reset"]:active,
 }
 
 /* Header layout for printed report */
+
 .print-header-row {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   gap: 1rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0.25in; /* small gap before section grades area */
 }
 
 .print-main-meta {
@@ -148,12 +152,14 @@ button[type="reset"]:active,
 }
 
 /* Big title on the left side */
+
 .print-book-title {
   margin: 0 0 0.35rem;
   font-size: 1.6rem;
 }
 
 /* 3x4" image box on the right */
+
 .print-cover-wrapper {
   width: 3in;
   height: 4in;
@@ -171,21 +177,22 @@ button[type="reset"]:active,
   object-fit: contain;
 }
 
-/* Optional small tweaks for notes/sections when printed */
+/* Optional small tweaks for notes/sections when printed/on-screen */
+
 .presentation-note {
   margin-top: 0.35rem;
 }
 
 .print-section {
-  margin-top: 0.85rem;
+  margin-top: 0.35rem;
 }
 
 .print-section h4 {
   margin: 0 0 0.25rem;
 }
 
+/* === PRINT LAYOUT (FINAL) === */
 
-/* === PRINT LAYOUT (TIGHTENED) === */
 @media print {
 
   @page {
@@ -212,13 +219,13 @@ button[type="reset"]:active,
     font-size: 0.95rem;
   }
 
-  /* Keep the two-column header layout in print: text left, image right */
+  /* Keep the two-column header layout in print */
   .print-header-row {
     display: flex;
-    flex-direction: row;             /* ensure text left, image right */
     justify-content: space-between;
     align-items: flex-start;
     gap: 0.75rem;
+    margin-bottom: 0.15in; /* tightened slightly */
   }
 
   .print-main-meta {
@@ -229,42 +236,45 @@ button[type="reset"]:active,
   h2.print-book-title {
     font-size: 1.6rem;
     font-weight: 700;
-    margin: 0 0 0.25rem;
+    margin: 0 0 0.35rem;
   }
 
-  /* Pull Section Grades up closer to the picture */
-  /* First section block starts just a bit below header row */
-  .print-section:first-of-type {
-    margin-top: 0.15in;   /* adjust smaller/larger if you want it closer/further */
+  /* Section Grades block sitting just under the header row */
+  .print-section-grades {
+    margin-top: 0.25in;  /* closer to the bottom of the picture */
   }
 
-  /* Section headings tighter */
+  /* Each section a bit closer together */
+  .print-section {
+    margin-top: 0.18in;  /* reduced vertical gap between sections */
+  }
+
+  /* Section headings with thin divider line, no caps */
   .print-section h4 {
-    margin: 0 0 0.1rem;
     font-size: 0.90rem;
+    margin: 0.04in 0 0.06rem;
+    padding-top: 0.04in;
+    border-top: 0.5px solid #000;
   }
 
-  /* Bullets: tighter spacing + make sure bullets show */
+  /* No top line on the first section */
+  .print-section:first-of-type h4 {
+    border-top: none;
+    padding-top: 0;
+  }
+
+  /* Tighter, smaller bullets */
   .print-section ul {
-    list-style-type: disc;
-    margin: 0.02rem 0 0.15rem 0.9rem;  /* closer to heading + modest indent */
+    margin: 0.05rem 0 0.18rem 1rem;
     padding-left: 0;
   }
 
   .print-section li {
-    display: list-item;        /* ensure bullet rendering */
-    font-size: 0.75rem;        /* one step smaller */
-    margin: 0.02rem 0;         /* very tight vertical spacing */
-    line-height: 1.2;          /* tighter line height */
+    font-size: 0.75rem;   /* about 9pt */
+    margin: 0.05rem 0;
   }
 
-  /* "Section Grades" heading margins slightly reduced */
-  #result h3 {
-    margin-top: 0.25rem;
-    margin-bottom: 0.15rem;
-  }
-
-  /* HIDE Internal Scores (header + paragraph) from print */
+  /* Hide Internal Scores section on print (last h3 + its paragraph) */
   #result h3:last-of-type,
   #result h3:last-of-type + p {
     display: none !important;
