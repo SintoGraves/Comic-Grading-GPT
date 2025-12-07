@@ -286,20 +286,6 @@ button[type="reset"]:active,
     line-height: 1.25;        /* tighter lines */
   }
 
-/* Print brand: logo + name on top, tight */
-  .print-brand {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-    margin-bottom: 0.05in;
-    font-size: 0.7rem;
-  }
-
-  .print-brand-logo {
-    height: 0.3in;   /* small, won’t push content down much */
-    width: auto;
-  }
-    
   /* Keep the two-column header layout in print */
   .print-header-row {
     display: flex;
