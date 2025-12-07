@@ -233,13 +233,13 @@ button[type="reset"]:active,
 
   /* Push the Section Grades block down the page a bit */
   .print-section-grades {
-    margin-top: 1.25in;  /* tweak up/down to taste */
+    margin-top: .5in;  /* tweak up/down to taste */
   }
 
   /* Section headings and bullet lists tighter, smaller */
   .print-section h4 {
     margin: 0 0 0.15rem;
-    font-size: 0.95rem;
+    font-size: 0.90rem;
   }
 
   .print-section ul {
@@ -248,7 +248,7 @@ button[type="reset"]:active,
   }
 
   .print-section li {
-    font-size: 0.85rem;             /* one size smaller than body */
+    font-size: 0.75rem;             /* one size smaller than body */
     margin: 0.05rem 0;
   }
 
