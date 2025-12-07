@@ -185,7 +185,7 @@ button[type="reset"]:active,
 }
 
 
-/* === PRINT LAYOUT (FINAL) === */
+/* === PRINT LAYOUT (TIGHTENED) === */
 @media print {
 
   @page {
@@ -212,9 +212,10 @@ button[type="reset"]:active,
     font-size: 0.95rem;
   }
 
-  /* Keep the two-column header layout in print */
+  /* Keep the two-column header layout in print: text left, image right */
   .print-header-row {
     display: flex;
+    flex-direction: row;             /* ensure text left, image right */
     justify-content: space-between;
     align-items: flex-start;
     gap: 0.75rem;
@@ -228,38 +229,44 @@ button[type="reset"]:active,
   h2.print-book-title {
     font-size: 1.6rem;
     font-weight: 700;
-    margin: 0 0 0.35rem;
+    margin: 0 0 0.25rem;
   }
 
-  /* Push the Section Grades block down the page a bit */
-  .print-section-grades {
-    margin-top: .5in;  /* tweak up/down to taste */
+  /* Pull Section Grades up closer to the picture */
+  /* First section block starts just a bit below header row */
+  .print-section:first-of-type {
+    margin-top: 0.25in;   /* adjust smaller/larger if you want it closer/further */
   }
 
-  /* Section headings and bullet lists tighter, smaller */
+  /* Section headings tighter */
   .print-section h4 {
-    margin: 0 0 0.15rem;
+    margin: 0 0 0.1rem;
     font-size: 0.90rem;
   }
 
+  /* Bullets: tighter spacing + make sure bullets show */
   .print-section ul {
-    margin: 0.05rem 0 0.2rem 1rem;  /* small gap, standard indent */
-    padding-left: 0;                /* browser adds default, we keep it predictable */
+    list-style-type: disc;
+    margin: 0.02rem 0 0.15rem 0.9rem;  /* closer to heading + modest indent */
+    padding-left: 0;
   }
 
   .print-section li {
-    font-size: 0.75rem;             /* one size smaller than body */
-    margin: 0.05rem 0;
+    display: list-item;        /* ensure bullet rendering */
+    font-size: 0.75rem;        /* one step smaller */
+    margin: 0.02rem 0;         /* very tight vertical spacing */
+    line-height: 1.2;          /* tighter line height */
   }
 
-  /* Internal scores slightly smaller as well */
+  /* "Section Grades" heading margins slightly reduced */
   #result h3 {
-    margin-top: 0.5rem;
-    margin-bottom: 0.25rem;
+    margin-top: 0.25rem;
+    margin-bottom: 0.15rem;
   }
 
-  #result p small {
-    font-size: 0.8rem;
+  /* HIDE Internal Scores (header + paragraph) from print */
+  #result h3:last-of-type,
+  #result h3:last-of-type + p {
+    display: none !important;
   }
-
 }
