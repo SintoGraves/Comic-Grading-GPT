@@ -161,8 +161,8 @@ button[type="reset"]:active,
 /* 3x4" image box on the right */
 
 .print-cover-wrapper {
-  width: 3in;
-  height: 4in;
+  width: 2.75in;
+  height: 3.67in;
   border: 1px solid #ccc;
   border-radius: 6px;
   overflow: hidden;
