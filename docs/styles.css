@@ -286,16 +286,7 @@ button[type="reset"]:active,
     line-height: 1.25;        /* tighter lines */
   }
 
-  /* Keep the two-column header layout in print */
-  .print-header-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 0.6rem;
-    margin-bottom: 0.1in;     /* tighter gap under header */
-  }
-
-  /* Print brand: logo + name on top, tight */
+/* Print brand: logo + name on top, tight */
   .print-brand {
     display: flex;
     align-items: center;
@@ -307,6 +298,15 @@ button[type="reset"]:active,
   .print-brand-logo {
     height: 0.3in;   /* small, won’t push content down much */
     width: auto;
+  }
+    
+  /* Keep the two-column header layout in print */
+  .print-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.6rem;
+    margin-bottom: 0.1in;     /* tighter gap under header */
   }
   
   .print-main-meta {
