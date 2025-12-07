@@ -144,7 +144,7 @@ button[type="reset"]:active,
   justify-content: space-between;
   align-items: flex-start;
   gap: 1rem;
-  margin-bottom: 0.25in; /* small gap before section grades area */
+  margin-bottom: 0.25in;
 }
 
 .print-main-meta {
@@ -177,7 +177,7 @@ button[type="reset"]:active,
   object-fit: contain;
 }
 
-/* Optional small tweaks for notes/sections when printed/on-screen */
+/* Notes / sections shared styles */
 
 .presentation-note {
   margin-top: 0.35rem;
@@ -191,7 +191,7 @@ button[type="reset"]:active,
   margin: 0 0 0.25rem;
 }
 
-/* === PRINT LAYOUT (FINAL) === */
+/* === PRINT LAYOUT (TIGHTENED) === */
 
 @media print {
 
@@ -225,7 +225,7 @@ button[type="reset"]:active,
     justify-content: space-between;
     align-items: flex-start;
     gap: 0.75rem;
-    margin-bottom: 0.15in; /* tightened slightly */
+    margin-bottom: 0.15in; /* slightly tighter header bottom gap */
   }
 
   .print-main-meta {
@@ -239,42 +239,35 @@ button[type="reset"]:active,
     margin: 0 0 0.35rem;
   }
 
-  /* Section Grades block sitting just under the header row */
+  /* Section Grades block closer to the cover image bottom */
   .print-section-grades {
-    margin-top: 0.25in;  /* closer to the bottom of the picture */
+    margin-top: 0.30in;
   }
 
-  /* Each section a bit closer together */
+  /* Sections closer together */
   .print-section {
-    margin-top: 0.18in;  /* reduced vertical gap between sections */
+    margin-top: 0.12in;  /* reduced vertical gap between sections */
   }
 
-  /* Section headings with thin divider line, no caps */
+  /* Section headings: no border line, minimal spacing */
   .print-section h4 {
     font-size: 0.90rem;
-    margin: 0.04in 0 0.06rem;
-    padding-top: 0.04in;
-    border-top: 0.5px solid #000;
-  }
-
-  /* No top line on the first section */
-  .print-section:first-of-type h4 {
-    border-top: none;
-    padding-top: 0;
+    margin: 0 0 0.06rem;
+    padding: 0;
   }
 
   /* Tighter, smaller bullets */
   .print-section ul {
-    margin: 0.05rem 0 0.18rem 1rem;
+    margin: 0.02rem 0 0.12rem 1rem;
     padding-left: 0;
   }
 
   .print-section li {
-    font-size: 0.75rem;   /* about 9pt */
-    margin: 0.05rem 0;
+    font-size: 0.75rem;   /* ~9pt */
+    margin: 0.03rem 0;    /* tighter vertical spacing */
   }
 
-  /* Hide Internal Scores section on print (last h3 + its paragraph) */
+  /* Hide Internal Scores section (last h3 + its paragraph) */
   #result h3:last-of-type,
   #result h3:last-of-type + p {
     display: none !important;
