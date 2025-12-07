@@ -151,6 +151,11 @@ button[type="reset"]:active,
   flex: 1;
 }
 
+/* Print-only brand bar (hidden on screen) */
+.print-brand {
+  display: none;
+}
+
 /* Big title on the left side */
 
 .print-book-title {
@@ -290,6 +295,20 @@ button[type="reset"]:active,
     margin-bottom: 0.1in;     /* tighter gap under header */
   }
 
+  /* Print brand: logo + name on top, tight */
+  .print-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin-bottom: 0.05in;
+    font-size: 0.7rem;
+  }
+
+  .print-brand-logo {
+    height: 0.3in;   /* small, won’t push content down much */
+    width: auto;
+  }
+  
   .print-main-meta {
     flex: 1;
   }
