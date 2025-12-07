@@ -246,7 +246,7 @@ button[type="reset"]:active,
 
   /* Sections closer together */
   .print-section {
-    margin-top: 0.12in;  /* reduced vertical gap between sections */
+    margin-top: 0.05in;  /* reduced vertical gap between sections */
   }
 
   /* Section headings: no border line, minimal spacing */
