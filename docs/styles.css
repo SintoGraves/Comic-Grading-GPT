@@ -151,11 +151,6 @@ button[type="reset"]:active,
   flex: 1;
 }
 
-/* Print-only brand bar (hidden on screen) */
-.print-brand {
-  display: none;
-}
-
 /* Big title on the left side */
 
 .print-book-title {
