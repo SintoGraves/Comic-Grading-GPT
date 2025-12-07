@@ -545,11 +545,54 @@ const gmCheckbox = document.getElementById("gm_candidate");  // <-- INSERT HERE
     });
   }
 
+  // === Sample image overlay (press-and-hold buttons) ===
+  const sampleOverlay = document.createElement("div");
+  sampleOverlay.id = "sample-overlay";
+  sampleOverlay.innerHTML = `
+    <img id="sample-overlay-img" alt="Grading example" />
+  `;
+  document.body.appendChild(sampleOverlay);
+
+  const sampleOverlayImg = sampleOverlay.querySelector("#sample-overlay-img");
+
+  function showSample(src) {
+    if (!src) return;
+    sampleOverlayImg.src = src;
+    sampleOverlay.style.display = "flex";
+  }
+
+  function hideSample() {
+    sampleOverlay.style.display = "none";
+    sampleOverlayImg.src = "";
+  }
+
+  // Attach press-and-hold to all .sample-btn
+  const sampleButtons = document.querySelectorAll(".sample-btn");
+
+  sampleButtons.forEach((btn) => {
+    const imgSrc = btn.getAttribute("data-sample-img");
+    if (!imgSrc) return;
+
+    // Mouse: show on mousedown, hide on mouseup/mouseleave
+    btn.addEventListener("mousedown", () => showSample(imgSrc));
+    btn.addEventListener("mouseup", hideSample);
+    btn.addEventListener("mouseleave", hideSample);
+
+    // Touch: show on touchstart, hide on touchend/cancel
+    btn.addEventListener("touchstart", (e) => {
+      e.preventDefault(); // avoid ghost click
+      showSample(imgSrc);
+    }, { passive: false });
+
+    btn.addEventListener("touchend", hideSample);
+    btn.addEventListener("touchcancel", hideSample);
+  });
+  
   form.addEventListener("submit", (e) => {
     e.preventDefault();
 
     const baseScore = 10.0;
-
+         
     // === Read choices from form ===
     const spineChoice        = form.elements["spine"].value;
     const structAttachChoice = form.elements["struct_attach"].value;
