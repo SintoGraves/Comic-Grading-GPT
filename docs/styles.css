@@ -191,8 +191,7 @@ button[type="reset"]:active,
   margin: 0 0 0.25rem;
 }
 
-/* === PRINT LAYOUT (TIGHTENED) === */
-
+/* === PRINT LAYOUT (TIGHT + ONE PAGE) === */
 @media print {
 
   @page {
@@ -211,12 +210,13 @@ button[type="reset"]:active,
     display: none !important;
   }
 
-  /* Show only the report content */
+  /* Show only the report content, slightly smaller & tighter */
   #result {
     display: block !important;
     max-width: 100%;
     margin: 0;
-    font-size: 0.95rem;
+    font-size: 0.9rem;        /* a touch smaller */
+    line-height: 1.25;        /* tighter lines */
   }
 
   /* Keep the two-column header layout in print */
@@ -224,8 +224,8 @@ button[type="reset"]:active,
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    gap: 0.75rem;
-    margin-bottom: 0.10in; /* slightly tighter header bottom gap */
+    gap: 0.6rem;
+    margin-bottom: 0.1in;     /* tighter gap under header */
   }
 
   .print-main-meta {
@@ -234,37 +234,48 @@ button[type="reset"]:active,
 
   /* Title */
   h2.print-book-title {
-    font-size: 1.6rem;
+    font-size: 1.5rem;        /* slightly smaller to save space */
     font-weight: 700;
-    margin: 0 0 0.35rem;
+    margin: 0 0 0.25rem;
   }
 
-  /* Section Grades block closer to the cover image bottom */
+  /* Make the printed cover box a bit shorter than 4" */
+  .print-cover-wrapper {
+    width: 2.75in;
+    height: 3.67in;            /* was 4in on screen */
+  }
+
+  /* Section Grades closer to the picture bottom */
   .print-section-grades {
-    margin-top: 0.15in;
+    margin-top: 0.25in;       /* pulled up a bit */
   }
 
   /* Sections closer together */
   .print-section {
-    margin-top: 0.03in;  /* reduced vertical gap between sections */
+    margin-top: 0.08in;       /* less space between sections */
   }
 
-  /* Section headings: no border line, minimal spacing */
+  /* Section headings: no borders, minimal spacing */
   .print-section h4 {
-    font-size: 0.90rem;
-    margin: 0 0 0.04rem;
+    font-size: 0.85rem;
+    margin: 0 0 0.04in;
     padding: 0;
   }
 
-  /* Tighter, smaller bullets */
+  /* Very tight bullet spacing */
   .print-section ul {
-    margin: 0.02rem 0 0.10rem 1rem;
+    margin: 0.01in 0 0.06in 0.85rem;
     padding-left: 0;
   }
 
   .print-section li {
-    font-size: 0.75rem;   /* ~9pt */
-    margin: 0.02rem 0;    /* tighter vertical spacing */
+    font-size: 0.7rem;        /* ~8.5–9pt */
+    margin: 0.01in 0;         /* very tight vertical gap */
+  }
+
+  /* Remove any extra bottom gap on the last section */
+  .print-section:last-of-type {
+    margin-bottom: 0;
   }
 
   /* Hide Internal Scores section (last h3 + its paragraph) */
