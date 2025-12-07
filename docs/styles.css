@@ -235,7 +235,7 @@ button[type="reset"]:active,
   /* Pull Section Grades up closer to the picture */
   /* First section block starts just a bit below header row */
   .print-section:first-of-type {
-    margin-top: 0.25in;   /* adjust smaller/larger if you want it closer/further */
+    margin-top: 0.15in;   /* adjust smaller/larger if you want it closer/further */
   }
 
   /* Section headings tighter */
