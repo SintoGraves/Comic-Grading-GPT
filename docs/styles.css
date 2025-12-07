@@ -185,7 +185,7 @@ button[type="reset"]:active,
 }
 
 
-/* === PRINT LAYOUT === */
+/* === PRINT LAYOUT (FINAL) === */
 @media print {
 
   @page {
@@ -199,11 +199,12 @@ button[type="reset"]:active,
     background: #ffffff;
   }
 
-  /* Hide everything EXCEPT the result block */
+  /* Hide everything EXCEPT the report */
   body > *:not(#result) {
     display: none !important;
   }
 
+  /* Show only the report content */
   #result {
     display: block !important;
     max-width: 100%;
@@ -211,7 +212,7 @@ button[type="reset"]:active,
     font-size: 0.95rem;
   }
 
-  /* Make sure the header row keeps its two-column layout */
+  /* Keep the two-column header layout in print */
   .print-header-row {
     display: flex;
     justify-content: space-between;
@@ -223,30 +224,42 @@ button[type="reset"]:active,
     flex: 1;
   }
 
-  /* Push Section Grades down the page a bit */
-  .print-section-grades {
-    margin-top: 1.5in;  /* adjust up/down if you want more or less spacing */
-  }
-
-  /* Remove bullets from section lists */
-  .print-section ul {
-    list-style: none;
-    padding-left: 0;
-    margin-left: 0;
-  }
-
-  .print-section li + li {
-    margin-top: 0.15rem;
-  }
-
-  /* Keep title reasonably large */
+  /* Title */
   h2.print-book-title {
     font-size: 1.6rem;
     font-weight: 700;
-    margin-bottom: 0.35rem;
+    margin: 0 0 0.35rem;
   }
+
+  /* Push the Section Grades block down the page a bit */
+  .print-section-grades {
+    margin-top: 1.25in;  /* tweak up/down to taste */
+  }
+
+  /* Section headings and bullet lists tighter, smaller */
+  .print-section h4 {
+    margin: 0 0 0.15rem;
+    font-size: 0.95rem;
+  }
+
+  .print-section ul {
+    margin: 0.05rem 0 0.2rem 1rem;  /* small gap, standard indent */
+    padding-left: 0;                /* browser adds default, we keep it predictable */
+  }
+
+  .print-section li {
+    font-size: 0.85rem;             /* one size smaller than body */
+    margin: 0.05rem 0;
+  }
+
+  /* Internal scores slightly smaller as well */
+  #result h3 {
+    margin-top: 0.5rem;
+    margin-bottom: 0.25rem;
+  }
+
+  #result p small {
+    font-size: 0.8rem;
+  }
+
 }
-
-
-
-
