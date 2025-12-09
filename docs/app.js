@@ -1425,16 +1425,18 @@ const displayHeading = (titleText || issueText)
           <h2 class="print-book-title">${displayHeading}</h2>
 
           <p><strong>Overall / True Grade:</strong>
-            ${overallGrade.short} (${overallGrade.label})
-          </p>
+  ${overallGrade.short} (${overallGrade.label})
+</p>
 
-          <p><strong>Presentation Grade (front view only):</strong>
-            ${presentationGrade.short} (${presentationGrade.label})
-          </p>
+<p><strong>Presentation Grade (front view only):</strong>
+  ${presentationGrade.short} (${presentationGrade.label})
+</p>
 
-          ${gmNote ? `<p class="gm-note"><em>${gmNote}</em></p>` : ""}
+${gmNote ? `<p class="gm-note"><em>${gmNote}</em></p>` : ""}
+${capNote ? `<p class="cap-note"><em>${capNote}</em></p>` : ""}
 
-          <p class="presentation-note"><em>${presentationNote}</em></p>
+<p class="presentation-note"><em>${presentationNote}</em></p>
+
         </div>
 
         ${
