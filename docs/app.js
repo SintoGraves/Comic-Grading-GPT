@@ -880,12 +880,37 @@ function normalizeTitle(rawTitle) {
   // Collapse multiple spaces
   t = t.replace(/\s+/g, " ");
 
-  // Normalize common variations for Amazing Spider-Man
-  // "amazing spiderman" → "amazing spider-man"
-  t = t.replace(/spiderman/g, "spider-man");
+  // =====================================================
+  // 🔧 Title Normalization Rules (do NOT change meaning)
+  // =====================================================
 
-  // Add more normalizations here over time if needed, e.g.:
-  // t = t.replace(/xmen/g, "x-men");
+  // === Standardize separators & common missing dashes ===
+  t = t.replace(/spiderman/g, "spider-man");
+  t = t.replace(/xmen/g, "x-men");
+  t = t.replace(/ironman/g, "iron man");
+  t = t.replace(/captainamerica/g, "captain america");
+  t = t.replace(/doctorstrange/g, "doctor strange");
+  t = t.replace(/dr\.\s*strange/g, "doctor strange");
+  t = t.replace(/newmutants/g, "new mutants");
+
+  // === Normalize abbreviations ===
+  t = t.replace(/^asm\s*/, "amazing spider-man ");
+  t = t.replace(/^tmnt\s*/, "teenage mutant ninja turtles ");
+  t = t.replace(/^tmt\s*/, "teenage mutant turtles ");
+  t = t.replace(/^bprd\s*/, "bprd ");
+  t = t.replace(/^ff\s*(?!#)/g, "fantastic four "); // avoids breaking FF #52
+
+  // === Normalize “x men” typing errors ===
+  t = t.replace(/\bx men\b/g, "x-men");
+
+  // === Normalize “&” to “and” (publishers use “and”) ===
+  t = t.replace(/ & /g, " and ");
+
+  // === Remove stray punctuation not part of title ===
+  t = t.replace(/[^a-z0-9\- ]+/g, ""); // remove punctuation or emoji etc.
+  t = t.replace(/\s\s+/g, " ");        // collapse leftover double spaces
+
+  // =====================================================
 
   return t;
 }
