@@ -995,7 +995,6 @@ function makeStampKey(title, issue) {
 }
 
 // === DOMContentLoaded ===
-
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("grading-form");
   const resultDiv = document.getElementById("result");
@@ -1011,9 +1010,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let stampApplies = false;
   const resetBtn = document.getElementById("reset-btn");
-const printBtn = document.getElementById("print-btn");
-const gmCheckbox = document.getElementById("gm_candidate");  // <-- INSERT HERE
-  
+  const printBtn = document.getElementById("print-btn");
+  const gmCheckbox = document.getElementById("gm_candidate");  // <-- still good
+
+  // --- existing: stamp lookup ---
   function updateStampLookup() {
     const title = titleInput.value.trim();
     const issue = issueInput.value.trim();
@@ -1046,6 +1046,46 @@ const gmCheckbox = document.getElementById("gm_candidate");  // <-- INSERT HERE
   if (titleInput && issueInput) {
     titleInput.addEventListener("input", updateStampLookup);
     issueInput.addEventListener("input", updateStampLookup);
+  }
+
+  // === Title suggestion (B: suggest only, don't auto-correct) ===
+  if (titleInput && titleSuggestion) {
+    const runTitleSuggestion = () => {
+      const raw = titleInput.value;
+      if (!raw.trim()) {
+        titleSuggestion.textContent = "";
+        return;
+      }
+
+      const suggestion = suggestTitle(raw);   // uses your normalized title list
+      if (!suggestion) {
+        titleSuggestion.textContent = "";
+        return;
+      }
+
+      const display = displayTitleFromNormalized(suggestion.normalized);
+
+      // Render: "Did you mean: Amazing Spider-Man? [Use this]"
+      titleSuggestion.innerHTML = `
+        Did you mean: <strong>${display}</strong>?
+        <button type="button" id="apply-title-suggestion-btn" style="margin-left:0.5rem; font-size:0.8rem;">
+          Use this
+        </button>
+      `;
+
+      const applyBtn = document.getElementById("apply-title-suggestion-btn");
+      if (applyBtn) {
+        applyBtn.addEventListener("click", () => {
+          titleInput.value = display;
+          titleSuggestion.textContent = "";
+          updateStampLookup(); // re-run value stamp check with corrected title
+        });
+      }
+    };
+
+    // Trigger suggestion when they leave the field or change the text
+    titleInput.addEventListener("blur", runTitleSuggestion);
+    titleInput.addEventListener("change", runTitleSuggestion);
   }
 
   // === Image upload preview ===
