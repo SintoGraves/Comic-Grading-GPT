@@ -848,6 +848,75 @@ const VALUE_STAMP_INDEX = {
   "worlds unknown#8": true
 };
 
+// === Known title list (derived from VALUE_STAMP_INDEX) ===
+// This gives us a comic-specific dictionary for suggestions.
+const KNOWN_TITLES = Array.from(
+  new Set(
+    Object.keys(VALUE_STAMP_INDEX).map(key => {
+      // "amazing spider-man#130" -> "amazing spider-man"
+      return key.split("#")[0];
+    })
+  )
+);
+
+// === Simple edit distance (Levenshtein) ===
+function editDistance(a, b) {
+  const lenA = a.length;
+  const lenB = b.length;
+  const dp = Array.from({ length: lenA + 1 }, () => new Array(lenB + 1).fill(0));
+
+  for (let i = 0; i <= lenA; i++) dp[i][0] = i;
+  for (let j = 0; j <= lenB; j++) dp[0][j] = j;
+
+  for (let i = 1; i <= lenA; i++) {
+    for (let j = 1; j <= lenB; j++) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      dp[i][j] = Math.min(
+        dp[i - 1][j] + 1,        // deletion
+        dp[i][j - 1] + 1,        // insertion
+        dp[i - 1][j - 1] + cost  // substitution
+      );
+    }
+  }
+  return dp[lenA][lenB];
+}
+
+// === Suggest a title based on known list (no auto-fix) ===
+function suggestTitle(rawTitle) {
+  const normUser = normalizeTitle(rawTitle);
+  if (!normUser || normUser.length < 3) {
+    return null; // too short for meaningful suggestions
+  }
+
+  let bestTitle = null;
+  let bestDistance = Infinity;
+
+  for (const t of KNOWN_TITLES) {
+    const d = editDistance(normUser, t);
+    if (d < bestDistance) {
+      bestDistance = d;
+      bestTitle = t;
+    }
+  }
+
+  // If it's basically the same, or too far off, don't bother
+  if (!bestTitle) return null;
+  if (bestDistance === 0) return null; // exact match
+  if (bestDistance > 3) return null;   // threshold so we don't show weird guesses
+
+  return { normalized: bestTitle, distance: bestDistance };
+}
+
+// Helper to convert normalized title back to display case
+// (you can customize later; for now, just capitalize words)
+function displayTitleFromNormalized(norm) {
+  return norm
+    .split(" ")
+    .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");
+}
+
+
 // === Helper: convert numeric score into nearest grade ===
 function pickGrade(grades, score) {
   let best = grades[grades.length - 1];
@@ -935,7 +1004,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const issueInput = document.getElementById("comic_issue");
   const stampFieldset = document.getElementById("stamp-fieldset");
   const stampHint = document.getElementById("stamp-hint");
-
+  const titleSuggestion = document.getElementById("title-suggestion");
+  
   const coverInput = document.getElementById("cover_image");
   const coverPreview = document.getElementById("cover-preview");
 
