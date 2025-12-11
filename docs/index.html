@@ -101,196 +101,346 @@
       </label>
     </fieldset>
  
-   <!-- === 1. Bindery Section === -->
-<section class="grade-section" id="bindery-section">
-  <h2>1. Bindery</h2>
+  <!-- =========================
+     BINDERY SECTION
+     ========================= -->
+<section id="bindery-section" class="grade-section">
+  <h3 class="section-title">Bindery Evaluation</h3>
+  <p class="section-intro">
+    When evaluating the bindery of a comic book, you are checking for issues that happened during
+    the printing and assembly process, not from wear or damage after purchase.
+  </p>
 
-  <!-- a. Staple Placement -->
-  <fieldset class="grade-element" id="bindery-staple-placement">
-    <legend>Staple Placement</legend>
-    <p class="hint">Staple Placement (7 pt)</p>
+  <!-- ======================
+       a. STAPLE PLACEMENT
+       ====================== -->
+  <h4 class="element-title">Staple Placement</h4>
+  <div class="element-note">Staple Placement – check centering and spacing of staples.</div>
 
-    <!-- 1) Staples too high/low or unevenly spaced -->
-    <div class="sub-element">
-      <h4>Staples too high/low or unevenly spaced</h4>
-      <div class="radio-row">
-        <label>
-          <input type="radio" name="bind_sp_placement_position" value="10" required>
-          Centered (10.0)
-        </label>
-        <label>
-          <input type="radio" name="bind_sp_placement_position" value="9.2">
-          Slightly Off (9.2)
-        </label>
-        <label>
-          <input type="radio" name="bind_sp_placement_position" value="8">
-          Significantly misaligned / tearing (8.0)
-        </label>
-      </div>
+  <!-- Staples too high/low or unevenly spaced -->
+  <div class="subelement-row">
+    <span class="subelement-label">Staples too high/low or unevenly spaced</span>
+
+    <div class="subelement-box">
+      <div class="subelement-desc">Staple Placement</div>
+
+      <label class="choice">
+        <input type="radio" name="bind_sp_height" value="9.2" />
+        Slightly off
+      </label>
+
+      <label class="choice">
+        <input type="radio" name="bind_sp_height" value="8.0" />
+        Significantly misaligned or tearing paper
+      </label>
+
+      <label class="choice">
+        <input type="radio" name="bind_sp_height" value="10.0" checked />
+        Centered
+      </label>
     </div>
+  </div>
 
-    <!-- 2) Staples inserted crooked -->
-    <div class="sub-element">
-      <h4>Staples inserted crooked</h4>
-      <p class="hint">Staple Alignment (7 pt)</p>
-      <div class="radio-row">
-        <label>
-          <input type="radio" name="bind_sp_placement_alignment" value="10" required>
-          Straight (10.0)
-        </label>
-        <label>
-          <input type="radio" name="bind_sp_placement_alignment" value="9.2">
-          Slightly Off (9.2)
-        </label>
-        <label>
-          <input type="radio" name="bind_sp_placement_alignment" value="8">
-          Significantly misaligned / tearing (8.0)
-        </label>
-      </div>
+  <!-- Staples inserted crooked -->
+  <div class="subelement-row">
+    <span class="subelement-label">Staples inserted crooked</span>
+
+    <div class="subelement-box">
+      <div class="subelement-desc">Staple Alignment</div>
+
+      <label class="choice">
+        <input type="radio" name="bind_sp_crooked" value="9.2" />
+        Slightly off
+      </label>
+
+      <label class="choice">
+        <input type="radio" name="bind_sp_crooked" value="8.0" />
+        Significantly misaligned or tearing paper
+      </label>
+
+      <label class="choice">
+        <input type="radio" name="bind_sp_crooked" value="10.0" checked />
+        Straight
+      </label>
     </div>
+  </div>
 
-    <!-- 3) Staples pulling at the paper -->
-    <div class="sub-element">
-      <h4>Staples pulling at the paper</h4>
-      <p class="hint">Staples to paper (7 pt)</p>
-      <div class="radio-row">
-        <label>
-          <input type="radio" name="bind_sp_placement_pull" value="10" required>
-          Normal (10.0)
-        </label>
-        <label>
-          <input type="radio" name="bind_sp_placement_pull" value="9.2">
-          Slightly Off (9.2)
-        </label>
-        <label>
-          <input type="radio" name="bind_sp_placement_pull" value="8">
-          Significantly misaligned / tearing (8.0)
-        </label>
-      </div>
+  <!-- Staples pulling at the paper -->
+  <div class="subelement-row">
+    <span class="subelement-label">Staples pulling at the paper</span>
+
+    <div class="subelement-box">
+      <div class="subelement-desc">Staples to Paper</div>
+
+      <label class="choice">
+        <input type="radio" name="bind_sp_pulling" value="9.2" />
+        Slightly off
+      </label>
+
+      <label class="choice">
+        <input type="radio" name="bind_sp_pulling" value="8.0" />
+        Significantly misaligned or tearing paper
+      </label>
+
+      <label class="choice">
+        <input type="radio" name="bind_sp_pulling" value="10.0" checked />
+        Normal
+      </label>
     </div>
-  </fieldset>
+  </div>
 
-  <!-- b. Staple Tightness & Attachment -->
-  <fieldset class="grade-element" id="bindery-staple-tightness">
-    <legend>Staple Tightness &amp; Attachment</legend>
+  <!-- ======================
+       b. STAPLE TIGHTNESS & ATTACHMENT
+       ====================== -->
+  <h4 class="element-title">Staple Tightness &amp; Attachment</h4>
+  <div class="element-note">Staple tightness &amp; attachment – cover and centerfold security.</div>
 
-    <!-- Cover firmly attached -->
-    <div class="sub-element">
-      <h4>Cover is firmly attached</h4>
-      <p class="hint">Cover (7 pt)</p>
-      <div class="radio-row">
-        <label><input type="radio" name="bind_st_tight_cover" value="10" required> Both attached (10.0)</label>
-        <label><input type="radio" name="bind_st_tight_cover" value="4"> One staple loose (4.0)</label>
-        <label><input type="radio" name="bind_st_tight_cover" value="2"> Both staples detached (2.0)</label>
-      </div>
+  <!-- Cover is firmly attached -->
+  <div class="subelement-row">
+    <span class="subelement-label">Cover is firmly attached</span>
+
+    <div class="subelement-box">
+      <div class="subelement-desc">Cover</div>
+
+      <label class="choice">
+        <input type="radio" name="bind_cover_attach" value="10.0" checked />
+        Both attached
+      </label>
+
+      <label class="choice">
+        <input type="radio" name="bind_cover_attach" value="4.0" />
+        One staple loose
+      </label>
+
+      <label class="choice">
+        <input type="radio" name="bind_cover_attach" value="2.0" />
+        Both staples detached
+      </label>
     </div>
+  </div>
 
-    <!-- Centerfold secure -->
-    <div class="sub-element">
-      <h4>Centerfold is secure</h4>
-      <p class="hint">Centerfold (7 pt)</p>
-      <div class="radio-row">
-        <label><input type="radio" name="bind_st_tight_center" value="10" required> Both attached (10.0)</label>
-        <label><input type="radio" name="bind_st_tight_center" value="4"> One staple loose (4.0)</label>
-        <label><input type="radio" name="bind_st_tight_center" value="2"> Both staples detached (2.0)</label>
-      </div>
+  <!-- Centerfold is secure -->
+  <div class="subelement-row">
+    <span class="subelement-label">Centerfold is secure</span>
+
+    <div class="subelement-box">
+      <div class="subelement-desc">Centerfold</div>
+
+      <label class="choice">
+        <input type="radio" name="bind_centerfold_secure" value="10.0" checked />
+        Both attached
+      </label>
+
+      <label class="choice">
+        <input type="radio" name="bind_centerfold_secure" value="4.0" />
+        One staple loose
+      </label>
+
+      <label class="choice">
+        <input type="radio" name="bind_centerfold_secure" value="2.0" />
+        Both staples detached
+      </label>
     </div>
-  </fieldset>
+  </div>
 
-  <!-- c. Spine Fold (Bind Alignment) -->
-  <fieldset class="grade-element" id="bindery-spine-fold">
-    <legend>Spine Fold (Bind) Alignment</legend>
-    <div class="sub-element">
-      <h4>Bind Alignment</h4>
-      <p class="hint">Left/Right alignment should match interior pages</p>
-      <div class="radio-row">
-        <label><input type="radio" name="bind_spine_alignment" value="10" required> Normal (10.0)</label>
-        <label><input type="radio" name="bind_spine_alignment" value="8.5"> Slight Miswrap (8.5)</label>
-        <label><input type="radio" name="bind_spine_alignment" value="4.5"> Major miswrap affecting art/text (4.5)</label>
-      </div>
+  <!-- ======================
+       c. SPINE FOLD (BIND) ALIGNMENT
+       ====================== -->
+  <h4 class="element-title">Spine Fold (Bind) Alignment</h4>
+  <div class="element-note">
+    Left/right alignment should match interior pages; major miswrap can cut off art or text.
+  </div>
+
+  <div class="subelement-row">
+    <span class="subelement-label">Spine fold alignment</span>
+
+    <div class="subelement-box">
+      <div class="subelement-desc">Bind Alignment</div>
+
+      <label class="choice">
+        <input type="radio" name="bind_spine_align" value="8.5" />
+        Slight miswrap
+      </label>
+
+      <label class="choice">
+        <input type="radio" name="bind_spine_align" value="4.5" />
+        Major miswrap affecting art or text
+      </label>
+
+      <label class="choice">
+        <input type="radio" name="bind_spine_align" value="10.0" checked />
+        Normal
+      </label>
     </div>
-  </fieldset>
+  </div>
 
-  <!-- d. Staples -->
-  <fieldset class="grade-element" id="bindery-staples">
-    <legend>Staples</legend>
-    <div class="sub-element">
-      <h4>Staple Rust</h4>
-      <p class="hint">Both the interior and exterior of the staple</p>
-      <div class="radio-row">
-        <label><input type="radio" name="bind_staple_rust" value="10" required> None (10.0)</label>
-        <label><input type="radio" name="bind_staple_rust" value="7"> Slight surface rust (7.0)</label>
-        <label><input type="radio" name="bind_staple_rust" value="4"> Rust migration to page/cover (4.0)</label>
-      </div>
+  <!-- ======================
+       d. STAPLES (RUST)
+       ====================== -->
+  <h4 class="element-title">Staples</h4>
+  <div class="element-note">Staple rust – check both the interior and exterior of the staple.</div>
+
+  <div class="subelement-row">
+    <span class="subelement-label">Staple rust</span>
+
+    <div class="subelement-box">
+      <div class="subelement-desc">Staple Rust</div>
+
+      <label class="choice">
+        <input type="radio" name="bind_staple_rust" value="10.0" checked />
+        None
+      </label>
+
+      <label class="choice">
+        <input type="radio" name="bind_staple_rust" value="7.0" />
+        Slight surface rust
+      </label>
+
+      <label class="choice">
+        <input type="radio" name="bind_staple_rust" value="4.0" />
+        Rust migration to page/cover
+      </label>
     </div>
-  </fieldset>
+  </div>
 
-  <!-- e. Cover Trim and Cuts -->
-  <fieldset class="grade-element" id="bindery-trim-cuts">
-    <legend>Cover Trim and Cuts</legend>
+  <!-- ======================
+       e. COVER TRIM AND CUTS
+       ====================== -->
+  <h4 class="element-title">Cover Trim and Cuts</h4>
+  <div class="element-note">Cover trim and cuts – centering, edge quality, and overcut.</div>
 
-    <!-- Uneven trimming -->
-    <div class="sub-element">
-      <h4>Uneven Trimming</h4>
-      <p class="hint">Cover not centered</p>
-      <div class="radio-row">
-        <label><input type="radio" name="bind_trim_uneven" value="10" required> No defects (10.0)</label>
-        <label><input type="radio" name="bind_trim_uneven" value="9.1"> Minor (9.1)</label>
-        <label><input type="radio" name="bind_trim_uneven" value="7"> Noticeable (7.0)</label>
-      </div>
+  <!-- Uneven trimming -->
+  <div class="subelement-row">
+    <span class="subelement-label">Uneven trimming</span>
+
+    <div class="subelement-box">
+      <div class="subelement-desc">Cover not centered</div>
+
+      <label class="choice">
+        <input type="radio" name="bind_trim_uneven" value="10.0" checked />
+        No defects
+      </label>
+
+      <label class="choice">
+        <input type="radio" name="bind_trim_uneven" value="9.1" />
+        Minor
+      </label>
+
+      <label class="choice">
+        <input type="radio" name="bind_trim_uneven" value="7.0" />
+        Noticeable
+      </label>
     </div>
+  </div>
 
-    <!-- Frayed edges -->
-    <div class="sub-element">
-      <h4>Frayed edges</h4>
-      <p class="hint">Page and cover edges</p>
-      <div class="radio-row">
-        <label><input type="radio" name="bind_trim_frayed" value="10" required> No defects (10.0)</label>
-        <label><input type="radio" name="bind_trim_frayed" value="9.1"> Minor (9.1)</label>
-        <label><input type="radio" name="bind_trim_frayed" value="7"> Noticeable (7.0)</label>
-      </div>
-    </div>
+  <!-- Frayed edges -->
+  <div class="subelement-row">
+    <span class="subelement-label">Frayed edges</span>
 
-    <!-- Overcut -->
-    <div class="sub-element">
-      <h4>Overcut</h4>
-      <p class="hint">Cover is shorter than pages</p>
-      <div class="radio-row">
-        <label><input type="radio" name="bind_trim_overcut" value="10" required> No defects (10.0)</label>
-        <label><input type="radio" name="bind_trim_overcut" value="9.1"> Minor (9.1)</label>
-        <label><input type="radio" name="bind_trim_overcut" value="7"> Noticeable (7.0)</label>
-      </div>
-    </div>
-  </fieldset>
+    <div class="subelement-box">
+      <div class="subelement-desc">Page and cover edges</div>
 
-  <!-- f. Printing/Bindery Tears -->
-  <fieldset class="grade-element" id="bindery-tears">
-    <legend>Printing / Bindery Tears</legend>
-    <div class="sub-element">
-      <h4>Tears</h4>
-      <p class="hint">Bindery tears</p>
-      <div class="radio-row">
-        <label><input type="radio" name="bind_tears" value="10" required> No Tears (10.0)</label>
-        <label><input type="radio" name="bind_tears" value="9.1"> Less than 1/16 inch (9.1)</label>
-        <label><input type="radio" name="bind_tears" value="6"> Greater than 1/16 inch (6.0)</label>
-      </div>
-    </div>
-  </fieldset>
+      <label class="choice">
+        <input type="radio" name="bind_trim_frayed" value="10.0" checked />
+        No defects
+      </label>
 
-  <!-- g. Cover/Interior Page Registration -->
-  <fieldset class="grade-element" id="bindery-registration">
-    <legend>Cover / Interior Page Registration</legend>
-    <div class="sub-element">
-      <h4>Page Alignment</h4>
-      <p class="hint">Are the pages and artwork aligned?</p>
-      <div class="radio-row">
-        <label><input type="radio" name="bind_registration" value="10" required> No misalignment (10.0)</label>
-        <label><input type="radio" name="bind_registration" value="7"> Minor misalignment (7.0)</label>
-        <label><input type="radio" name="bind_registration" value="5"> Major misalignment (5.0)</label>
-      </div>
+      <label class="choice">
+        <input type="radio" name="bind_trim_frayed" value="9.1" />
+        Minor
+      </label>
+
+      <label class="choice">
+        <input type="radio" name="bind_trim_frayed" value="7.0" />
+        Noticeable
+      </label>
     </div>
-  </fieldset>
+  </div>
+
+  <!-- Overcut -->
+  <div class="subelement-row">
+    <span class="subelement-label">Overcut (cover shorter than pages)</span>
+
+    <div class="subelement-box">
+      <div class="subelement-desc">Overcut</div>
+
+      <label class="choice">
+        <input type="radio" name="bind_trim_overcut" value="10.0" checked />
+        No defects
+      </label>
+
+      <label class="choice">
+        <input type="radio" name="bind_trim_overcut" value="9.1" />
+        Minor
+      </label>
+
+      <label class="choice">
+        <input type="radio" name="bind_trim_overcut" value="7.0" />
+        Noticeable
+      </label>
+    </div>
+  </div>
+
+  <!-- ======================
+       f. PRINTING / BINDERY TEARS
+       ====================== -->
+  <h4 class="element-title">Printing / Bindery Tears</h4>
+  <div class="element-note">Bindery tears – tears at the edge from the manufacturing process.</div>
+
+  <div class="subelement-row">
+    <span class="subelement-label">Bindery tears</span>
+
+    <div class="subelement-box">
+      <div class="subelement-desc">Bindery Tears</div>
+
+      <label class="choice">
+        <input type="radio" name="bind_tears" value="10.0" checked />
+        No tears
+      </label>
+
+      <label class="choice">
+        <input type="radio" name="bind_tears" value="9.1" />
+        Less than 1/16 inch
+      </label>
+
+      <label class="choice">
+        <input type="radio" name="bind_tears" value="6.0" />
+        Greater than 1/16 inch
+      </label>
+    </div>
+  </div>
+
+  <!-- ======================
+       g. COVER / INTERIOR PAGE REGISTRATION
+       ====================== -->
+  <h4 class="element-title">Cover / Interior Page Registration</h4>
+  <div class="element-note">Cover / interior page registration – are the pages and artwork aligned.</div>
+
+  <div class="subelement-row">
+    <span class="subelement-label">Page alignment</span>
+
+    <div class="subelement-box">
+      <div class="subelement-desc">Page Alignment</div>
+
+      <label class="choice">
+        <input type="radio" name="bind_registration" value="10.0" checked />
+        No misalignment
+      </label>
+
+      <label class="choice">
+        <input type="radio" name="bind_registration" value="7.0" />
+        Minor misalignment
+      </label>
+
+      <label class="choice">
+        <input type="radio" name="bind_registration" value="5.0" />
+        Major misalignment
+      </label>
+    </div>
+  </div>
+
 </section>
+
 
     
        <button type="submit">Estimate Grade</button>
