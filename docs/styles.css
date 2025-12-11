@@ -137,6 +137,71 @@ button[type="reset"]:active,
   border: 1px solid #ccc;
 }
 
+/* Section shell */
+.grade-section {
+  margin: 1.5rem 0;
+  padding: 1rem 1.25rem;
+  background: #eef3fb;
+  border-radius: 12px;
+}
+
+.section-title {
+  margin-top: 0;
+  margin-bottom: 0.2rem;
+}
+
+.section-intro {
+  font-size: 0.9rem;
+  margin-bottom: 0.8rem;
+}
+
+/* Element heading and small note */
+.element-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin: 0.9rem 0 0.2rem;
+}
+
+.element-note {
+  font-size: 7pt;      /* as requested */
+  margin-bottom: 0.3rem;
+}
+
+/* Row: label left, boxed choices right */
+.subelement-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.55rem;
+}
+
+.subelement-label {
+  width: 260px;        /* adjust to match your left column */
+  font-size: 0.95rem;
+}
+
+/* Bounding box for descriptor + radios */
+.subelement-box {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  border: 1px solid #8b9bb7;
+  border-radius: 6px;
+  background: #f7f9fc;
+  padding: 0.35rem 0.7rem;
+}
+
+.subelement-desc {
+  font-weight: 600;
+  margin-right: 0.4rem;
+  white-space: nowrap;
+}
+
+.choice {
+  white-space: nowrap;
+  font-size: 0.95rem;
+}
+
 /* Header layout for printed report */
 
 .print-header-row {
