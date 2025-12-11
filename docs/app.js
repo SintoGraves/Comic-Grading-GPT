@@ -1183,10 +1183,123 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const baseScore = 10.0;
          
-    // === Read choices from form ===
-   
-    
-    // === Map to rule objects ===
+    // === 1. Read Bindery sub-element scores ===
+  const v = (name) => parseFloat(form.elements[name].value);
+
+  // a. Staple Placement (lowest of the 3 sub-elements)
+  const bindStaplePlacementScore = Math.min(
+    v("bind_sp_placement_position"),
+    v("bind_sp_placement_alignment"),
+    v("bind_sp_placement_pull")
+  );
+
+  // b. Staple Tightness & Attachment (lowest of the 2)
+  const bindStapleTightnessScore = Math.min(
+    v("bind_st_tight_cover"),
+    v("bind_st_tight_center")
+  );
+
+  // c–g: single-value elements
+  const bindSpineAlignScore   = v("bind_spine_alignment");
+  const bindStaplesScore      = v("bind_staple_rust");
+  const bindTrimScore = Math.min(
+    v("bind_trim_uneven"),
+    v("bind_trim_frayed"),
+    v("bind_trim_overcut")
+  );
+  const bindTearsScore        = v("bind_tears");
+  const bindRegistrationScore = v("bind_registration");
+
+  const bindElementScores = [
+    bindStaplePlacementScore,
+    bindStapleTightnessScore,
+    bindSpineAlignScore,
+    bindStaplesScore,
+    bindTrimScore,
+    bindTearsScore,
+    bindRegistrationScore
+  ];
+
+  // === 2. Base score = lowest of the 7 elements ===
+  const bindBaseScore = Math.min(...bindElementScores);
+
+  // === 3. Penalty calculation for the remaining elements ===
+  function penaltyForScore(score) {
+    if (score >= 0 && score <= 3.0)   return 1.0;
+    if (score >= 3.1 && score <= 6.0) return 0.5;
+    if (score >= 6.1 && score <= 9.9) return 0.1;
+    return 0.0; // 10.0 has no penalty
+  }
+
+  let bindPenalty = 0;
+  // We apply penalty to all elements EXCEPT the base (lowest) one
+  // (if you want, you can skip only one instance of the min)
+  let minUsed = false;
+  for (const s of bindElementScores) {
+    if (!minUsed && s === bindBaseScore) {
+      minUsed = true; // skip this one as the base
+      continue;
+    }
+    bindPenalty += penaltyForScore(s);
+  }
+
+  const bindFinalScore = Math.max(0, bindBaseScore - bindPenalty);
+  const bindGrade = pickGrade(GRADES, bindFinalScore);
+
+  // === 4. (Temporary) overall: just show Bindery as its own line ===
+  // Later we will combine Bindery + Corners + Spine + Pages + Cover.
+  const overallScore = bindFinalScore;
+  const overallGrade = bindGrade;
+
+  // === 5. Build title + cover as before ===
+  const titleText = titleInput.value.trim();
+  const issueText = issueInput.value.trim();
+
+  const displayHeading = (titleText || issueText)
+    ? `${titleText || "Unknown Title"}${issueText ? " #" + issueText : ""}`
+    : "Comic Book Grading Report";
+
+  const coverSrc = coverPreview ? coverPreview.src : "";
+
+  resultDiv.innerHTML = `
+    <div class="print-header-row">
+      <div class="print-main-meta">
+        <h2 class="print-book-title">${displayHeading}</h2>
+
+        <p><strong>Overall / True Grade (temporary – Bindery only):</strong>
+          ${overallGrade.short} (${overallGrade.label}) – ${overallScore.toFixed(1)}
+        </p>
+
+        <h3>Section Breakdown</h3>
+        <p><strong>Bindery Final Score:</strong>
+          ${bindFinalScore.toFixed(1)} (${bindGrade.short} – ${bindGrade.label})
+        </p>
+        <ul>
+          <li>Staple Placement: ${bindStaplePlacementScore.toFixed(1)}</li>
+          <li>Staple Tightness &amp; Attachment: ${bindStapleTightnessScore.toFixed(1)}</li>
+          <li>Spine Fold Alignment: ${bindSpineAlignScore.toFixed(1)}</li>
+          <li>Staples: ${bindStaplesScore.toFixed(1)}</li>
+          <li>Cover Trim &amp; Cuts: ${bindTrimScore.toFixed(1)}</li>
+          <li>Printing/Bindery Tears: ${bindTearsScore.toFixed(1)}</li>
+          <li>Cover / Interior Page Registration: ${bindRegistrationScore.toFixed(1)}</li>
+          <li>Penalty applied: ${bindPenalty.toFixed(1)}</li>
+        </ul>
+      </div>
+
+      ${
+        coverSrc
+          ? `<div class="print-cover-wrapper">
+               <img class="print-cover" src="${coverSrc}" alt="Comic cover preview" />
+             </div>`
+          : ""
+      }
+    </div>
+  `;
+
+  if (resultDiv && resultDiv.scrollIntoView) {
+    resultDiv.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+});
    
    
 
