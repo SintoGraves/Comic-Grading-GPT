@@ -23,314 +23,138 @@ const GRADES = [
   { score: 0.5,  code: "PR",    label: "Poor",                   short: "0.5 PR" }
 ];
 
-// === Spine rules (edge look) ===
-const SPINE_RULES = [
-  {
-    id: "spine_gm_perfect",
-    description: "Perfect (GM-level) – razor-flat spine, no ticks even under strong light, no bindery tears, no roll, no splits, perfectly centered clean staples.",
-    max_score: 10.0,
-    deduction: 0.0
-  },
-  {
-    id: "spine_near_perfect",
-    description: "Near perfect (NM-range) – flat spine, may allow a micro tick or bindery imperfection visible only under close/angled light. No color breaks, no roll, no splits.",
-    max_score: 9.8,
-    deduction: 0.2
-  },
-  {
-    id: "spine_minor_stress",
-    description: "1–2 tiny stress lines, no color break, no roll, no splits.",
-    max_score: 9.4,
-    deduction: 0.8
-  },
-  {
-    id: "spine_multiple_stress_color_break",
-    description: "Multiple spine stress lines with color break.",
-    max_score: 6.0,
-    deduction: 3.0
-  },
-  {
-    id: "spine_small_split",
-    description: "Small spine split under 1/4 inch.",
-    max_score: 6.5,
-    deduction: 3.0
-  },
-  {
-    id: "spine_large_split_or_roll",
-    description: "Spine roll or split over 1 inch.",
-    max_score: 3.0,
-    deduction: 6.0
+function pickGrade(grades, score) {
+  let best = grades[grades.length - 1];
+  for (const g of grades) {
+    if (score >= g.score && g.score >= best.score) {
+      best = g;
+    }
   }
-];
+  return best;
+}
 
-// === Severity rules used for cover + corners ===
-const SEVERITY_RULES = {
-  perfect: {
-    key: "perfect",
-    label: "Perfect (GM-level)",
-    deduction: 0.0,
-    max_score: 10.0
-  },
-  near: {
-    key: "near",
-    label: "Near Perfect (NM-range)",
-    deduction: 0.2,
-    max_score: 9.8
-  },
-  light: {
-    key: "light",
-    label: "Light Wear",
-    deduction: 0.8,
-    max_score: 9.4
-  },
-  moderate: {
-    key: "moderate",
-    label: "Moderate Wear",
-    deduction: 2.0,
-    max_score: 7.5
-  },
-  heavy: {
-    key: "heavy",
-    label: "Heavy Wear",
-    deduction: 4.0,
-    max_score: 5.0
+/* ---------- 2. Generic helpers ---------- */
+
+// Get numeric value from a radio group; default to 10.0
+function getRadioValue(form, name) {
+  const field = form.elements[name];
+  if (!field) return 10.0;
+
+  // Single input vs. NodeList
+  if (field.length === undefined) {
+    return parseFloat(field.value) || 10.0;
   }
-};
 
-
-// === Structural attachment ===
-const STRUCT_ATTACHMENT_RULES = {
-  intact: {
-    key: "intact",
-    label: "Cover & centerfold fully attached",
-    deduction: 0.0,
-    max_score: 10.0   // was 9.8
-  },
-  loose_one: {
-    key: "loose_one",
-    label: "Minor looseness / pulls",
-    deduction: 0.7,
-    max_score: 8.5
-  },
-  detached_one: {
-    key: "detached_one",
-    label: "Detached at one staple or partial split",
-    deduction: 3.0,
-    max_score: 4.5
-  },
-  detached_both: {
-    key: "detached_both",
-    label: "Detached at both staples / loose wrap",
-    deduction: 5.0,
-    max_score: 2.0
+  for (const input of field) {
+    if (input.checked) {
+      return parseFloat(input.value) || 10.0;
+    }
   }
-};
+  return 10.0;
+}
 
-// === Staple rust ===
-const STAPLE_RUST_RULES = {
-  clean: {
-    key: "clean",
-    label: "Clean staples",
-    deduction: 0.0,
-    max_score: 10.0   // was 9.8
-  },
-  light: {
-    key: "light",
-    label: "Light rust, no migration",
-    deduction: 0.5,
-    max_score: 9.0
-  },
-  moderate: {
-    key: "moderate",
-    label: "Moderate rust with small migration",
-    deduction: 1.5,
-    max_score: 7.0
-  },
-  heavy: {
-    key: "heavy",
-    label: "Heavy rust / flaking / strong migration",
-    deduction: 3.0,
-    max_score: 4.0
+/* ---------- 3. Bindery scoring ---------- */
+/*
+   Elements (each 0–10):
+   1. Staple Placement           -> min of 3 sub-elements
+   2. Staple Tightness & Attach  -> min of 2 sub-elements
+   3. Spine Fold (Bind) Align    -> single sub-element
+   4. Staples (Rust)             -> single sub-element
+   5. Cover Trim and Cuts        -> min of 3 sub-elements
+   6. Printing/Bindery Tears     -> single sub-element
+   7. Cover/Interior Registration-> single sub-element
+
+   Base score = lowest element score.
+   Other elements contribute penalties:
+   - 0–3.0   => 1.0 penalty
+   - 3.1–6.0 => 0.5 penalty
+   - 6.1–9.9 => 0.1 penalty
+   - 10.0    => 0.0 penalty
+*/
+
+function binderyPenaltyForScore(score) {
+  if (score >= 9.95) return 0.0;                    // treat 10 as perfect
+  if (score >= 6.1 && score <= 9.9) return 0.1;
+  if (score >= 3.1 && score <= 6.0) return 0.5;
+  if (score >= 0.0 && score <= 3.0) return 1.0;
+  return 0.0;
+}
+
+function computeBinderyScore(form) {
+  // Element scores (min of sub-elements where needed)
+  const staplePlacement = Math.min(
+    getRadioValue(form, "bind_sp_height"),     // Staples too high/low or uneven
+    getRadioValue(form, "bind_sp_crooked"),    // Staples inserted crooked
+    getRadioValue(form, "bind_sp_pulling")     // Staples pulling at the paper
+  );
+
+  const stapleTightness = Math.min(
+    getRadioValue(form, "bind_cover_attach"),       // Cover firmly attached
+    getRadioValue(form, "bind_centerfold_secure")  // Centerfold secure
+  );
+
+  const spineFoldAlign   = getRadioValue(form, "bind_spine_align");
+  const stapleRust       = getRadioValue(form, "bind_staple_rust");
+
+  const coverTrimCuts = Math.min(
+    getRadioValue(form, "bind_trim_uneven"),
+    getRadioValue(form, "bind_trim_frayed"),
+    getRadioValue(form, "bind_trim_overcut")
+  );
+
+  const printingTears    = getRadioValue(form, "bind_tears");
+  const registration     = getRadioValue(form, "bind_registration");
+
+  const elements = [
+    { id: "Staple Placement",                    score: staplePlacement },
+    { id: "Staple Tightness & Attachment",      score: stapleTightness },
+    { id: "Spine Fold (Bind) Alignment",        score: spineFoldAlign },
+    { id: "Staples (Rust)",                     score: stapleRust },
+    { id: "Cover Trim and Cuts",                score: coverTrimCuts },
+    { id: "Printing/Bindery Tears",             score: printingTears },
+    { id: "Cover/Interior Page Registration",   score: registration }
+  ];
+
+  // Base score = lowest element score
+  const baseScore = Math.min(...elements.map(e => e.score));
+
+  // Penalties from all elements above the base
+  let penaltyTotal = 0;
+  for (const e of elements) {
+    if (e.score > baseScore) {
+      penaltyTotal += binderyPenaltyForScore(e.score);
+    }
   }
-};
 
+  let finalScore = baseScore - penaltyTotal;
+  if (finalScore < 0.5) finalScore = 0.5;
+  if (finalScore > 10.0) finalScore = 10.0;
 
-// === Surface dirt / handling ===
-const SURFACE_RULES = {
-  perfect: {
-    key: "perfect",
-    label: "Perfect (GM-level) surface",
-    deduction: 0.0,
-    max_score: 10.0
-  },
-  clean: {
-    key: "clean",
-    label: "Clean (NM-range)",
-    deduction: 0.2,
-    max_score: 9.8
-  },
-  light: {
-    key: "light",
-    label: "Light dirt / smudges",
-    deduction: 0.8,
-    max_score: 9.4
-  },
-  moderate: {
-    key: "moderate",
-    label: "Moderate dirt / abrasion",
-    deduction: 1.5,
-    max_score: 7.5
-  },
-  heavy: {
-    key: "heavy",
-    label: "Heavy dirt / abrasion",
-    deduction: 3.0,
-    max_score: 5.0
-  }
-};
+  const grade = pickGrade(GRADES, finalScore);
 
+  return {
+    finalScore,
+    baseScore,
+    penaltyTotal,
+    grade,
+    elements
+  };
+}
 
-// === Color / Gloss rules ===
-const GLOSS_RULES = {
-  perfect:   { key: "perfect",   label: "Perfect Gloss/Color (GM-level)",  deduction: 0.0, max_score: 10.0 },
-  near:      { key: "near",      label: "Near Perfect Gloss/Color",        deduction: 0.2, max_score: 9.8 },
-  light:     { key: "light",     label: "Slight Loss of Gloss/Color",      deduction: 0.8, max_score: 9.4 },
-  moderate:  { key: "moderate",  label: "Moderate Loss of Gloss/Color",    deduction: 1.5, max_score: 8.0 },
-  heavy:     { key: "heavy",     label: "Heavy Loss of Gloss/Color",       deduction: 3.0, max_score: 6.0 }
-};
+/* ---------- 4. PLACEHOLDER FOR FUTURE SECTIONS ---------- */
+/*
+   TODO – next build step:
 
-const UV_RULES = {
-  none:     { key: "none",     label: "No UV Fade",            deduction: 0.0, max_score: 10.0 },
-  light:    { key: "light",    label: "Light UV Fade",         deduction: 1.0, max_score: 8.8 },
-  moderate: { key: "moderate", label: "Moderate UV Fade",      deduction: 2.0, max_score: 7.5 },
-  heavy:    { key: "heavy",    label: "Heavy UV Fade",         deduction: 3.0, max_score: 5.0 }
-};
+   - computeCornersScore(form)     // Corners section
+   - computeSpineScore(form)       // Spine section
+   - computePagesScore(form)       // Pages section
+   - computeCoverScore(form)       // Cover section
 
-const COLOR_RULES = {
-  clean:    { key: "clean",    label: "Clean Color",                   deduction: 0.0, max_score: 10.0 },
-  slight:   { key: "slight",   label: "Slight Color/Foxing Variation", deduction: 0.5, max_score: 9.0 },
-  moderate: { key: "moderate", label: "Moderate Color/Foxing Variation", deduction: 1.5, max_score: 7.5 },
-  heavy:    { key: "heavy",    label: "Heavy Color/Foxing Variation",  deduction: 3.0, max_score: 5.0 }
-};
+   Each function should return an object similar to computeBinderyScore:
+   { finalScore, baseScore, penaltyTotal, grade, elements }
 
-// === Water / moisture rules ===
-const WATER_RULES = {
-  none: {
-    key: "none",
-    label: "No water or moisture defects",
-    deduction: 0.0,
-    max_score: 10.0   // was 9.8
-  },
-  light: {
-    key: "light",
-    label: "Light ripple / very small spot",
-    deduction: 1.0,
-    max_score: 8.0
-  },
-  moderate: {
-    key: "moderate",
-    label: "Moderate tide mark or localized stain",
-    deduction: 2.5,
-    max_score: 6.0
-  },
-  heavy: {
-    key: "heavy",
-    label: "Heavy water damage / large stains",
-    deduction: 4.0,
-    max_score: 3.0
-  }
-};
-
-
-// === Cover writing / stamps / dates ===
-const COVER_MARK_RULES = {
-  none: {
-    key: "none",
-    label: "No writing or stamps on cover",
-    deduction: 0.0,
-    max_score: 10.0   // was 9.8
-  },
-  small: {
-    key: "small",
-    label: "Small / minor marks",
-    deduction: 0.5,
-    max_score: 9.0
-  },
-  moderate: {
-    key: "moderate",
-    label: "Moderate writing / stamps",
-    deduction: 1.5,
-    max_score: 7.0
-  },
-  heavy: {
-    key: "heavy",
-    label: "Heavy writing / large stamps",
-    deduction: 3.0,
-    max_score: 5.0
-  }
-};
-
-// === Interior page tone rules ===
-const PAGE_TONE_RULES = {
-  white:            { key: "white",            label: "White",               deduction: 0.0, max_score: 10.0 },
-  off_white_white:  { key: "off_white_white",  label: "Off-White to White",  deduction: 0.2, max_score: 9.6 },
-  offwhite:         { key: "offwhite",         label: "Off-White",           deduction: 0.5, max_score: 9.0 },
-  cream_offwhite:   { key: "cream_offwhite",   label: "Cream to Off-White",  deduction: 1.0, max_score: 8.5 },
-  cream:            { key: "cream",            label: "Cream",               deduction: 1.5, max_score: 7.5 },
-  light_tan:        { key: "light_tan",        label: "Light Tan",           deduction: 2.5, max_score: 6.0 },
-  tan:              { key: "tan",              label: "Tan",                 deduction: 3.5, max_score: 4.0 },
-  brittle:          { key: "brittle",          label: "Brittle",             deduction: 5.0, max_score: 2.0 }
-};
-
-// === Interior tear rules ===
-const INTERIOR_TEAR_RULES = {
-  none:        { key: "none",        label: "No Tears",                       deduction: 0.0, max_score: 10.0 },
-  small:       { key: "small",       label: "Small Tears",                    deduction: 0.5, max_score: 9.0 },
-  multiple:    { key: "multiple",    label: "Multiple Tears / Small Pieces",  deduction: 2.0, max_score: 6.0 },
-  big_missing: { key: "big_missing", label: "Big Tears / Pieces Missing",     deduction: 4.0, max_score: 3.0 }
-};
-
-// === Interior stain rules ===
-const INTERIOR_STAIN_RULES = {
-  none:     { key: "none",     label: "No Stains",                     deduction: 0.0, max_score: 10.0 },
-  small:    { key: "small",    label: "Small Marks / Light Stains",    deduction: 0.5, max_score: 9.0 },
-  moderate: { key: "moderate", label: "Moderate Staining / Writing",   deduction: 1.5, max_score: 7.0 },
-  heavy:    { key: "heavy",    label: "Heavy Staining / Water Damage", deduction: 3.0, max_score: 4.0 }
-};
-
-// === Marvel Value Stamp / coupon rules ===
-const STAMP_RULES = {
-  na: {
-    key: "na",
-    label: "No Stamp / Not Applicable",
-    deduction: 0.0,
-    max_score: 10.0
-  },
-  intact: {
-    key: "intact",
-    label: "Stamp Intact",
-    deduction: 0.0,
-    max_score: 10.0   // was 9.8
-  },
-  missing: {
-    key: "missing",
-    label: "Stamp Missing / Clipped",
-    deduction: 4.0,
-    max_score: 2.0
-  },
-  replaced: {
-    key: "replaced",
-    label: "Stamp Replaced / Married",
-    deduction: 3.0,
-    max_score: 3.0
-  },
-  unsure: {
-    key: "unsure",
-    label: "Stamp Status Unsure",
-    deduction: 2.0,
-    max_score: 4.0
-  }
-};
+   Then the form submit handler can combine them into an overall book grade.
+*/
 
 
 /// === Lookup: issues that DO contain a Marvel Value Stamp ===
@@ -998,7 +822,9 @@ function makeStampKey(title, issue) {
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("grading-form");
   const resultDiv = document.getElementById("result");
-
+  const resetBtn = document.getElementById("reset-btn");
+  const printBtn = document.getElementById("print-btn");
+  
   const titleInput = document.getElementById("comic_title");
   const issueInput = document.getElementById("comic_issue");
   const stampFieldset = document.getElementById("stamp-fieldset");
@@ -1009,8 +835,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const coverPreview = document.getElementById("cover-preview");
 
   let stampApplies = false;
-  const resetBtn = document.getElementById("reset-btn");
-  const printBtn = document.getElementById("print-btn");
+
   const gmCheckbox = document.getElementById("gm_candidate");  // <-- still good
 
   // --- existing: stamp lookup ---
@@ -1105,6 +930,58 @@ document.addEventListener("DOMContentLoaded", () => {
       };
       reader.readAsDataURL(file);
     });
+  }
+
+// --- NEW: Bindery grading submit handler
+  if (!form || !resultDiv) return;
+
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    // 1) Bindery section
+    const bindery = computeBinderyScore(form);
+
+    // 2) Overall grade – for now, just equal to Bindery
+    //    Later, you will merge Bindery + Corners + Spine + Pages + Cover here.
+    const overallScore = bindery.finalScore;
+    const overallGrade = bindery.grade;
+
+    // 3) Build results HTML
+    resultDiv.innerHTML = `
+      <h2>Comic Book Grading Report</h2>
+
+      <p><strong>Overall Grade (temporary – Bindery only):</strong>
+        ${overallGrade.short} (${overallGrade.label}) – numeric
+        ${overallScore.toFixed(1)}
+      </p>
+
+      <h3>Bindery Section</h3>
+      <p>
+        <strong>Bindery Grade:</strong>
+        ${bindery.grade.short} (${bindery.grade.label}) – numeric
+        ${bindery.finalScore.toFixed(1)}<br/>
+        <strong>Base score (lowest bindery element):</strong>
+        ${bindery.baseScore.toFixed(1)}<br/>
+        <strong>Total bindery penalties:</strong>
+        ${bindery.penaltyTotal.toFixed(1)}
+      </p>
+
+      <h4>Bindery Element Scores</h4>
+      <ul>
+        ${bindery.elements.map(e =>
+          `<li>${e.id}: ${e.score.toFixed(1)}</li>`
+        ).join("")}
+      </ul>
+
+      <hr/>
+      <p><em>Note:</em> Corners, Spine, Pages, and Cover sections
+      will be added in the next build and combined into the final grade.</p>
+    `;
+
+    if (resultDiv.scrollIntoView) {
+      resultDiv.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  });
   }
   
     // === Reset button: clear form, hide stamp UI, clear result, clear image ===
