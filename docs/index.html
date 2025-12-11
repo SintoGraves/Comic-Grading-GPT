@@ -101,664 +101,197 @@
       </label>
     </fieldset>
  
-    <!-- Spine section (edge look) -->
-    <fieldset>
-      <legend>Spine / Edge Condition</legend>
+   <!-- === 1. Bindery Section === -->
+<section class="grade-section" id="bindery-section">
+  <h2>1. Bindery</h2>
+
+  <!-- a. Staple Placement -->
+  <fieldset class="grade-element" id="bindery-staple-placement">
+    <legend>Staple Placement</legend>
+    <p class="hint">Staple Placement (7 pt)</p>
+
+    <!-- 1) Staples too high/low or unevenly spaced -->
+    <div class="sub-element">
+      <h4>Staples too high/low or unevenly spaced</h4>
+      <div class="radio-row">
+        <label>
+          <input type="radio" name="bind_sp_placement_position" value="10" required>
+          Centered (10.0)
+        </label>
+        <label>
+          <input type="radio" name="bind_sp_placement_position" value="9.2">
+          Slightly Off (9.2)
+        </label>
+        <label>
+          <input type="radio" name="bind_sp_placement_position" value="8">
+          Significantly misaligned / tearing (8.0)
+        </label>
+      </div>
+    </div>
+
+    <!-- 2) Staples inserted crooked -->
+    <div class="sub-element">
+      <h4>Staples inserted crooked</h4>
+      <p class="hint">Staple Alignment (7 pt)</p>
+      <div class="radio-row">
+        <label>
+          <input type="radio" name="bind_sp_placement_alignment" value="10" required>
+          Straight (10.0)
+        </label>
+        <label>
+          <input type="radio" name="bind_sp_placement_alignment" value="9.2">
+          Slightly Off (9.2)
+        </label>
+        <label>
+          <input type="radio" name="bind_sp_placement_alignment" value="8">
+          Significantly misaligned / tearing (8.0)
+        </label>
+      </div>
+    </div>
+
+    <!-- 3) Staples pulling at the paper -->
+    <div class="sub-element">
+      <h4>Staples pulling at the paper</h4>
+      <p class="hint">Staples to paper (7 pt)</p>
+      <div class="radio-row">
+        <label>
+          <input type="radio" name="bind_sp_placement_pull" value="10" required>
+          Normal (10.0)
+        </label>
+        <label>
+          <input type="radio" name="bind_sp_placement_pull" value="9.2">
+          Slightly Off (9.2)
+        </label>
+        <label>
+          <input type="radio" name="bind_sp_placement_pull" value="8">
+          Significantly misaligned / tearing (8.0)
+        </label>
+      </div>
+    </div>
+  </fieldset>
+
+  <!-- b. Staple Tightness & Attachment -->
+  <fieldset class="grade-element" id="bindery-staple-tightness">
+    <legend>Staple Tightness &amp; Attachment</legend>
+
+    <!-- Cover firmly attached -->
+    <div class="sub-element">
+      <h4>Cover is firmly attached</h4>
+      <p class="hint">Cover (7 pt)</p>
+      <div class="radio-row">
+        <label><input type="radio" name="bind_st_tight_cover" value="10" required> Both attached (10.0)</label>
+        <label><input type="radio" name="bind_st_tight_cover" value="4"> One staple loose (4.0)</label>
+        <label><input type="radio" name="bind_st_tight_cover" value="2"> Both staples detached (2.0)</label>
+      </div>
+    </div>
+
+    <!-- Centerfold secure -->
+    <div class="sub-element">
+      <h4>Centerfold is secure</h4>
+      <p class="hint">Centerfold (7 pt)</p>
+      <div class="radio-row">
+        <label><input type="radio" name="bind_st_tight_center" value="10" required> Both attached (10.0)</label>
+        <label><input type="radio" name="bind_st_tight_center" value="4"> One staple loose (4.0)</label>
+        <label><input type="radio" name="bind_st_tight_center" value="2"> Both staples detached (2.0)</label>
+      </div>
+    </div>
+  </fieldset>
+
+  <!-- c. Spine Fold (Bind Alignment) -->
+  <fieldset class="grade-element" id="bindery-spine-fold">
+    <legend>Spine Fold (Bind) Alignment</legend>
+    <div class="sub-element">
+      <h4>Bind Alignment</h4>
+      <p class="hint">Left/Right alignment should match interior pages</p>
+      <div class="radio-row">
+        <label><input type="radio" name="bind_spine_alignment" value="10" required> Normal (10.0)</label>
+        <label><input type="radio" name="bind_spine_alignment" value="8.5"> Slight Miswrap (8.5)</label>
+        <label><input type="radio" name="bind_spine_alignment" value="4.5"> Major miswrap affecting art/text (4.5)</label>
+      </div>
+    </div>
+  </fieldset>
+
+  <!-- d. Staples -->
+  <fieldset class="grade-element" id="bindery-staples">
+    <legend>Staples</legend>
+    <div class="sub-element">
+      <h4>Staple Rust</h4>
+      <p class="hint">Both the interior and exterior of the staple</p>
+      <div class="radio-row">
+        <label><input type="radio" name="bind_staple_rust" value="10" required> None (10.0)</label>
+        <label><input type="radio" name="bind_staple_rust" value="7"> Slight surface rust (7.0)</label>
+        <label><input type="radio" name="bind_staple_rust" value="4"> Rust migration to page/cover (4.0)</label>
+      </div>
+    </div>
+  </fieldset>
+
+  <!-- e. Cover Trim and Cuts -->
+  <fieldset class="grade-element" id="bindery-trim-cuts">
+    <legend>Cover Trim and Cuts</legend>
+
+    <!-- Uneven trimming -->
+    <div class="sub-element">
+      <h4>Uneven Trimming</h4>
+      <p class="hint">Cover not centered</p>
+      <div class="radio-row">
+        <label><input type="radio" name="bind_trim_uneven" value="10" required> No defects (10.0)</label>
+        <label><input type="radio" name="bind_trim_uneven" value="9.1"> Minor (9.1)</label>
+        <label><input type="radio" name="bind_trim_uneven" value="7"> Noticeable (7.0)</label>
+      </div>
+    </div>
+
+    <!-- Frayed edges -->
+    <div class="sub-element">
+      <h4>Frayed edges</h4>
+      <p class="hint">Page and cover edges</p>
+      <div class="radio-row">
+        <label><input type="radio" name="bind_trim_frayed" value="10" required> No defects (10.0)</label>
+        <label><input type="radio" name="bind_trim_frayed" value="9.1"> Minor (9.1)</label>
+        <label><input type="radio" name="bind_trim_frayed" value="7"> Noticeable (7.0)</label>
+      </div>
+    </div>
+
+    <!-- Overcut -->
+    <div class="sub-element">
+      <h4>Overcut</h4>
+      <p class="hint">Cover is shorter than pages</p>
+      <div class="radio-row">
+        <label><input type="radio" name="bind_trim_overcut" value="10" required> No defects (10.0)</label>
+        <label><input type="radio" name="bind_trim_overcut" value="9.1"> Minor (9.1)</label>
+        <label><input type="radio" name="bind_trim_overcut" value="7"> Noticeable (7.0)</label>
+      </div>
+    </div>
+  </fieldset>
+
+  <!-- f. Printing/Bindery Tears -->
+  <fieldset class="grade-element" id="bindery-tears">
+    <legend>Printing / Bindery Tears</legend>
+    <div class="sub-element">
+      <h4>Tears</h4>
+      <p class="hint">Bindery tears</p>
+      <div class="radio-row">
+        <label><input type="radio" name="bind_tears" value="10" required> No Tears (10.0)</label>
+        <label><input type="radio" name="bind_tears" value="9.1"> Less than 1/16 inch (9.1)</label>
+        <label><input type="radio" name="bind_tears" value="6"> Greater than 1/16 inch (6.0)</label>
+      </div>
+    </div>
+  </fieldset>
+
+  <!-- g. Cover/Interior Page Registration -->
+  <fieldset class="grade-element" id="bindery-registration">
+    <legend>Cover / Interior Page Registration</legend>
+    <div class="sub-element">
+      <h4>Page Alignment</h4>
+      <p class="hint">Are the pages and artwork aligned?</p>
+      <div class="radio-row">
+        <label><input type="radio" name="bind_registration" value="10" required> No misalignment (10.0)</label>
+        <label><input type="radio" name="bind_registration" value="7"> Minor misalignment (7.0)</label>
+        <label><input type="radio" name="bind_registration" value="5"> Major misalignment (5.0)</label>
+      </div>
+    </div>
+  </fieldset>
+</section>
 
-       <label>
-    <input type="radio" name="spine" value="spine_gm_perfect" checked />
-    <strong>Perfect (GM-level):</strong> Razor-flat spine, no ticks even under strong light, no bindery tears,
-    no roll, no splits, perfectly centered clean staples.
-  </label><br/>
-
-  <label>
-    <input type="radio" name="spine" value="spine_near_perfect" />
-    Near perfect (NM-range) – flat spine, may have a micro tick or bindery imperfection visible only under close light;
-    no color breaks, no roll, no splits.
-  </label><br/>
-
-      <label>
-        <input type="radio" name="spine" value="spine_minor_stress" />
-        1–2 tiny stress lines, no color break, no roll, no splits
-      </label><br/>
-
-      <label>
-        <input type="radio" name="spine" value="spine_multiple_stress_color_break" />
-        Multiple stress lines, or color break
-        <button
-    type="button"
-    class="sample-btn"
-    data-sample-img="images/Spine-Color-Break.png"
-    aria-label="Show sample of spine color break"
-  >
-    ⓘ
-  </button>
-      </label><br/>
-
-      <label>
-        <input type="radio" name="spine" value="spine_small_split" />
-        Small spine split under 1/4 inch
-      </label><br/>
-
-      <label>
-        <input type="radio" name="spine" value="spine_large_split_or_roll" />
-        Spine roll or split over 1 inch
-      </label>
-   
-          <p style="margin-top:1rem;"><strong>Cover / Centerfold Attachment:</strong></p>
-
-      <label>
-        <input type="radio" name="struct_attach" value="intact" checked />
-        <strong>Fully Attached:</strong> Cover and centerfold firmly attached at both staples, no major pulls.
-      </label><br/>
-
-      <label>
-        <input type="radio" name="struct_attach" value="loose_one" />
-        <strong>Minor Looseness / Pull:</strong> Light staple pulls or looseness, but still attached at both staples.
-      </label><br/>
-
-      <label>
-        <input type="radio" name="struct_attach" value="detached_one" />
-        <strong>Detached at One Staple:</strong> Cover or centerfold detached at one staple, or partial spine split.
-      </label><br/>
-
-      <label>
-        <input type="radio" name="struct_attach" value="detached_both" />
-        <strong>Detached at Both / Wrap Loose:</strong> Cover or centerfold detached at both staples, or full wrap/spine split.
-      </label>
-
-      <p style="margin-top:0.75rem;"><strong>Staple Condition:</strong></p>
-
-      <label>
-        <input type="radio" name="staple_rust" value="clean" checked />
-        <strong>Clean Staples:</strong> Bright metal, no rust or discoloration.
-      </label><br/>
-
-      <label>
-        <input type="radio" name="staple_rust" value="light" />
-        <strong>Light Rust:</strong> Slight discoloration or tiny rust spots, no visible migration into paper.
-      </label><br/>
-
-      <label>
-        <input type="radio" name="staple_rust" value="moderate" />
-        <strong>Moderate Rust / Migration:</strong> Noticeable rust with small migration dots on surrounding paper.
-      </label><br/>
-
-      <label>
-        <input type="radio" name="staple_rust" value="heavy" />
-        <strong>Heavy Rust:</strong> Flaking rust, heavy migration, or staples weakened by corrosion.
-      </label>
-    </fieldset>
-
-           <!-- Cover section: separate Front + Back grading -->
-    <fieldset>
-      <legend>Cover Condition (Front &amp; Back)</legend>
-
-      <!-- Front cover -->
-      <p><strong>Front Cover Condition:</strong></p>
-
-      <label>
-        <input type="radio" name="front_cover" value="perfect" checked />
-        <strong>Perfect (GM-level):</strong> Absolutely flat, no visible or hidden ticks,
-        no creases, no edge wear, no handling.
-      </label><br/>
-
-      <label>
-        <input type="radio" name="front_cover" value="near" />
-        <strong>Near Perfect (NM-range):</strong> Essentially sharp; may allow 1–2 micro-ticks
-        or tiny manufacturing specks under close/angled light, no obvious wear.
-      </label><br/>
-
-      <label>
-        <input type="radio" name="front_cover" value="light" />
-        <strong>Light Wear:</strong> A few tiny spine ticks, faint stress lines,
-        small corner bends, very light edge wear.
-      </label><br/>
-
-      <label>
-        <input type="radio" name="front_cover" value="moderate" />
-        <strong>Moderate Wear:</strong> Several ticks, small color-breaking creases,
-        visible handling marks, moderate edge wear.
-      </label><br/>
-
-      <label>
-        <input type="radio" name="front_cover" value="heavy" />
-        <strong>Heavy Wear:</strong> Large creases, strong color break, heavy scuffing,
-        chips, tears, missing pieces, or heavy edge wear.
-        <button
-    type="button"
-    class="sample-btn"
-    data-sample-img="images/Heavy-Wear-tears.png"
-    aria-label="Show sample of tear"
-  >
-    ⓘ
-  </button>
-      </label>
-
-      <p style="margin-top:0.75rem;"><strong>Front Surface Dirt / Handling:</strong></p>
-
-      <label>
-        <input type="radio" name="front_surface" value="perfect" checked />
-        <strong>Perfect (GM-level):</strong> Absolutely clean surface, no fingerprints,
-        smudges, dirt, or rub.
-      </label><br/>
-
-      <label>
-        <input type="radio" name="front_surface" value="clean" />
-        <strong>Clean (NM-range):</strong> Looks freshly handled; any marks would be
-        extremely faint under bright/angled light.
-      </label><br/>
-
-      <label>
-        <input type="radio" name="front_surface" value="light" />
-        <strong>Light Dirt:</strong> A few fingerprints, light smudges, or minor soiling
-        that could likely clean/press out.
-      </label><br/>
-
-      <label>
-        <input type="radio" name="front_surface" value="moderate" />
-        <strong>Moderate Dirt:</strong> Noticeable overall soiling, multiple fingerprints,
-        or light abrasion.
-<button
-    type="button"
-    class="sample-btn"
-    data-sample-img="images/Surface-Dirt-Moderate-2.png"
-    aria-label="Show sample of moderate dirt"
-  >
-    ⓘ
-  </button>
-        
-      </label><br/>
-
-      <label>
-        <input type="radio" name="front_surface" value="heavy" />
-        <strong>Heavy Dirt / Abrasion:</strong> Ground-in dirt, heavy grime,
-        or strong surface abrasion.
-      </label>
-
-      <!-- Back cover -->
-      <p style="margin-top:1rem;"><strong>Back Cover Condition:</strong></p>
-
-      <label>
-        <input type="radio" name="back_cover" value="perfect" checked />
-        <strong>Perfect (GM-level):</strong> Absolutely flat, no visible or hidden ticks,
-        no creases, no edge wear, no handling.
-      </label><br/>
-
-      <label>
-        <input type="radio" name="back_cover" value="near" />
-        <strong>Near Perfect (NM-range):</strong> Essentially sharp; may allow 1–2 micro-ticks
-        or tiny manufacturing specks under close/angled light, no obvious wear.
-      </label><br/>
-
-      <label>
-        <input type="radio" name="back_cover" value="light" />
-        <strong>Light Wear:</strong> A few tiny spine ticks, faint stress lines,
-        small corner bends, very light edge wear.
-      </label><br/>
-
-      <label>
-        <input type="radio" name="back_cover" value="moderate" />
-        <strong>Moderate Wear:</strong> Several ticks, small color-breaking creases,
-        visible handling marks, moderate edge wear.
-      </label><br/>
-
-      <label>
-        <input type="radio" name="back_cover" value="heavy" />
-        <strong>Heavy Wear:</strong> Large creases, strong color break, heavy scuffing,
-        chips, tears, missing pieces or heavy edge wear.
-      </label>
-
-      <p style="margin-top:0.75rem;"><strong>Back Surface Dirt / Handling:</strong></p>
-
-      <label>
-        <input type="radio" name="back_surface" value="perfect" checked />
-        <strong>Perfect (GM-level):</strong> Absolutely clean surface, no fingerprints,
-        smudges, dirt, or rub.
-      </label><br/>
-
-      <label>
-        <input type="radio" name="back_surface" value="clean" />
-        <strong>Clean (NM-range):</strong> Looks freshly handled; any marks would be
-        extremely faint under bright/angled light.
-      </label><br/>
-
-      <label>
-        <input type="radio" name="back_surface" value="light" />
-        <strong>Light Dirt:</strong> A few fingerprints, light smudges, or minor soiling
-        that could likely clean/press out.
-      </label><br/>
-
-      <label>
-        <input type="radio" name="back_surface" value="moderate" />
-        <strong>Moderate Dirt:</strong> Noticeable overall soiling, multiple fingerprints,
-        or light abrasion.
-      </label><br/>
-
-      <label>
-        <input type="radio" name="back_surface" value="heavy" />
-        <strong>Heavy Dirt / Abrasion:</strong> Ground-in dirt, heavy grime,
-        or strong surface abrasion.
-      </label>
-    </fieldset>
-    <!-- End Cover section -->
-
-    
-    <!-- Corners section: separate Front + Back grading -->
-       <!-- Corners section: separate Front + Back grading -->
-    <fieldset>
-      <legend>Corner Condition (Front &amp; Back)</legend>
-
-      <!-- Front corners -->
-      <p><strong>Front Corners:</strong></p>
-
-      <label>
-  <input type="radio" name="front_corner" value="perfect" checked />
-  <strong>Perfect (GM-level):</strong> Razor-sharp, no rounding, no blunting, no bends, no color break, no overhang curl.
-</label><br/>
-
-<label>
-  <input type="radio" name="front_corner" value="near" />
-  <strong>Near Perfect (NM-range):</strong> Very sharp; may have microscopic softness visible only on close inspection.
-</label><br/>
-
-      <label>
-        <input type="radio" name="front_corner" value="light" />
-        <strong>Light Wear:</strong> Slight softness or tiny blunting, micro-bends, or very small non–color-breaking folds.
-      </label><br/>
-
-      <label>
-        <input type="radio" name="front_corner" value="moderate" />
-        <strong>Moderate Wear:</strong> Noticeable rounding or blunting, small creases, mild color break, or moderate corner folds.
-        <button
-    type="button"
-    class="sample-btn"
-    data-sample-img="images/Corner-Moderate-Crease-Rounding.png"
-    aria-label="Show sample of moderate crease and rounding"
-  >
-    ⓘ
-  </button>
-      </label><br/>
-
-      <label>
-        <input type="radio" name="front_corner" value="heavy" />
-        <strong>Heavy Wear:</strong> Strong rounding, deep creases with color break, chips, tears, or material loss at the corner.
-        <button
-    type="button"
-    class="sample-btn"
-    data-sample-img="images/Corner-Heavy-Material-Missing.png"
-    aria-label="Show sample of corner material missing"
-  >
-    ⓘ
-  </button>
-      </label>
-
-      <!-- Back corners -->
-      <p style="margin-top:1rem;"><strong>Back Corners:</strong></p>
-
-      <label>
-  <input type="radio" name="back_corner" value="perfect" checked />
-  <strong>Perfect (GM-level):</strong> Razor-sharp, no rounding, no blunting, no bends, no color break, no overhang curl.
-</label><br/>
-
-<label>
-  <input type="radio" name="back_corner" value="near" />
-  <strong>Near Perfect (NM-range):</strong> Very sharp; may have microscopic softness visible only on close inspection.
-</label><br/>
-
-      <label>
-        <input type="radio" name="back_corner" value="light" />
-        <strong>Light Wear:</strong> Mild softness or tiny corner ticks, very small bends or micro-folds.
-      </label><br/>
-
-      <label>
-        <input type="radio" name="back_corner" value="moderate" />
-        <strong>Moderate Wear:</strong> Visible rounding, small corner creases, minor color break, moderate wear, or a light or non–color-breaking subscription crease.
-      </label><br/>
-
-      <label>
-        <input type="radio" name="back_corner" value="heavy" />
-        <strong>Heavy Wear:</strong> Significant rounding, tearing, deep creasing, material loss on the corner, or full-length, color-breaking subscription crease, overhang tears, or miswrap causing edge chipping.
-      </label>
-    </fieldset>
-   
-     <!-- Color / Gloss / UV section -->
-    <fieldset>
-      <legend>Color, Gloss &amp; UV Exposure</legend>
-
-            <!-- Front: Color / Gloss / UV -->
-      <p><strong>Front Cover Color &amp; Gloss:</strong></p>
-
-      <label>
-        <input type="radio" name="front_gloss" value="perfect" checked />
-        <strong>Perfect (GM-level):</strong> Rich, vibrant color with full gloss.
-        No fade, no sun shadow, no dulling even under angled light.
-      </label><br/>
-
-      <label>
-        <input type="radio" name="front_gloss" value="near" />
-        <strong>Near Perfect (NM-range):</strong> High gloss and strong color,
-        may allow a tiny manufacturing gloss variance under angled light,
-        but no visible fading.
-      </label><br/>
-
-      <label>
-        <input type="radio" name="front_gloss" value="light" />
-        <strong>Slight Loss:</strong> Small drop in gloss or very mild color dulling,
-        visible mostly under angled light.
-      </label><br/>
-
-      <label>
-        <input type="radio" name="front_gloss" value="moderate" />
-        <strong>Moderate Loss:</strong> Noticeable dulling of gloss and color;
-        cover no longer looks “fresh.”
-      </label><br/>
-
-      <label>
-        <input type="radio" name="front_gloss" value="heavy" />
-        <strong>Heavy Loss:</strong> Gloss mostly gone, colors look flat, chalky,
-        or washed-out.
-      </label>
-
-      <p style="margin-top:0.75rem;"><strong>Front UV Fading / Sun Shadow:</strong></p>
-
-      <label>
-        <input type="radio" name="front_uv" value="none" checked />
-        <strong>No UV Fade:</strong> No sun shadow, no obvious fading.
-      </label><br/>
-
-      <label>
-        <input type="radio" name="front_uv" value="light" />
-        <strong>Light UV:</strong> Slight lightening of colors or a faint tan line; still attractive overall.
-      </label><br/>
-
-      <label>
-        <input type="radio" name="front_uv" value="moderate" />
-        <strong>Moderate UV:</strong> Clear loss of color saturation, visible fade or sun line.
-      </label><br/>
-
-      <label>
-        <input type="radio" name="front_uv" value="heavy" />
-        <strong>Heavy UV:</strong> Strong bleaching, washed-out colors, obvious sun shadow or uneven tone.
-      </label>
-
-      <p style="margin-top:0.75rem;"><strong>Front Color Uniformity:</strong></p>
-
-      <label>
-        <input type="radio" name="front_color" value="clean" checked />
-        <strong>Clean:</strong> Even, consistent color with no blotching, spotting, or discoloration.
-      </label><br/>
-
-      <label>
-        <input type="radio" name="front_color" value="slight" />
-        <strong>Slight Variation:</strong> Minor uneven areas, very light spotting or discoloration.
-      </label><br/>
-
-      <label>
-        <input type="radio" name="front_color" value="moderate" />
-        <strong>Moderate Variation:</strong> Noticeable uneven color, spotting, or light staining.
-      </label><br/>
-
-      <label>
-        <input type="radio" name="front_color" value="heavy" />
-        <strong>Heavy Variation:</strong> Strong discoloration, blotchy areas, obvious staining or darkening.
-      </label>
-
-      <p style="margin-top:0.75rem;"><strong>Front Water / Moisture:</strong></p>
-
-      <label>
-        <input type="radio" name="front_water" value="none" checked />
-        <strong>None:</strong> No moisture ripples, tide marks, or water stains.
-      </label><br/>
-
-      <label>
-        <input type="radio" name="front_water" value="light" />
-        <strong>Light:</strong> Very light ripple or a tiny moisture spot with no strong staining.
-      </label><br/>
-
-      <label>
-        <input type="radio" name="front_water" value="moderate" />
-        <strong>Moderate:</strong> Visible tide mark, ripple, or localized water stain.
-        <button
-    type="button"
-    class="sample-btn"
-    data-sample-img="images/Cover-Moderate-Water.png"
-    aria-label="Show sample of water tide mark"
-  >
-    ⓘ
-  </button>
-      </label><br/>
-
-      <label>
-        <input type="radio" name="front_water" value="heavy" />
-        <strong>Heavy:</strong> Large tide marks, strong staining, or widespread water wrinkles.
-      </label>
-      
-            <!-- Back: Color / Gloss / UV -->
-      <p style="margin-top:1.25rem;"><strong>Back Cover Color &amp; Gloss:</strong></p>
-
-      <label>
-        <input type="radio" name="back_gloss" value="perfect" checked />
-        <strong>Perfect (GM-level):</strong> Rich, vibrant color with full gloss.
-        No fade, no sun shadow, no dulling even under angled light.
-      </label><br/>
-
-      <label>
-        <input type="radio" name="back_gloss" value="near" />
-        <strong>Near Perfect (NM-range):</strong> High gloss and strong color,
-        may allow a tiny manufacturing gloss variance under angled light,
-        but no visible fading.
-      </label><br/>
-
-      <label>
-        <input type="radio" name="back_gloss" value="light" />
-        <strong>Slight Loss:</strong> Small drop in gloss or very mild color dulling,
-        visible mostly under angled light.
-      </label><br/>
-
-      <label>
-        <input type="radio" name="back_gloss" value="moderate" />
-        <strong>Moderate Loss:</strong> Noticeable dulling of gloss and color;
-        cover no longer looks “fresh.”
-      </label><br/>
-
-      <label>
-        <input type="radio" name="back_gloss" value="heavy" />
-        <strong>Heavy Loss:</strong> Gloss mostly gone, colors look flat, chalky,
-        or washed-out.
-      </label>
-
-      <p style="margin-top:0.75rem;"><strong>Back UV Fading / Sun Shadow:</strong></p>
-
-      <label>
-        <input type="radio" name="back_uv" value="none" checked />
-        <strong>No UV Fade:</strong> No significant fading or tan line.
-      </label><br/>
-
-      <label>
-        <input type="radio" name="back_uv" value="light" />
-        <strong>Light UV:</strong> Slight lightening or faint sun shadow.
-      </label><br/>
-
-      <label>
-        <input type="radio" name="back_uv" value="moderate" />
-        <strong>Moderate UV:</strong> Noticeable fade or tan line.
-      </label><br/>
-
-      <label>
-        <input type="radio" name="back_uv" value="heavy" />
-        <strong>Heavy UV:</strong> Strong bleaching or uneven UV damage.
-      </label>
-
-      <p style="margin-top:0.75rem;"><strong>Back Color Uniformity:</strong></p>
-
-      <label>
-        <input type="radio" name="back_color" value="clean" checked />
-        <strong>Clean:</strong> Even color with no spotting or major discoloration.
-      </label><br/>
-
-      <label>
-        <input type="radio" name="back_color" value="slight" />
-        <strong>Slight Variation:</strong> Small areas of uneven tone, light spotting, or early foxing.
-      </label><br/>
-
-      <label>
-        <input type="radio" name="back_color" value="moderate" />
-        <strong>Moderate Variation:</strong> Clear uneven color, spotting in several areas, or noticable foxing/tanning in several areas.
-      </label><br/>
-
-      <label>
-        <input type="radio" name="back_color" value="heavy" />
-        <strong>Heavy Variation:</strong> Strong discoloration, staining, blotchy areas, or heavy foxing, dark spotting, or strong cover oxidation.
-      </label>
-    
-          <p style="margin-top:0.75rem;"><strong>Back Water / Moisture:</strong></p>
-
-      <label>
-        <input type="radio" name="back_water" value="none" checked />
-        <strong>None:</strong> No tide marks, ripples, or moisture stains.
-      </label><br/>
-
-      <label>
-        <input type="radio" name="back_water" value="light" />
-        <strong>Light:</strong> Small moisture area or faint rippling.
-      </label><br/>
-
-      <label>
-        <input type="radio" name="back_water" value="moderate" />
-        <strong>Moderate:</strong> Clear tide mark or moisture wrinkle area.
-      </label><br/>
-
-      <label>
-        <input type="radio" name="back_water" value="heavy" />
-        <strong>Heavy:</strong> Large/stained moisture area or heavy rippling.
-      </label>
-    </fieldset>
-
-    <fieldset>
-      <legend>Cover Writing / Stamps / Dates</legend>
-
-      <p><strong>Any writing, store stamps, or dates on the cover?</strong></p>
-
-      <label>
-        <input type="radio" name="cover_marks" value="none" checked />
-        <strong>None:</strong> No writing, date stamps, arrival codes, store stamps, or marks on the cover.
-      </label><br/>
-
-      <label>
-        <input type="radio" name="cover_marks" value="small" />
-        <strong>Small / Minor:</strong> Tiny price mark, initials, or a small date or store stamp in a corner.
-      </label><br/>
-
-      <label>
-        <input type="radio" name="cover_marks" value="moderate" />
-        <strong>Moderate:</strong> Noticeable writing or stamps in one area, but not covering the main art.
-      </label><br/>
-
-      <label>
-        <input type="radio" name="cover_marks" value="heavy" />
-        <strong>Heavy:</strong> Large writing, big store stamps, or multiple marks that dominate the cover.
-      </label>
-    </fieldset>
-    
-        <!-- Interior pages section -->
-    <fieldset>
-      <legend>Interior Pages</legend>
-
-      <p><strong>Page Color / Tone:</strong></p>
-
-      <label>
-        <input type="radio" name="page_tone" value="white" checked />
-        <strong>White:</strong> Bright pages, minimal aging.
-        <span class="swatch" style="background:#FFFFFF;"></span>
-      </label><br/>
-
-      <label>
-        <input type="radio" name="page_tone" value="off_white_white" />
-        <strong>Off-White to White:</strong> Very light natural aging.
-        <span class="swatch" style="background:#F8F3E8;"></span>
-      </label><br/>
-
-      <label>
-        <input type="radio" name="page_tone" value="offwhite" />
-        <strong>Off-White:</strong> Noticeable but clean aging.
-        <span class="swatch" style="background:#EFE3CC;"></span>
-      </label><br/>
-
-      <label>
-        <input type="radio" name="page_tone" value="cream_offwhite" />
-        <strong>Cream to Off-White:</strong> Warm tone, early oxidation.
-        <span class="swatch" style="background:#E6D7B8;"></span>
-      </label><br/>
-
-      <label>
-        <input type="radio" name="page_tone" value="cream" />
-        <strong>Cream:</strong> Aging clearly visible, still flexible.
-        <span class="swatch" style="background:#DCC89E;"></span>
-      </label><br/>
-
-      <label>
-        <input type="radio" name="page_tone" value="light_tan" />
-        <strong>Light Tan:</strong> Noticeable oxidation with brown tint.
-        <span class="swatch" style="background:#C2A87A;"></span>
-      </label><br/>
-
-      <label>
-        <input type="radio" name="page_tone" value="tan" />
-        <strong>Tan:</strong> Heavy oxidation, dry feel starting.
-        <span class="swatch" style="background:#A98558;"></span>
-      </label><br/>
-
-      <label>
-        <input type="radio" name="page_tone" value="brittle" />
-        <strong>Brittle:</strong> Very dark, fragile pages that can crack or chip.
-        <span class="swatch" style="background:#8B5E3C;"></span>
-      </label>
-
-      <p style="margin-top:1rem;"><strong>Interior Tears / Pieces Missing:</strong></p>
-
-      <label>
-        <input type="radio" name="interior_tears" value="none" checked />
-        <strong>No Tears:</strong> No tears or missing pieces on interior story pages.
-      </label><br/>
-
-      <label>
-        <input type="radio" name="interior_tears" value="small" />
-        <strong>Small Tears:</strong> Small edge tears or nicks that do not affect story.
-      </label><br/>
-
-      <label>
-        <input type="radio" name="interior_tears" value="multiple" />
-        <strong>Multiple Tears:</strong> Several tears or small pieces missing, but story is complete.
-      </label><br/>
-
-      <label>
-        <input type="radio" name="interior_tears" value="big_missing" />
-        <strong>Big Tears / Pieces Missing:</strong> Large tears or chunks missing from interior pages.
-      </label>
-
-      <p style="margin-top:1rem;"><strong>Interior Stains / Marks:</strong></p>
-
-      <label>
-        <input type="radio" name="interior_stains" value="none" checked />
-        <strong>No Stains:</strong> Clean pages, no markings or water spots.
-      </label><br/>
-
-      <label>
-        <input type="radio" name="interior_stains" value="small" />
-        <strong>Small Marks:</strong> Small pencil marks, light spots, or tiny stains.
-      </label><br/>
-
-      <label>
-        <input type="radio" name="interior_stains" value="moderate" />
-        <strong>Moderate Staining:</strong> Noticeable stains or marks on a few pages.
-      </label><br/>
-
-      <label>
-        <input type="radio" name="interior_stains" value="heavy" />
-        <strong>Heavy Staining / Writing:</strong> Large stains, water damage, or heavy writing in the book.
-      </label>
-    </fieldset>
     
        <button type="submit">Estimate Grade</button>
     <button type="reset" id="reset-btn">Reset Form</button>
