@@ -1,4 +1,7 @@
-// === Grade scale ===
+/* =========================================================
+ * SECTION 1 – GRADE SCALE
+ * =======================================================*/
+
 const GRADES = [
   { score: 10.0, code: "GM",    label: "Gem Mint",               short: "10.0 GM" },
   { score: 9.9,  code: "MT",    label: "Mint",                   short: "9.9 MT" },
@@ -33,129 +36,10 @@ function pickGrade(grades, score) {
   return best;
 }
 
-/* ---------- 2. Generic helpers ---------- */
 
-// Get numeric value from a radio group; default to 10.0
-function getRadioValue(form, name) {
-  const field = form.elements[name];
-  if (!field) return 10.0;
-
-  // Single input vs. NodeList
-  if (field.length === undefined) {
-    return parseFloat(field.value) || 10.0;
-  }
-
-  for (const input of field) {
-    if (input.checked) {
-      return parseFloat(input.value) || 10.0;
-    }
-  }
-  return 10.0;
-}
-
-/* ---------- 3. Bindery scoring ---------- */
-/*
-   Elements (each 0–10):
-   1. Staple Placement           -> min of 3 sub-elements
-   2. Staple Tightness & Attach  -> min of 2 sub-elements
-   3. Spine Fold (Bind) Align    -> single sub-element
-   4. Staples (Rust)             -> single sub-element
-   5. Cover Trim and Cuts        -> min of 3 sub-elements
-   6. Printing/Bindery Tears     -> single sub-element
-   7. Cover/Interior Registration-> single sub-element
-
-   Base score = lowest element score.
-   Other elements contribute penalties:
-   - 0–3.0   => 1.0 penalty
-   - 3.1–6.0 => 0.5 penalty
-   - 6.1–9.9 => 0.1 penalty
-   - 10.0    => 0.0 penalty
-*/
-
-function binderyPenaltyForScore(score) {
-  if (score >= 9.95) return 0.0;                    // treat 10 as perfect
-  if (score >= 6.1 && score <= 9.9) return 0.1;
-  if (score >= 3.1 && score <= 6.0) return 0.5;
-  if (score >= 0.0 && score <= 3.0) return 1.0;
-  return 0.0;
-}
-
-function computeBinderyScore(form) {
-  // Element scores (min of sub-elements where needed)
-  const staplePlacement = Math.min(
-    getRadioValue(form, "bind_sp_height"),     // Staples too high/low or uneven
-    getRadioValue(form, "bind_sp_crooked"),    // Staples inserted crooked
-    getRadioValue(form, "bind_sp_pulling")     // Staples pulling at the paper
-  );
-
-  const stapleTightness = Math.min(
-    getRadioValue(form, "bind_cover_attach"),       // Cover firmly attached
-    getRadioValue(form, "bind_centerfold_secure")  // Centerfold secure
-  );
-
-  const spineFoldAlign   = getRadioValue(form, "bind_spine_align");
-  const stapleRust       = getRadioValue(form, "bind_staple_rust");
-
-  const coverTrimCuts = Math.min(
-    getRadioValue(form, "bind_trim_uneven"),
-    getRadioValue(form, "bind_trim_frayed"),
-    getRadioValue(form, "bind_trim_overcut")
-  );
-
-  const printingTears    = getRadioValue(form, "bind_tears");
-  const registration     = getRadioValue(form, "bind_registration");
-
-  const elements = [
-    { id: "Staple Placement",                    score: staplePlacement },
-    { id: "Staple Tightness & Attachment",      score: stapleTightness },
-    { id: "Spine Fold (Bind) Alignment",        score: spineFoldAlign },
-    { id: "Staples (Rust)",                     score: stapleRust },
-    { id: "Cover Trim and Cuts",                score: coverTrimCuts },
-    { id: "Printing/Bindery Tears",             score: printingTears },
-    { id: "Cover/Interior Page Registration",   score: registration }
-  ];
-
-  // Base score = lowest element score
-  const baseScore = Math.min(...elements.map(e => e.score));
-
-  // Penalties from all elements above the base
-  let penaltyTotal = 0;
-  for (const e of elements) {
-    if (e.score > baseScore) {
-      penaltyTotal += binderyPenaltyForScore(e.score);
-    }
-  }
-
-  let finalScore = baseScore - penaltyTotal;
-  if (finalScore < 0.5) finalScore = 0.5;
-  if (finalScore > 10.0) finalScore = 10.0;
-
-  const grade = pickGrade(GRADES, finalScore);
-
-  return {
-    finalScore,
-    baseScore,
-    penaltyTotal,
-    grade,
-    elements
-  };
-}
-
-/* ---------- 4. PLACEHOLDER FOR FUTURE SECTIONS ---------- */
-/*
-   TODO – next build step:
-
-   - computeCornersScore(form)     // Corners section
-   - computeSpineScore(form)       // Spine section
-   - computePagesScore(form)       // Pages section
-   - computeCoverScore(form)       // Cover section
-
-   Each function should return an object similar to computeBinderyScore:
-   { finalScore, baseScore, penaltyTotal, grade, elements }
-
-   Then the form submit handler can combine them into an overall book grade.
-*/
-
+/* =========================================================
+ * SECTION 2 – VALUE-STAMP INDEX + TITLE NORMALIZATION
+ * =======================================================*/
 
 /// === Lookup: issues that DO contain a Marvel Value Stamp ===
 const VALUE_STAMP_INDEX = {
@@ -673,17 +557,60 @@ const VALUE_STAMP_INDEX = {
 };
 
 // === Known title list (derived from VALUE_STAMP_INDEX) ===
-// This gives us a comic-specific dictionary for suggestions.
 const KNOWN_TITLES = Array.from(
   new Set(
     Object.keys(VALUE_STAMP_INDEX).map(key => {
-      // "amazing spider-man#130" -> "amazing spider-man"
       return key.split("#")[0];
     })
   )
 );
 
-// === Simple edit distance (Levenshtein) ===
+// Normalize title text for lookup
+function normalizeTitle(rawTitle) {
+  if (!rawTitle) return "";
+
+  let t = rawTitle.trim().toLowerCase();
+
+  if (t.startsWith("the ")) {
+    t = t.slice(4);
+  }
+
+  t = t.replace(/\s+/g, " ");
+
+  t = t.replace(/spiderman/g, "spider-man");
+  t = t.replace(/xmen/g, "x-men");
+  t = t.replace(/ironman/g, "iron man");
+  t = t.replace(/captainamerica/g, "captain america");
+  t = t.replace(/doctorstrange/g, "doctor strange");
+  t = t.replace(/dr\.\s*strange/g, "doctor strange");
+  t = t.replace(/newmutants/g, "new mutants");
+
+  t = t.replace(/^asm\s*/, "amazing spider-man ");
+  t = t.replace(/^tmnt\s*/, "teenage mutant ninja turtles ");
+  t = t.replace(/^tmt\s*/, "teenage mutant turtles ");
+  t = t.replace(/^bprd\s*/, "bprd ");
+  t = t.replace(/^ff\s*(?!#)/g, "fantastic four ");
+
+  t = t.replace(/\bx men\b/g, "x-men");
+  t = t.replace(/ & /g, " and ");
+  t = t.replace(/[^a-z0-9\- ]+/g, "");
+  t = t.replace(/\s\s+/g, " ");
+
+  return t;
+}
+
+function makeStampKey(title, issue) {
+  const normTitle = normalizeTitle(title);
+  let normIssue = `${issue}`.trim().toLowerCase();
+  normIssue = normIssue.replace(/^#/, "");
+  return normTitle + "#" + normIssue;
+}
+
+
+/* =========================================================
+ * SECTION 3 – TITLE SUGGESTION (LEVENSHTEIN)
+ * =======================================================*/
+
 function editDistance(a, b) {
   const lenA = a.length;
   const lenB = b.length;
@@ -696,21 +623,18 @@ function editDistance(a, b) {
     for (let j = 1; j <= lenB; j++) {
       const cost = a[i - 1] === b[j - 1] ? 0 : 1;
       dp[i][j] = Math.min(
-        dp[i - 1][j] + 1,        // deletion
-        dp[i][j - 1] + 1,        // insertion
-        dp[i - 1][j - 1] + cost  // substitution
+        dp[i - 1][j] + 1,
+        dp[i][j - 1] + 1,
+        dp[i - 1][j - 1] + cost
       );
     }
   }
   return dp[lenA][lenB];
 }
 
-// === Suggest a title based on known list (no auto-fix) ===
 function suggestTitle(rawTitle) {
   const normUser = normalizeTitle(rawTitle);
-  if (!normUser || normUser.length < 3) {
-    return null; // too short for meaningful suggestions
-  }
+  if (!normUser || normUser.length < 3) return null;
 
   let bestTitle = null;
   let bestDistance = Infinity;
@@ -723,16 +647,13 @@ function suggestTitle(rawTitle) {
     }
   }
 
-  // If it's basically the same, or too far off, don't bother
   if (!bestTitle) return null;
-  if (bestDistance === 0) return null; // exact match
-  if (bestDistance > 3) return null;   // threshold so we don't show weird guesses
+  if (bestDistance === 0) return null;
+  if (bestDistance > 3) return null;
 
   return { normalized: bestTitle, distance: bestDistance };
 }
 
-// Helper to convert normalized title back to display case
-// (you can customize later; for now, just capitalize words)
 function displayTitleFromNormalized(norm) {
   return norm
     .split(" ")
@@ -741,107 +662,124 @@ function displayTitleFromNormalized(norm) {
 }
 
 
-// === Helper: convert numeric score into nearest grade ===
-function pickGrade(grades, score) {
-  let best = grades[grades.length - 1];
-  for (const g of grades) {
-    if (score >= g.score && g.score >= best.score) {
-      best = g;
+/* =========================================================
+ * SECTION 4 – GENERIC FORM HELPERS
+ * =======================================================*/
+
+// Get numeric value from a radio group; default to 10.0
+function getRadioValue(form, name) {
+  const field = form.elements[name];
+  if (!field) return 10.0;
+
+  if (field.length === undefined) {
+    return parseFloat(field.value) || 10.0;
+  }
+
+  for (const input of field) {
+    if (input.checked) {
+      return parseFloat(input.value) || 10.0;
     }
   }
-  return best;
+  return 10.0;
 }
 
-// === Helper: compute section from base, deduction, cap ===
-function computeSection(baseScore, deduction, maxScore) {
-  const raw = baseScore - deduction;
-  const score = Math.min(raw, maxScore);
-  return { raw, score };
+
+/* =========================================================
+ * SECTION 5 – BINDERY SCORING LOGIC
+ * =======================================================*/
+
+function binderyPenaltyForScore(score) {
+  if (score >= 9.95) return 0.0;
+  if (score >= 6.1 && score <= 9.9) return 0.1;
+  if (score >= 3.1 && score <= 6.0) return 0.5;
+  if (score >= 0.0 && score <= 3.0) return 1.0;
+  return 0.0;
 }
 
-// === Helper: normalize title & issue to lookup key ===
-function normalizeTitle(rawTitle) {
-  if (!rawTitle) return "";
+function computeBinderyScore(form) {
+  const staplePlacement = Math.min(
+    getRadioValue(form, "bind_sp_height"),
+    getRadioValue(form, "bind_sp_crooked"),
+    getRadioValue(form, "bind_sp_pulling")
+  );
 
-  let t = rawTitle.trim().toLowerCase();
+  const stapleTightness = Math.min(
+    getRadioValue(form, "bind_cover_attach"),
+    getRadioValue(form, "bind_centerfold_secure")
+  );
 
-  // Drop leading "the "
-  if (t.startsWith("the ")) {
-    t = t.slice(4);
+  const spineFoldAlign = getRadioValue(form, "bind_spine_align");
+  const stapleRust     = getRadioValue(form, "bind_staple_rust");
+
+  const coverTrimCuts  = Math.min(
+    getRadioValue(form, "bind_trim_uneven"),
+    getRadioValue(form, "bind_trim_frayed"),
+    getRadioValue(form, "bind_trim_overcut")
+  );
+
+  const printingTears  = getRadioValue(form, "bind_tears");
+  const registration   = getRadioValue(form, "bind_registration");
+
+  const elements = [
+    { id: "Staple Placement",                  score: staplePlacement },
+    { id: "Staple Tightness & Attachment",    score: stapleTightness },
+    { id: "Spine Fold (Bind) Alignment",      score: spineFoldAlign },
+    { id: "Staples (Rust)",                   score: stapleRust },
+    { id: "Cover Trim and Cuts",              score: coverTrimCuts },
+    { id: "Printing/Bindery Tears",           score: printingTears },
+    { id: "Cover/Interior Page Registration", score: registration }
+  ];
+
+  const baseScore = Math.min(...elements.map(e => e.score));
+
+  let penaltyTotal = 0;
+  for (const e of elements) {
+    if (e.score > baseScore) {
+      penaltyTotal += binderyPenaltyForScore(e.score);
+    }
   }
 
-  // Collapse multiple spaces
-  t = t.replace(/\s+/g, " ");
+  let finalScore = baseScore - penaltyTotal;
+  if (finalScore < 0.5) finalScore = 0.5;
+  if (finalScore > 10.0) finalScore = 10.0;
 
-  // =====================================================
-  // 🔧 Title Normalization Rules (do NOT change meaning)
-  // =====================================================
+  const grade = pickGrade(GRADES, finalScore);
 
-  // === Standardize separators & common missing dashes ===
-  t = t.replace(/spiderman/g, "spider-man");
-  t = t.replace(/xmen/g, "x-men");
-  t = t.replace(/ironman/g, "iron man");
-  t = t.replace(/captainamerica/g, "captain america");
-  t = t.replace(/doctorstrange/g, "doctor strange");
-  t = t.replace(/dr\.\s*strange/g, "doctor strange");
-  t = t.replace(/newmutants/g, "new mutants");
-
-  // === Normalize abbreviations ===
-  t = t.replace(/^asm\s*/, "amazing spider-man ");
-  t = t.replace(/^tmnt\s*/, "teenage mutant ninja turtles ");
-  t = t.replace(/^tmt\s*/, "teenage mutant turtles ");
-  t = t.replace(/^bprd\s*/, "bprd ");
-  t = t.replace(/^ff\s*(?!#)/g, "fantastic four "); // avoids breaking FF #52
-
-  // === Normalize “x men” typing errors ===
-  t = t.replace(/\bx men\b/g, "x-men");
-
-  // === Normalize “&” to “and” (publishers use “and”) ===
-  t = t.replace(/ & /g, " and ");
-
-  // === Remove stray punctuation not part of title ===
-  t = t.replace(/[^a-z0-9\- ]+/g, ""); // remove punctuation or emoji etc.
-  t = t.replace(/\s\s+/g, " ");        // collapse leftover double spaces
-
-  // =====================================================
-
-  return t;
+  return {
+    finalScore,
+    baseScore,
+    penaltyTotal,
+    grade,
+    elements
+  };
 }
 
-function makeStampKey(title, issue) {
-  const normTitle = normalizeTitle(title);
-  let normIssue = `${issue}`.trim().toLowerCase();
 
-  // Strip a leading "#"
-  normIssue = normIssue.replace(/^#/, "");
+/* =========================================================
+ * SECTION 6 – DOM WIRING (FORM, TITLE, IMAGE, OVERLAY)
+ * =======================================================*/
 
-  return normTitle + "#" + normIssue;
-}
-
-// === DOMContentLoaded ===
 document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("grading-form");
-  const resultDiv = document.getElementById("result");
-  const resetBtn = document.getElementById("reset-btn");
-  const printBtn = document.getElementById("print-btn");
-  
-  const titleInput = document.getElementById("comic_title");
-  const issueInput = document.getElementById("comic_issue");
-  const stampFieldset = document.getElementById("stamp-fieldset");
-  const stampHint = document.getElementById("stamp-hint");
+  const form            = document.getElementById("grading-form");
+  const resultDiv       = document.getElementById("result");
+  const resetBtn        = document.getElementById("reset-btn");
+  const printBtn        = document.getElementById("print-btn");
+
+  const titleInput      = document.getElementById("comic_title");
+  const issueInput      = document.getElementById("comic_issue");
+  const stampFieldset   = document.getElementById("stamp-fieldset");
+  const stampHint       = document.getElementById("stamp-hint");
   const titleSuggestion = document.getElementById("title-suggestion");
-  
-  const coverInput = document.getElementById("cover_image");
-  const coverPreview = document.getElementById("cover-preview");
+
+  const coverInput      = document.getElementById("cover_image");
+  const coverPreview    = document.getElementById("cover-preview");
 
   let stampApplies = false;
 
-  const gmCheckbox = document.getElementById("gm_candidate");  // <-- still good
-
-  // --- existing: stamp lookup ---
+  // --- 6.1 Value-stamp lookup ---
   function updateStampLookup() {
-    const title = titleInput.value.trim();
-    const issue = issueInput.value.trim();
+    const title = titleInput ? titleInput.value.trim() : "";
+    const issue = issueInput ? issueInput.value.trim() : "";
 
     if (!title || !issue) {
       stampApplies = false;
@@ -873,7 +811,7 @@ document.addEventListener("DOMContentLoaded", () => {
     issueInput.addEventListener("input", updateStampLookup);
   }
 
-  // === Title suggestion (B: suggest only, don't auto-correct) ===
+  // --- 6.2 Title suggestion UI ---
   if (titleInput && titleSuggestion) {
     const runTitleSuggestion = () => {
       const raw = titleInput.value;
@@ -882,7 +820,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      const suggestion = suggestTitle(raw);   // uses your normalized title list
+      const suggestion = suggestTitle(raw);
       if (!suggestion) {
         titleSuggestion.textContent = "";
         return;
@@ -890,10 +828,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const display = displayTitleFromNormalized(suggestion.normalized);
 
-      // Render: "Did you mean: Amazing Spider-Man? [Use this]"
       titleSuggestion.innerHTML = `
         Did you mean: <strong>${display}</strong>?
-        <button type="button" id="apply-title-suggestion-btn" style="margin-left:0.5rem; font-size:0.8rem;">
+        <button type="button" id="apply-title-suggestion-btn"
+                style="margin-left:0.5rem; font-size:0.8rem;">
           Use this
         </button>
       `;
@@ -903,17 +841,16 @@ document.addEventListener("DOMContentLoaded", () => {
         applyBtn.addEventListener("click", () => {
           titleInput.value = display;
           titleSuggestion.textContent = "";
-          updateStampLookup(); // re-run value stamp check with corrected title
+          updateStampLookup();
         });
       }
     };
 
-    // Trigger suggestion when they leave the field or change the text
     titleInput.addEventListener("blur", runTitleSuggestion);
     titleInput.addEventListener("change", runTitleSuggestion);
   }
 
-  // === Image upload preview ===
+  // --- 6.3 Cover image preview ---
   if (coverInput && coverPreview) {
     coverInput.addEventListener("change", (e) => {
       const file = e.target.files && e.target.files[0];
@@ -932,87 +869,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-// --- NEW: Bindery grading submit handler
-  if (!form || !resultDiv) return;
-
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
-
-    // 1) Bindery section
-    const bindery = computeBinderyScore(form);
-
-    // 2) Overall grade – for now, just equal to Bindery
-    //    Later, you will merge Bindery + Corners + Spine + Pages + Cover here.
-    const overallScore = bindery.finalScore;
-    const overallGrade = bindery.grade;
-
-    // 3) Build results HTML
-    resultDiv.innerHTML = `
-      <h2>Comic Book Grading Report</h2>
-
-      <p><strong>Overall Grade (temporary – Bindery only):</strong>
-        ${overallGrade.short} (${overallGrade.label}) – numeric
-        ${overallScore.toFixed(1)}
-      </p>
-
-      <h3>Bindery Section</h3>
-      <p>
-        <strong>Bindery Grade:</strong>
-        ${bindery.grade.short} (${bindery.grade.label}) – numeric
-        ${bindery.finalScore.toFixed(1)}<br/>
-        <strong>Base score (lowest bindery element):</strong>
-        ${bindery.baseScore.toFixed(1)}<br/>
-        <strong>Total bindery penalties:</strong>
-        ${bindery.penaltyTotal.toFixed(1)}
-      </p>
-
-      <h4>Bindery Element Scores</h4>
-      <ul>
-        ${bindery.elements.map(e =>
-          `<li>${e.id}: ${e.score.toFixed(1)}</li>`
-        ).join("")}
-      </ul>
-
-      <hr/>
-      <p><em>Note:</em> Corners, Spine, Pages, and Cover sections
-      will be added in the next build and combined into the final grade.</p>
-    `;
-
-    if (resultDiv.scrollIntoView) {
-      resultDiv.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  });
-  }
-  
-    // === Reset button: clear form, hide stamp UI, clear result, clear image ===
-  if (resetBtn) {
-    resetBtn.addEventListener("click", () => {
-      stampApplies = false;
-      if (stampFieldset) stampFieldset.style.display = "none";
-      if (stampHint) stampHint.textContent = "";
-      if (resultDiv) resultDiv.innerHTML = "";
-
-      if (coverInput) coverInput.value = "";
-      if (coverPreview) {
-        coverPreview.src = "";
-        coverPreview.style.display = "none";
-      }
-    });
-  }
-
-
-  // === Print button: print only after a result exists ===
-  if (printBtn) {
-    printBtn.addEventListener("click", () => {
-      if (!resultDiv || !resultDiv.innerHTML.trim()) {
-        alert("Please estimate a grade first, then print the results.");
-        return;
-      }
-      window.print();
-    });
-  }
-
-  // === Sample image overlay (press-and-hold buttons) ===
+  // --- 6.4 Sample image overlay (press-and-hold) ---
   const sampleOverlay = document.createElement("div");
   sampleOverlay.id = "sample-overlay";
   sampleOverlay.innerHTML = `
@@ -1033,325 +890,113 @@ document.addEventListener("DOMContentLoaded", () => {
     sampleOverlayImg.src = "";
   }
 
-  // Attach press-and-hold to all .sample-btn
   const sampleButtons = document.querySelectorAll(".sample-btn");
-
   sampleButtons.forEach((btn) => {
     const imgSrc = btn.getAttribute("data-sample-img");
     if (!imgSrc) return;
 
-    // Mouse: show on mousedown, hide on mouseup/mouseleave
     btn.addEventListener("mousedown", () => showSample(imgSrc));
     btn.addEventListener("mouseup", hideSample);
     btn.addEventListener("mouseleave", hideSample);
 
-    // Touch: show on touchstart, hide on touchend/cancel
     btn.addEventListener("touchstart", (e) => {
-      e.preventDefault(); // avoid ghost click
+      e.preventDefault();
       showSample(imgSrc);
     }, { passive: false });
 
     btn.addEventListener("touchend", hideSample);
     btn.addEventListener("touchcancel", hideSample);
   });
-  
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
 
-    const baseScore = 10.0;
-         
-    // === 1. Read Bindery sub-element scores ===
-  const v = (name) => parseFloat(form.elements[name].value);
+  // --- 6.5 Reset button ---
+  if (resetBtn) {
+    resetBtn.addEventListener("click", () => {
+      if (form) form.reset();
+      stampApplies = false;
+      if (stampFieldset) stampFieldset.style.display = "none";
+      if (stampHint) stampHint.textContent = "";
+      if (titleSuggestion) titleSuggestion.textContent = "";
+      if (resultDiv) resultDiv.innerHTML = "";
 
-  // a. Staple Placement (lowest of the 3 sub-elements)
-  const bindStaplePlacementScore = Math.min(
-    v("bind_sp_placement_position"),
-    v("bind_sp_placement_alignment"),
-    v("bind_sp_placement_pull")
-  );
-
-  // b. Staple Tightness & Attachment (lowest of the 2)
-  const bindStapleTightnessScore = Math.min(
-    v("bind_st_tight_cover"),
-    v("bind_st_tight_center")
-  );
-
-  // c–g: single-value elements
-  const bindSpineAlignScore   = v("bind_spine_alignment");
-  const bindStaplesScore      = v("bind_staple_rust");
-  const bindTrimScore = Math.min(
-    v("bind_trim_uneven"),
-    v("bind_trim_frayed"),
-    v("bind_trim_overcut")
-  );
-  const bindTearsScore        = v("bind_tears");
-  const bindRegistrationScore = v("bind_registration");
-
-  const bindElementScores = [
-    bindStaplePlacementScore,
-    bindStapleTightnessScore,
-    bindSpineAlignScore,
-    bindStaplesScore,
-    bindTrimScore,
-    bindTearsScore,
-    bindRegistrationScore
-  ];
-
-  // === 2. Base score = lowest of the 7 elements ===
-  const bindBaseScore = Math.min(...bindElementScores);
-
-  // === 3. Penalty calculation for the remaining elements ===
-  function penaltyForScore(score) {
-    if (score >= 0 && score <= 3.0)   return 1.0;
-    if (score >= 3.1 && score <= 6.0) return 0.5;
-    if (score >= 6.1 && score <= 9.9) return 0.1;
-    return 0.0; // 10.0 has no penalty
-  }
-
-  let bindPenalty = 0;
-  // We apply penalty to all elements EXCEPT the base (lowest) one
-  // (if you want, you can skip only one instance of the min)
-  let minUsed = false;
-  for (const s of bindElementScores) {
-    if (!minUsed && s === bindBaseScore) {
-      minUsed = true; // skip this one as the base
-      continue;
-    }
-    bindPenalty += penaltyForScore(s);
-  }
-
-  const bindFinalScore = Math.max(0, bindBaseScore - bindPenalty);
-  const bindGrade = pickGrade(GRADES, bindFinalScore);
-
-  // === 4. (Temporary) overall: just show Bindery as its own line ===
-  // Later we will combine Bindery + Corners + Spine + Pages + Cover.
-  const overallScore = bindFinalScore;
-  const overallGrade = bindGrade;
-
-  // === 5. Build title + cover as before ===
-  const titleText = titleInput.value.trim();
-  const issueText = issueInput.value.trim();
-
-  const displayHeading = (titleText || issueText)
-    ? `${titleText || "Unknown Title"}${issueText ? " #" + issueText : ""}`
-    : "Comic Book Grading Report";
-
-  const coverSrc = coverPreview ? coverPreview.src : "";
-
-  resultDiv.innerHTML = `
-    <div class="print-header-row">
-      <div class="print-main-meta">
-        <h2 class="print-book-title">${displayHeading}</h2>
-
-        <p><strong>Overall / True Grade (temporary – Bindery only):</strong>
-          ${overallGrade.short} (${overallGrade.label}) – ${overallScore.toFixed(1)}
-        </p>
-
-        <h3>Section Breakdown</h3>
-        <p><strong>Bindery Final Score:</strong>
-          ${bindFinalScore.toFixed(1)} (${bindGrade.short} – ${bindGrade.label})
-        </p>
-        <ul>
-          <li>Staple Placement: ${bindStaplePlacementScore.toFixed(1)}</li>
-          <li>Staple Tightness &amp; Attachment: ${bindStapleTightnessScore.toFixed(1)}</li>
-          <li>Spine Fold Alignment: ${bindSpineAlignScore.toFixed(1)}</li>
-          <li>Staples: ${bindStaplesScore.toFixed(1)}</li>
-          <li>Cover Trim &amp; Cuts: ${bindTrimScore.toFixed(1)}</li>
-          <li>Printing/Bindery Tears: ${bindTearsScore.toFixed(1)}</li>
-          <li>Cover / Interior Page Registration: ${bindRegistrationScore.toFixed(1)}</li>
-          <li>Penalty applied: ${bindPenalty.toFixed(1)}</li>
-        </ul>
-      </div>
-
-      ${
-        coverSrc
-          ? `<div class="print-cover-wrapper">
-               <img class="print-cover" src="${coverSrc}" alt="Comic cover preview" />
-             </div>`
-          : ""
+      if (coverInput) coverInput.value = "";
+      if (coverPreview) {
+        coverPreview.src = "";
+        coverPreview.style.display = "none";
       }
-    </div>
-  `;
+    });
+  }
 
-  if (resultDiv && resultDiv.scrollIntoView) {
-    resultDiv.scrollIntoView({ behavior: "smooth", block: "start" });
+  // --- 6.6 Print button ---
+  if (printBtn) {
+    printBtn.addEventListener("click", () => {
+      if (!resultDiv || !resultDiv.innerHTML.trim()) {
+        alert("Please estimate a grade first, then print the results.");
+        return;
+      }
+      window.print();
+    });
+  }
+
+  // --- 6.7 Form submit → Bindery grading + report ---
+  if (form && resultDiv) {
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const bindery = computeBinderyScore(form);
+
+      const overallScore = bindery.finalScore;  // temporary: Bindery-only
+      const overallGrade = bindery.grade;
+
+      const titleText = titleInput ? titleInput.value.trim() : "";
+      const issueText = issueInput ? issueInput.value.trim() : "";
+      const displayHeading = (titleText || issueText)
+        ? `${titleText || "Unknown Title"}${issueText ? " #" + issueText : ""}`
+        : "Comic Book Grading Report";
+
+      const coverSrc = coverPreview ? coverPreview.src : "";
+
+      resultDiv.innerHTML = `
+        <div class="print-header-row">
+          <div class="print-main-meta">
+            <h2 class="print-book-title">${displayHeading}</h2>
+
+            <p><strong>Overall Grade (temporary – Bindery only):</strong>
+              ${overallGrade.short} (${overallGrade.label}) –
+              ${overallScore.toFixed(1)}
+            </p>
+
+            <h3>Bindery Section</h3>
+            <p>
+              <strong>Bindery Final Score:</strong>
+              ${bindery.finalScore.toFixed(1)} (${bindery.grade.short} – ${bindery.grade.label})<br/>
+              <strong>Base score (lowest bindery element):</strong>
+              ${bindery.baseScore.toFixed(1)}<br/>
+              <strong>Total bindery penalties:</strong>
+              ${bindery.penaltyTotal.toFixed(1)}
+            </p>
+
+            <h4>Bindery Element Scores</h4>
+            <ul>
+              ${bindery.elements.map(e =>
+                `<li>${e.id}: ${e.score.toFixed(1)}</li>`
+              ).join("")}
+            </ul>
+
+            <hr/>
+            <p><em>Note:</em> Corners, Spine, Pages, and Cover sections
+            will be added later and combined into the final overall grade.</p>
+          </div>
+
+          ${
+            coverSrc
+              ? `<div class="print-cover-wrapper">
+                   <img class="print-cover" src="${coverSrc}" alt="Comic cover preview" />
+                 </div>`
+              : ""
+          }
+        </div>
+      `;
+      // No scrollIntoView – report just appears in place.
+    });
   }
 });
-   
-   
-
-    // === Build display title for printing ===
-const titleText = titleInput.value.trim();
-const issueText = issueInput.value.trim();
-
-// No more "Estimated Grades" in the heading text itself
-const displayHeading = (titleText || issueText)
-  ? `${titleText || "Unknown Title"}${issueText ? " #" + issueText : ""}`
-  : "Comic Book Grading Report";
-
-    const coverSrc = coverPreview ? coverPreview.src : "";
-
-    // === Output ===
-    resultDiv.innerHTML = `
-      <!-- HEADER ROW: left = grades/meta, right = cover image -->
-      <div class="print-header-row">
-        <div class="print-main-meta">
-          <h2 class="print-book-title">${displayHeading}</h2>
-
-          <p><strong>Overall / True Grade:</strong>
-  ${overallGrade.short} (${overallGrade.label})
-</p>
-
-<p><strong>Presentation Grade (front view only):</strong>
-  ${presentationGrade.short} (${presentationGrade.label})
-</p>
-
-${gmNote ? `<p class="gm-note"><em>${gmNote}</em></p>` : ""}
-${capNote ? `<p class="cap-note"><em>${capNote}</em></p>` : ""}
-
-<p class="presentation-note"><em>${presentationNote}</em></p>
-
-        </div>
-
-        ${
-          coverSrc
-            ? `<div class="print-cover-wrapper">
-                 <img class="print-cover" src="${coverSrc}" alt="Comic cover preview" />
-               </div>`
-            : ""
-        }
-      </div>
-
-      <!-- SECTION GRADES LIVE *UNDER* THE HEADER ROW -->
-      <div class="print-section-grades">
-        <h3>Section Grades</h3>
-
-        <!-- Spine / Edge section -->
-        <section class="print-section">
-          <h4>Spine / Edge</h4>
-          <ul>
-            <li><strong>Spine / Edge:</strong>
-              ${spineGrade.short} (${spineGrade.label}) – ${spineRule.description}
-            </li>
-            <li><strong>Cover / Centerfold Attachment:</strong>
-              ${structAttachGrade.short} (${structAttachGrade.label}) – ${structAttachRule.label}
-            </li>
-            <li><strong>Staple Condition:</strong>
-              ${stapleRustGrade.short} (${stapleRustGrade.label}) – ${stapleRustRule.label}
-            </li>
-          </ul>
-        </section>
-
-        <!-- Cover Condition -->
-        <section class="print-section">
-          <h4>Cover Condition</h4>
-          <ul>
-            <li><strong>Front Cover (physical wear):</strong>
-              ${frontCoverGrade.short} (${frontCoverGrade.label}) – ${frontCoverRule.label}
-            </li>
-            <li><strong>Back Cover (physical wear):</strong>
-              ${backCoverGrade.short} (${backCoverGrade.label}) – ${backCoverRule.label}
-            </li>
-            <li><strong>Front Surface Dirt / Handling:</strong>
-              ${frontSurfaceGrade.short} (${frontSurfaceGrade.label}) – ${frontSurfaceRule.label}
-            </li>
-            <li><strong>Back Surface Dirt / Handling:</strong>
-              ${backSurfaceGrade.short} (${backSurfaceGrade.label}) – ${backSurfaceRule.label}
-            </li>
-            <li><strong>Front Corners:</strong>
-              ${frontCornerGrade.short} (${frontCornerGrade.label}) – ${frontCornerRule.label}
-            </li>
-            <li><strong>Back Corners:</strong>
-              ${backCornerGrade.short} (${backCornerGrade.label}) – ${backCornerRule.label}
-            </li>
-          </ul>
-        </section>
-
-        <!-- Cover Finish -->
-        <section class="print-section">
-          <h4>Cover Finish</h4>
-          <ul>
-            <li><strong>Front Color / Gloss / UV:</strong>
-              ${frontColorSysGrade.short} (${frontColorSysGrade.label})
-            </li>
-            <li><strong>Back Color / Gloss / UV:</strong>
-              ${backColorSysGrade.short} (${backColorSysGrade.label})
-            </li>
-            <li><strong>Front Water / Moisture:</strong>
-              ${frontWaterGrade.short} (${frontWaterGrade.label}) – ${frontWaterRule.label}
-            </li>
-            <li><strong>Back Water / Moisture:</strong>
-              ${backWaterGrade.short} (${backWaterGrade.label}) – ${backWaterRule.label}
-            </li>
-          </ul>
-        </section>
-
-        <!-- Markings -->
-        <section class="print-section">
-          <h4>Markings</h4>
-          <ul>
-            <li><strong>Cover Writing / Stamps / Dates:</strong>
-              ${coverMarksGrade.short} (${coverMarksGrade.label}) – ${coverMarksRule.label}
-            </li>
-          </ul>
-        </section>
-
-        <!-- Interior Pages -->
-        <section class="print-section">
-          <h4>Interior Pages</h4>
-          <ul>
-            <li><strong>Page Tone:</strong>
-              ${pageToneGrade.short} (${pageToneGrade.label}) – ${pageToneRule.label}
-            </li>
-            <li><strong>Interior Tears / Pieces Missing:</strong>
-              ${interiorTearGrade.short} (${interiorTearGrade.label}) – ${interiorTearRule.label}
-            </li>
-            <li><strong>Interior Stains / Marks:</strong>
-              ${interiorStainGrade.short} (${interiorStainGrade.label}) – ${interiorStainRule.label}
-            </li>
-            <li><strong>Stamp / Coupon Status:</strong>
-              ${stampGrade.short} (${stampGrade.label}) – ${stampRule.label}
-            </li>
-            <li><strong>Combined Interior (overall):</strong>
-              ${interiorSysGrade.short} (${interiorSysGrade.label})
-            </li>
-          </ul>
-        </section>
-      </div>
-
-      <!-- Internal Scores (still present, but hidden in print by CSS) -->
-      <h3>Internal Scores</h3>
-      <p><small>
-        Internal scores – Overall: ${overallScore.toFixed(1)},
-        Presentation: ${presentationScore.toFixed(1)},
-        Spine-only: ${spineSec.score.toFixed(1)},
-        Structural Attachment-only: ${structAttachSec.score.toFixed(1)},
-        Staple-only: ${stapleRustSec.score.toFixed(1)},
-        Front Cover-only: ${frontCoverSec.score.toFixed(1)},
-        Back Cover-only: ${backCoverSec.score.toFixed(1)},
-        Front Surface-only: ${frontSurfaceSec.score.toFixed(1)},
-        Back Surface-only: ${backSurfaceSec.score.toFixed(1)},
-        Front Corners-only: ${frontCornerSec.score.toFixed(1)},
-        Back Corners-only: ${backCornerSec.score.toFixed(1)},
-        Front Color/Gloss/UV-only: ${frontColorSysSec.score.toFixed(1)},
-        Back Color/Gloss/UV-only: ${backColorSysSec.score.toFixed(1)},
-        Front Water-only: ${frontWaterSec.score.toFixed(1)},
-        Back Water-only: ${backWaterSec.score.toFixed(1)},
-        Cover Marks-only: ${coverMarksSec.score.toFixed(1)},
-        Page Tone-only: ${pageToneSec.score.toFixed(1)},
-        Interior Tears-only: ${interiorTearSec.score.toFixed(1)},
-        Interior Stains-only: ${interiorStainSec.score.toFixed(1)},
-        Stamp-only: ${stampSec.score.toFixed(1)},
-        Combined Interior-only: ${interiorSysSec.score.toFixed(1)}
-      </small></p>
-    `;
-    
-    // Scroll the freshly-built report into view
-    if (resultDiv && resultDiv.scrollIntoView) {
-      resultDiv.scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-      });
-    }
-  }); // <-- keep this: closes form.addEventListener("submit", ...)
-});   // <-- and this: closes DOMContentLoaded
