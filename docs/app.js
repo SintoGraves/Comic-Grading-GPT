@@ -1,7 +1,8 @@
-/* =========================================================
- * SECTION 1 – GRADE SCALE
- * =======================================================*/
+"use strict";
 
+/* ============================================================
+ * 1. GRADE SCALE
+ * ============================================================ */
 const GRADES = [
   { score: 10.0, code: "GM",    label: "Gem Mint",               short: "10.0 GM" },
   { score: 9.9,  code: "MT",    label: "Mint",                   short: "9.9 MT" },
@@ -36,12 +37,360 @@ function pickGrade(grades, score) {
   return best;
 }
 
+/* ============================================================
+ * 2. GENERIC HELPERS
+ * ============================================================ */
 
-/* =========================================================
- * SECTION 2 – VALUE-STAMP INDEX + TITLE NORMALIZATION
- * =======================================================*/
+// Numeric radio: returns 10.0 if nothing selected
+function getRadioValue(form, name) {
+  const field = form.elements[name];
+  if (!field) return 10.0;
 
-/// === Lookup: issues that DO contain a Marvel Value Stamp ===
+  if (field.length === undefined) {
+    return parseFloat(field.value) || 10.0;
+  }
+
+  for (const input of field) {
+    if (input.checked) return parseFloat(input.value) || 10.0;
+  }
+  return 10.0;
+}
+
+// String radio: returns defaultVal if nothing selected
+function getRadioChoice(form, name, defaultVal = null) {
+  const field = form.elements[name];
+  if (!field) return defaultVal;
+
+  if (field.length === undefined) {
+    return field.value || defaultVal;
+  }
+
+  for (const input of field) {
+    if (input.checked) return input.value || defaultVal;
+  }
+  return defaultVal;
+}
+
+// Penalty logic shared by Bindery and Corners
+function binderyPenaltyForScore(score) {
+  if (score >= 9.95) return 0.0;                    // treat 10 as perfect
+  if (score >= 6.1 && score <= 9.9) return 0.1;
+  if (score >= 3.1 && score <= 6.0) return 0.5;
+  if (score >= 0.0 && score <= 3.0) return 1.0;
+  return 0.0;
+}
+
+/* ============================================================
+ * 3. BINDERY SCORING
+ * ============================================================ */
+/*
+   Elements (each 0–10):
+   1. Staple Placement           -> min of 3 sub-elements
+   2. Staple Tightness & Attach  -> min of 2 sub-elements
+   3. Spine Fold (Bind) Align    -> single sub-element
+   4. Staples (Rust)             -> single sub-element
+   5. Cover Trim and Cuts        -> min of 3 sub-elements
+   6. Printing/Bindery Tears     -> single sub-element
+   7. Cover/Interior Registration-> single sub-element
+
+   Base score = lowest element score.
+   Other elements contribute penalties:
+   - 0–3.0   => 1.0 penalty
+   - 3.1–6.0 => 0.5 penalty
+   - 6.1–9.9 => 0.1 penalty
+   - 10.0    => 0.0 penalty
+*/
+
+function computeBinderyScore(form) {
+  const staplePlacement = Math.min(
+    getRadioValue(form, "bind_sp_height"),     // Staples too high/low or uneven
+    getRadioValue(form, "bind_sp_crooked"),    // Staples inserted crooked
+    getRadioValue(form, "bind_sp_pulling")     // Staples pulling at the paper
+  );
+
+  const stapleTightness = Math.min(
+    getRadioValue(form, "bind_cover_attach"),       // Cover firmly attached
+    getRadioValue(form, "bind_centerfold_secure")   // Centerfold secure
+  );
+
+  const spineFoldAlign   = getRadioValue(form, "bind_spine_align");
+  const stapleRust       = getRadioValue(form, "bind_staple_rust");
+
+  const coverTrimCuts = Math.min(
+    getRadioValue(form, "bind_trim_uneven"),
+    getRadioValue(form, "bind_trim_frayed"),
+    getRadioValue(form, "bind_trim_overcut")
+  );
+
+  const printingTears    = getRadioValue(form, "bind_tears");
+  const registration     = getRadioValue(form, "bind_registration");
+
+  const elements = [
+    { id: "Staple Placement",                  score: staplePlacement },
+    { id: "Staple Tightness & Attachment",    score: stapleTightness },
+    { id: "Spine Fold (Bind) Alignment",      score: spineFoldAlign },
+    { id: "Staples (Rust)",                   score: stapleRust },
+    { id: "Cover Trim and Cuts",              score: coverTrimCuts },
+    { id: "Printing/Bindery Tears",           score: printingTears },
+    { id: "Cover/Interior Page Registration", score: registration }
+  ];
+
+  const baseScore = Math.min(...elements.map(e => e.score));
+
+  let penaltyTotal = 0;
+  for (const e of elements) {
+    if (e.score > baseScore) {
+      penaltyTotal += binderyPenaltyForScore(e.score);
+    }
+  }
+
+  let finalScore = baseScore - penaltyTotal;
+  if (finalScore < 0.5) finalScore = 0.5;
+  if (finalScore > 10.0) finalScore = 10.0;
+
+  const grade = pickGrade(GRADES, finalScore);
+
+  return {
+    finalScore,
+    baseScore,
+    penaltyTotal,
+    grade,
+    elements
+  };
+}
+
+/* ============================================================
+ * 4. CORNERS SCORING
+ * ============================================================ */
+/* === Sub-score helpers === */
+
+// Blunting (softening / rounding)
+function scoreCornerBlunting(severity, multi) {
+  // severity: "none", "slight", "moderate", "heavy"
+  switch (severity) {
+    case "slight":
+      return multi ? 9.2 : 9.7;
+    case "moderate":
+      return multi ? 5.5 : 7.0;
+    case "heavy":
+      return multi ? 1.8 : 3.5;
+    case "none":
+    default:
+      return 10.0;
+  }
+}
+
+// Tiny corner creases
+function scoreCornerCrease(level, multi) {
+  // level: "none", "small_no_break", "long_with_break", "multiple_severe"
+  switch (level) {
+    case "small_no_break":
+      return multi ? 8.0 : 8.5;
+    case "long_with_break":
+      return multi ? 5.5 : 6.5;
+    case "multiple_severe":
+      return multi ? 3.5 : 4.5;
+    case "none":
+    default:
+      return 10.0;
+  }
+}
+
+// Color breaks
+function scoreCornerColorBreak(level) {
+  // level: "none", "minor_single", "multiple_prominent"
+  switch (level) {
+    case "minor_single":
+      return 7.0;
+    case "multiple_prominent":
+      return 3.5;
+    case "none":
+    default:
+      return 10.0;
+  }
+}
+
+// Tears at corners
+function scoreCornerTears(level) {
+  // level: "none", "tiny", "large"
+  switch (level) {
+    case "tiny":
+      return 5.0;
+    case "large":
+      return 2.5;
+    case "none":
+    default:
+      return 10.0;
+  }
+}
+
+// Missing chunks / chips
+function scoreCornerMissing(level) {
+  // level: "none", "missing"
+  switch (level) {
+    case "missing":
+      return 2.0;
+    case "none":
+    default:
+      return 10.0;
+  }
+}
+
+// Fraying
+function scoreCornerFray(hasFray, multi) {
+  // hasFray: "none" or "yes"
+  if (hasFray === "yes") {
+    return multi ? 3.5 : 4.5;
+  }
+  return 10.0;
+}
+
+// Delamination
+function scoreCornerDelam(hasDelam, multi) {
+  // hasDelam: "none" or "yes"
+  if (hasDelam === "yes") {
+    return multi ? 3.5 : 4.5;
+  }
+  return 10.0;
+}
+
+// Dirt / smudges
+function scoreCornerDirt(level) {
+  // level: "none", "light"
+  if (level === "light") return 6.0;
+  return 10.0;
+}
+
+// Stains
+function scoreCornerStain(level) {
+  // level: "none", "present"
+  if (level === "present") return 1.8;
+  return 10.0;
+}
+
+/* === Main Corners score === */
+
+function computeCornersScore(form) {
+  // Blunting
+  const bluntFrontSeverity = getRadioChoice(form, "corners_blunt_front_severity", "none");
+  const bluntFrontMulti = getRadioChoice(form, "corners_blunt_front_multi", "no") === "yes";
+  const bluntFrontScore = scoreCornerBlunting(bluntFrontSeverity, bluntFrontMulti);
+
+  const bluntBackSeverity = getRadioChoice(form, "corners_blunt_back_severity", "none");
+  const bluntBackMulti = getRadioChoice(form, "corners_blunt_back_multi", "no") === "yes";
+  const bluntBackScore = scoreCornerBlunting(bluntBackSeverity, bluntBackMulti);
+
+  const bluntingScore = Math.min(bluntFrontScore, bluntBackScore);
+
+  // Creases
+  const creaseFrontLevel = getRadioChoice(form, "corners_crease_front_level", "none");
+  const creaseFrontMulti = getRadioChoice(form, "corners_crease_front_multi", "no") === "yes";
+  const creaseFrontScore = scoreCornerCrease(creaseFrontLevel, creaseFrontMulti);
+
+  const creaseBackLevel = getRadioChoice(form, "corners_crease_back_level", "none");
+  const creaseBackMulti = getRadioChoice(form, "corners_crease_back_multi", "no") === "yes";
+  const creaseBackScore = scoreCornerCrease(creaseBackLevel, creaseBackMulti);
+
+  const creaseScore = Math.min(creaseFrontScore, creaseBackScore);
+
+  // Color breaks
+  const cbFrontLevel = getRadioChoice(form, "corners_colorbreak_front_level", "none");
+  const cbBackLevel  = getRadioChoice(form, "corners_colorbreak_back_level", "none");
+  const cbFrontScore = scoreCornerColorBreak(cbFrontLevel);
+  const cbBackScore  = scoreCornerColorBreak(cbBackLevel);
+  const cbScore      = Math.min(cbFrontScore, cbBackScore);
+
+  // Tears
+  const tearFrontLevel = getRadioChoice(form, "corners_tears_front_level", "none");
+  const tearBackLevel  = getRadioChoice(form, "corners_tears_back_level", "none");
+  const tearFrontScore = scoreCornerTears(tearFrontLevel);
+  const tearBackScore  = scoreCornerTears(tearBackLevel);
+  const tearScore      = Math.min(tearFrontScore, tearBackScore);
+
+  // Missing chunks
+  const missFrontLevel = getRadioChoice(form, "corners_missing_front_level", "none");
+  const missBackLevel  = getRadioChoice(form, "corners_missing_back_level", "none");
+  const missFrontScore = scoreCornerMissing(missFrontLevel);
+  const missBackScore  = scoreCornerMissing(missBackLevel);
+  const missingScore   = Math.min(missFrontScore, missBackScore);
+
+  // Fraying
+  const frayFrontHas = getRadioChoice(form, "corners_fray_front_has", "none");
+  const frayFrontMulti = getRadioChoice(form, "corners_fray_front_multi", "no") === "yes";
+  const frayFrontScore = scoreCornerFray(frayFrontHas, frayFrontMulti);
+
+  const frayBackHas = getRadioChoice(form, "corners_fray_back_has", "none");
+  const frayBackMulti = getRadioChoice(form, "corners_fray_back_multi", "no") === "yes";
+  const frayBackScore = scoreCornerFray(frayBackHas, frayBackMulti);
+
+  const frayScore = Math.min(frayFrontScore, frayBackScore);
+
+  // Delamination
+  const delamFrontHas = getRadioChoice(form, "corners_delam_front_has", "none");
+  const delamFrontMulti = getRadioChoice(form, "corners_delam_front_multi", "no") === "yes";
+  const delamFrontScore = scoreCornerDelam(delamFrontHas, delamFrontMulti);
+
+  const delamBackHas = getRadioChoice(form, "corners_delam_back_has", "none");
+  const delamBackMulti = getRadioChoice(form, "corners_delam_back_multi", "no") === "yes";
+  const delamBackScore = scoreCornerDelam(delamBackHas, delamBackMulti);
+
+  const delamScore = Math.min(delamFrontScore, delamBackScore);
+
+  // Dirt
+  const dirtFrontLevel = getRadioChoice(form, "corners_dirt_front_level", "none");
+  const dirtBackLevel  = getRadioChoice(form, "corners_dirt_back_level", "none");
+  const dirtFrontScore = scoreCornerDirt(dirtFrontLevel);
+  const dirtBackScore  = scoreCornerDirt(dirtBackLevel);
+  const dirtScore      = Math.min(dirtFrontScore, dirtBackScore);
+
+  // Stains
+  const stainFrontLevel = getRadioChoice(form, "corners_stain_front_level", "none");
+  const stainBackLevel  = getRadioChoice(form, "corners_stain_back_level", "none");
+  const stainFrontScore = scoreCornerStain(stainFrontLevel);
+  const stainBackScore  = scoreCornerStain(stainBackLevel);
+  const stainScore      = Math.min(stainFrontScore, stainBackScore);
+
+  const elements = [
+    { id: "Corner Sharpness / Blunting", score: bluntingScore },
+    { id: "Corner Creases",              score: creaseScore },
+    { id: "Corner Color Breaks",         score: cbScore },
+    { id: "Tears at Corners",            score: tearScore },
+    { id: "Missing Corners / Chips",     score: missingScore },
+    { id: "Fraying",                     score: frayScore },
+    { id: "Delamination",                score: delamScore },
+    { id: "Light Dirt / Smudges",        score: dirtScore },
+    { id: "Stains (water, oil, ink)",    score: stainScore }
+  ];
+
+  const baseScore = Math.min(...elements.map(e => e.score));
+
+  let penaltyTotal = 0;
+  for (const e of elements) {
+    if (e.score > baseScore) {
+      penaltyTotal += binderyPenaltyForScore(e.score);
+    }
+  }
+
+  let finalScore = baseScore - penaltyTotal;
+  if (finalScore < 0.5) finalScore = 0.5;
+  if (finalScore > 10.0) finalScore = 10.0;
+
+  const grade = pickGrade(GRADES, finalScore);
+
+  return {
+    finalScore,
+    baseScore,
+    penaltyTotal,
+    grade,
+    elements
+  };
+}
+
+/* ============================================================
+ * 5. VALUE STAMP LOOKUP + TITLE NORMALIZATION
+ * ============================================================ */
+
+// Lookup: issues that DO contain a Marvel Value Stamp
 const VALUE_STAMP_INDEX = {
   // Adventure Into Fear
   "adventure into fear#21": true,
@@ -556,60 +905,12 @@ const VALUE_STAMP_INDEX = {
   "worlds unknown#8": true
 };
 
-// === Known title list (derived from VALUE_STAMP_INDEX) ===
+// Known titles list (for suggestions)
 const KNOWN_TITLES = Array.from(
   new Set(
-    Object.keys(VALUE_STAMP_INDEX).map(key => {
-      return key.split("#")[0];
-    })
+    Object.keys(VALUE_STAMP_INDEX).map(key => key.split("#")[0])
   )
 );
-
-// Normalize title text for lookup
-function normalizeTitle(rawTitle) {
-  if (!rawTitle) return "";
-
-  let t = rawTitle.trim().toLowerCase();
-
-  if (t.startsWith("the ")) {
-    t = t.slice(4);
-  }
-
-  t = t.replace(/\s+/g, " ");
-
-  t = t.replace(/spiderman/g, "spider-man");
-  t = t.replace(/xmen/g, "x-men");
-  t = t.replace(/ironman/g, "iron man");
-  t = t.replace(/captainamerica/g, "captain america");
-  t = t.replace(/doctorstrange/g, "doctor strange");
-  t = t.replace(/dr\.\s*strange/g, "doctor strange");
-  t = t.replace(/newmutants/g, "new mutants");
-
-  t = t.replace(/^asm\s*/, "amazing spider-man ");
-  t = t.replace(/^tmnt\s*/, "teenage mutant ninja turtles ");
-  t = t.replace(/^tmt\s*/, "teenage mutant turtles ");
-  t = t.replace(/^bprd\s*/, "bprd ");
-  t = t.replace(/^ff\s*(?!#)/g, "fantastic four ");
-
-  t = t.replace(/\bx men\b/g, "x-men");
-  t = t.replace(/ & /g, " and ");
-  t = t.replace(/[^a-z0-9\- ]+/g, "");
-  t = t.replace(/\s\s+/g, " ");
-
-  return t;
-}
-
-function makeStampKey(title, issue) {
-  const normTitle = normalizeTitle(title);
-  let normIssue = `${issue}`.trim().toLowerCase();
-  normIssue = normIssue.replace(/^#/, "");
-  return normTitle + "#" + normIssue;
-}
-
-
-/* =========================================================
- * SECTION 3 – TITLE SUGGESTION (LEVENSHTEIN)
- * =======================================================*/
 
 function editDistance(a, b) {
   const lenA = a.length;
@@ -630,6 +931,46 @@ function editDistance(a, b) {
     }
   }
   return dp[lenA][lenB];
+}
+
+function normalizeTitle(rawTitle) {
+  if (!rawTitle) return "";
+
+  let t = rawTitle.trim().toLowerCase();
+
+  if (t.startsWith("the ")) t = t.slice(4);
+
+  t = t.replace(/\s+/g, " ");
+
+  t = t.replace(/spiderman/g, "spider-man");
+  t = t.replace(/xmen/g, "x-men");
+  t = t.replace(/ironman/g, "iron man");
+  t = t.replace(/captainamerica/g, "captain america");
+  t = t.replace(/doctorstrange/g, "doctor strange");
+  t = t.replace(/dr\.\s*strange/g, "doctor strange");
+  t = t.replace(/newmutants/g, "new mutants");
+
+  t = t.replace(/^asm\s*/, "amazing spider-man ");
+  t = t.replace(/^tmnt\s*/, "teenage mutant ninja turtles ");
+  t = t.replace(/^tmt\s*/, "teenage mutant turtles ");
+  t = t.replace(/^bprd\s*/, "bprd ");
+  t = t.replace(/^ff\s*(?!#)/g, "fantastic four ");
+
+  t = t.replace(/\bx men\b/g, "x-men");
+
+  t = t.replace(/ & /g, " and ");
+
+  t = t.replace(/[^a-z0-9\- ]+/g, "");
+  t = t.replace(/\s\s+/g, " ");
+
+  return t;
+}
+
+function makeStampKey(title, issue) {
+  const normTitle = normalizeTitle(title);
+  let normIssue = `${issue}`.trim().toLowerCase();
+  normIssue = normIssue.replace(/^#/, "");
+  return normTitle + "#" + normIssue;
 }
 
 function suggestTitle(rawTitle) {
@@ -661,122 +1002,29 @@ function displayTitleFromNormalized(norm) {
     .join(" ");
 }
 
-
-/* =========================================================
- * SECTION 4 – GENERIC FORM HELPERS
- * =======================================================*/
-
-// Get numeric value from a radio group; default to 10.0
-function getRadioValue(form, name) {
-  const field = form.elements[name];
-  if (!field) return 10.0;
-
-  if (field.length === undefined) {
-    return parseFloat(field.value) || 10.0;
-  }
-
-  for (const input of field) {
-    if (input.checked) {
-      return parseFloat(input.value) || 10.0;
-    }
-  }
-  return 10.0;
-}
-
-
-/* =========================================================
- * SECTION 5 – BINDERY SCORING LOGIC
- * =======================================================*/
-
-function binderyPenaltyForScore(score) {
-  if (score >= 9.95) return 0.0;
-  if (score >= 6.1 && score <= 9.9) return 0.1;
-  if (score >= 3.1 && score <= 6.0) return 0.5;
-  if (score >= 0.0 && score <= 3.0) return 1.0;
-  return 0.0;
-}
-
-function computeBinderyScore(form) {
-  const staplePlacement = Math.min(
-    getRadioValue(form, "bind_sp_height"),
-    getRadioValue(form, "bind_sp_crooked"),
-    getRadioValue(form, "bind_sp_pulling")
-  );
-
-  const stapleTightness = Math.min(
-    getRadioValue(form, "bind_cover_attach"),
-    getRadioValue(form, "bind_centerfold_secure")
-  );
-
-  const spineFoldAlign = getRadioValue(form, "bind_spine_align");
-  const stapleRust     = getRadioValue(form, "bind_staple_rust");
-
-  const coverTrimCuts  = Math.min(
-    getRadioValue(form, "bind_trim_uneven"),
-    getRadioValue(form, "bind_trim_frayed"),
-    getRadioValue(form, "bind_trim_overcut")
-  );
-
-  const printingTears  = getRadioValue(form, "bind_tears");
-  const registration   = getRadioValue(form, "bind_registration");
-
-  const elements = [
-    { id: "Staple Placement",                  score: staplePlacement },
-    { id: "Staple Tightness & Attachment",    score: stapleTightness },
-    { id: "Spine Fold (Bind) Alignment",      score: spineFoldAlign },
-    { id: "Staples (Rust)",                   score: stapleRust },
-    { id: "Cover Trim and Cuts",              score: coverTrimCuts },
-    { id: "Printing/Bindery Tears",           score: printingTears },
-    { id: "Cover/Interior Page Registration", score: registration }
-  ];
-
-  const baseScore = Math.min(...elements.map(e => e.score));
-
-  let penaltyTotal = 0;
-  for (const e of elements) {
-    if (e.score > baseScore) {
-      penaltyTotal += binderyPenaltyForScore(e.score);
-    }
-  }
-
-  let finalScore = baseScore - penaltyTotal;
-  if (finalScore < 0.5) finalScore = 0.5;
-  if (finalScore > 10.0) finalScore = 10.0;
-
-  const grade = pickGrade(GRADES, finalScore);
-
-  return {
-    finalScore,
-    baseScore,
-    penaltyTotal,
-    grade,
-    elements
-  };
-}
-
-
-/* =========================================================
- * SECTION 6 – DOM WIRING (FORM, TITLE, IMAGE, OVERLAY)
- * =======================================================*/
+/* ============================================================
+ * 6. DOM INITIALISATION – FORM, STAMP LOOKUP, IMAGE, PRINT
+ * ============================================================ */
 
 document.addEventListener("DOMContentLoaded", () => {
   const form            = document.getElementById("grading-form");
   const resultDiv       = document.getElementById("result");
   const resetBtn        = document.getElementById("reset-btn");
   const printBtn        = document.getElementById("print-btn");
-
   const titleInput      = document.getElementById("comic_title");
   const issueInput      = document.getElementById("comic_issue");
   const stampFieldset   = document.getElementById("stamp-fieldset");
   const stampHint       = document.getElementById("stamp-hint");
   const titleSuggestion = document.getElementById("title-suggestion");
-
   const coverInput      = document.getElementById("cover_image");
   const coverPreview    = document.getElementById("cover-preview");
+  const gmCheckbox      = document.getElementById("gm_candidate"); // optional
+
+  if (!form || !resultDiv) return;
 
   let stampApplies = false;
 
-  // --- 6.1 Value-stamp lookup ---
+  // --- Value stamp lookup ---
   function updateStampLookup() {
     const title = titleInput ? titleInput.value.trim() : "";
     const issue = issueInput ? issueInput.value.trim() : "";
@@ -811,7 +1059,7 @@ document.addEventListener("DOMContentLoaded", () => {
     issueInput.addEventListener("input", updateStampLookup);
   }
 
-  // --- 6.2 Title suggestion UI ---
+  // --- Title suggestion (non-destructive) ---
   if (titleInput && titleSuggestion) {
     const runTitleSuggestion = () => {
       const raw = titleInput.value;
@@ -827,7 +1075,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       const display = displayTitleFromNormalized(suggestion.normalized);
-
       titleSuggestion.innerHTML = `
         Did you mean: <strong>${display}</strong>?
         <button type="button" id="apply-title-suggestion-btn"
@@ -850,7 +1097,7 @@ document.addEventListener("DOMContentLoaded", () => {
     titleInput.addEventListener("change", runTitleSuggestion);
   }
 
-  // --- 6.3 Cover image preview ---
+  // --- Image upload preview ---
   if (coverInput && coverPreview) {
     coverInput.addEventListener("change", (e) => {
       const file = e.target.files && e.target.files[0];
@@ -869,12 +1116,10 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // --- 6.4 Sample image overlay (press-and-hold) ---
+  // --- Sample overlay for reference images ---
   const sampleOverlay = document.createElement("div");
   sampleOverlay.id = "sample-overlay";
-  sampleOverlay.innerHTML = `
-    <img id="sample-overlay-img" alt="Grading example" />
-  `;
+  sampleOverlay.innerHTML = `<img id="sample-overlay-img" alt="Grading example" />`;
   document.body.appendChild(sampleOverlay);
 
   const sampleOverlayImg = sampleOverlay.querySelector("#sample-overlay-img");
@@ -908,17 +1153,132 @@ document.addEventListener("DOMContentLoaded", () => {
     btn.addEventListener("touchcancel", hideSample);
   });
 
-  // --- 6.5 Reset button ---
+  /* ------------------------------------------------------------
+   * FORM SUBMIT – compute Bindery + Corners and build report
+   * ------------------------------------------------------------ */
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const bindery = computeBinderyScore(form);
+    const corners = computeCornersScore(form);
+
+    const sectionScores = [bindery.finalScore, corners.finalScore];
+    const overallScore = sectionScores.reduce((a, b) => a + b, 0) / sectionScores.length;
+    const overallGrade = pickGrade(GRADES, overallScore);
+
+    const titleText = titleInput ? titleInput.value.trim() : "";
+    const issueText = issueInput ? issueInput.value.trim() : "";
+    const displayHeading = (titleText || issueText)
+      ? `${titleText || "Unknown Title"}${issueText ? " #"+issueText : ""}`
+      : "Comic Book Grading Report";
+
+    const coverSrc = (coverPreview && coverPreview.src) ? coverPreview.src : "";
+
+    // Value stamp status (optional radio group in your HTML)
+    let stampStatusText = "";
+    const stampStatus = getRadioChoice(form, "stamp_status", null);
+    if (stampApplies) {
+      if (stampStatus) {
+        stampStatusText = `This issue is in the value-stamp list. Reported status: ${stampStatus}.`;
+      } else {
+        stampStatusText = "This issue is in the value-stamp list. Please record the stamp/coupon status.";
+      }
+    } else {
+      stampStatusText = "No value stamp or coupon listed for this issue in the current lookup table.";
+    }
+
+    // Optional Gem Mint candidate note
+    let gmNote = "";
+    if (gmCheckbox && gmCheckbox.checked) {
+      gmNote = "Marked as a Gem Mint candidate by the grader.";
+    }
+
+    // Build HTML
+    resultDiv.innerHTML = `
+      <div class="print-header-row">
+        <div class="print-main-meta">
+          <h2 class="print-book-title">${displayHeading}</h2>
+
+          <p><strong>Overall / True Grade (Bindery + Corners only at this stage):</strong>
+            ${overallGrade.short} (${overallGrade.label}) – ${overallScore.toFixed(1)}
+          </p>
+
+          ${gmNote ? `<p class="gm-note"><em>${gmNote}</em></p>` : ""}
+
+          <p class="stamp-note"><em>${stampStatusText}</em></p>
+        </div>
+
+        ${
+          coverSrc
+            ? `<div class="print-cover-wrapper">
+                 <img class="print-cover" src="${coverSrc}" alt="Comic cover preview" />
+               </div>`
+            : ""
+        }
+      </div>
+
+      <div class="print-section-grades">
+        <h3>Section Grades</h3>
+
+        <section class="print-section">
+          <h4>Bindery</h4>
+          <p>
+            <strong>Bindery Grade:</strong>
+            ${bindery.grade.short} (${bindery.grade.label}) –
+            ${bindery.finalScore.toFixed(1)}<br/>
+            <strong>Base score (lowest bindery element):</strong>
+            ${bindery.baseScore.toFixed(1)}<br/>
+            <strong>Total bindery penalties:</strong>
+            ${bindery.penaltyTotal.toFixed(1)}
+          </p>
+          <ul>
+            ${bindery.elements.map(e =>
+              `<li>${e.id}: ${e.score.toFixed(1)}</li>`
+            ).join("")}
+          </ul>
+        </section>
+
+        <section class="print-section">
+          <h4>Corners</h4>
+          <p>
+            <strong>Corners Grade:</strong>
+            ${corners.grade.short} (${corners.grade.label}) –
+            ${corners.finalScore.toFixed(1)}<br/>
+            <strong>Base score (lowest corner element):</strong>
+            ${corners.baseScore.toFixed(1)}<br/>
+            <strong>Total corner penalties:</strong>
+            ${corners.penaltyTotal.toFixed(1)}
+          </p>
+          <ul>
+            ${corners.elements.map(e =>
+              `<li>${e.id}: ${e.score.toFixed(1)}</li>`
+            ).join("")}
+          </ul>
+        </section>
+      </div>
+
+      <h3>Internal Scores (for developer reference – hide in print if desired)</h3>
+      <p><small>
+        Bindery final: ${bindery.finalScore.toFixed(1)} |
+        Corners final: ${corners.finalScore.toFixed(1)} |
+        Overall: ${overallScore.toFixed(1)}
+      </small></p>
+    `;
+
+    if (resultDiv.scrollIntoView) {
+      resultDiv.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  });
+
+  // --- Reset button ---
   if (resetBtn) {
     resetBtn.addEventListener("click", () => {
-      if (form) form.reset();
+      form.reset();
       stampApplies = false;
       if (stampFieldset) stampFieldset.style.display = "none";
       if (stampHint) stampHint.textContent = "";
-      if (titleSuggestion) titleSuggestion.textContent = "";
       if (resultDiv) resultDiv.innerHTML = "";
-
-      if (coverInput) coverInput.value = "";
+      if (titleSuggestion) titleSuggestion.textContent = "";
       if (coverPreview) {
         coverPreview.src = "";
         coverPreview.style.display = "none";
@@ -926,7 +1286,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // --- 6.6 Print button ---
+  // --- Print button ---
   if (printBtn) {
     printBtn.addEventListener("click", () => {
       if (!resultDiv || !resultDiv.innerHTML.trim()) {
@@ -934,69 +1294,6 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
       window.print();
-    });
-  }
-
-  // --- 6.7 Form submit → Bindery grading + report ---
-  if (form && resultDiv) {
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-
-      const bindery = computeBinderyScore(form);
-
-      const overallScore = bindery.finalScore;  // temporary: Bindery-only
-      const overallGrade = bindery.grade;
-
-      const titleText = titleInput ? titleInput.value.trim() : "";
-      const issueText = issueInput ? issueInput.value.trim() : "";
-      const displayHeading = (titleText || issueText)
-        ? `${titleText || "Unknown Title"}${issueText ? " #" + issueText : ""}`
-        : "Comic Book Grading Report";
-
-      const coverSrc = coverPreview ? coverPreview.src : "";
-
-      resultDiv.innerHTML = `
-        <div class="print-header-row">
-          <div class="print-main-meta">
-            <h2 class="print-book-title">${displayHeading}</h2>
-
-            <p><strong>Overall Grade (temporary – Bindery only):</strong>
-              ${overallGrade.short} (${overallGrade.label}) –
-              ${overallScore.toFixed(1)}
-            </p>
-
-            <h3>Bindery Section</h3>
-            <p>
-              <strong>Bindery Final Score:</strong>
-              ${bindery.finalScore.toFixed(1)} (${bindery.grade.short} – ${bindery.grade.label})<br/>
-              <strong>Base score (lowest bindery element):</strong>
-              ${bindery.baseScore.toFixed(1)}<br/>
-              <strong>Total bindery penalties:</strong>
-              ${bindery.penaltyTotal.toFixed(1)}
-            </p>
-
-            <h4>Bindery Element Scores</h4>
-            <ul>
-              ${bindery.elements.map(e =>
-                `<li>${e.id}: ${e.score.toFixed(1)}</li>`
-              ).join("")}
-            </ul>
-
-            <hr/>
-            <p><em>Note:</em> Corners, Spine, Pages, and Cover sections
-            will be added later and combined into the final overall grade.</p>
-          </div>
-
-          ${
-            coverSrc
-              ? `<div class="print-cover-wrapper">
-                   <img class="print-cover" src="${coverSrc}" alt="Comic cover preview" />
-                 </div>`
-              : ""
-          }
-        </div>
-      `;
-      // No scrollIntoView – report just appears in place.
     });
   }
 });
