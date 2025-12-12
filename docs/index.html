@@ -441,6 +441,330 @@
 
 </section>
 
+<!-- ================================
+     CORNERS EVALUATION
+     ================================ -->
+<section id="corners-section" class="grading-section">
+  <h2>Corner Evaluation</h2>
+  <p class="section-intro">
+    Evaluating the corners of a comic book is a crucial part of grading,
+    especially when assessing eye appeal and structural integrity.
+    Corners can show wear even when the rest of the book looks great.
+  </p>
+
+  <!-- a. Sharpness / Blunting -->
+  <div class="element-group">
+    <div class="element-title-row">
+      <h3>Corners – Sharpness</h3>
+      <div class="element-hint">
+        Corners should be square, sharp, and crisp.
+      </div>
+    </div>
+    <div class="element-box">
+      <!-- Front Cover -->
+      <div class="sub-row">
+        <div class="sub-label">Blunting – Front Cover</div>
+        <div class="sub-controls">
+          <label><input type="radio" name="corners_blunt_front_severity" value="none" checked> No defects</label>
+          <label><input type="radio" name="corners_blunt_front_severity" value="slight"> Slightly blunted</label>
+          <label><input type="radio" name="corners_blunt_front_severity" value="moderate"> Moderate blunting</label>
+          <label><input type="radio" name="corners_blunt_front_severity" value="heavy"> Heavy rounding / mashed</label>
+
+          <span class="sub-toggle">
+            In more than one location?
+            <label><input type="radio" name="corners_blunt_front_multi" value="no" checked> No</label>
+            <label><input type="radio" name="corners_blunt_front_multi" value="yes"> Yes</label>
+          </span>
+        </div>
+      </div>
+
+      <!-- Back Cover -->
+      <div class="sub-row">
+        <div class="sub-label">Blunting – Back Cover</div>
+        <div class="sub-controls">
+          <label><input type="radio" name="corners_blunt_back_severity" value="none" checked> No defects</label>
+          <label><input type="radio" name="corners_blunt_back_severity" value="slight"> Slightly blunted</label>
+          <label><input type="radio" name="corners_blunt_back_severity" value="moderate"> Moderate blunting</label>
+          <label><input type="radio" name="corners_blunt_back_severity" value="heavy"> Heavy rounding / mashed</label>
+
+          <span class="sub-toggle">
+            In more than one location?
+            <label><input type="radio" name="corners_blunt_back_multi" value="no" checked> No</label>
+            <label><input type="radio" name="corners_blunt_back_multi" value="yes"> Yes</label>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- b. Creases -->
+  <div class="element-group">
+    <div class="element-title-row">
+      <h3>Corner Creases</h3>
+      <div class="element-hint">
+        Tiny corner creases, often from bending or dropping.
+      </div>
+    </div>
+    <div class="element-box">
+      <!-- Front Cover -->
+      <div class="sub-row">
+        <div class="sub-label">Creases – Front Cover</div>
+        <div class="sub-controls">
+          <label><input type="radio" name="corners_crease_front_level" value="none" checked> No defects</label>
+          <label><input type="radio" name="corners_crease_front_level" value="small_no_break">
+            &lt; 1/4" – no color break
+          </label>
+          <label><input type="radio" name="corners_crease_front_level" value="long_with_break">
+            ≥ 1/4" – with color break
+          </label>
+          <label><input type="radio" name="corners_crease_front_level" value="multiple_severe">
+            Multiple / severe creases
+          </label>
+
+          <span class="sub-toggle">
+            In more than one location?
+            <label><input type="radio" name="corners_crease_front_multi" value="no" checked> No</label>
+            <label><input type="radio" name="corners_crease_front_multi" value="yes"> Yes</label>
+          </span>
+        </div>
+      </div>
+
+      <!-- Back Cover -->
+      <div class="sub-row">
+        <div class="sub-label">Creases – Back Cover</div>
+        <div class="sub-controls">
+          <label><input type="radio" name="corners_crease_back_level" value="none" checked> No defects</label>
+          <label><input type="radio" name="corners_crease_back_level" value="small_no_break">
+            &lt; 1/4" – no color break
+          </label>
+          <label><input type="radio" name="corners_crease_back_level" value="long_with_break">
+            ≥ 1/4" – with color break
+          </label>
+          <label><input type="radio" name="corners_crease_back_level" value="multiple_severe">
+            Multiple / severe creases
+          </label>
+
+          <span class="sub-toggle">
+            In more than one location?
+            <label><input type="radio" name="corners_crease_back_multi" value="no" checked> No</label>
+            <label><input type="radio" name="corners_crease_back_multi" value="yes"> Yes</label>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- c. Color Breaks -->
+  <div class="element-group">
+    <div class="element-title-row">
+      <h3>Corner Color Breaks</h3>
+      <div class="element-hint">
+        When a crease or dent causes ink to flake or discolor.
+      </div>
+    </div>
+    <div class="element-box">
+      <div class="sub-row">
+        <div class="sub-label">Color Break – Front Cover</div>
+        <div class="sub-controls">
+          <label><input type="radio" name="corners_colorbreak_front_level" value="none" checked> No color break</label>
+          <label><input type="radio" name="corners_colorbreak_front_level" value="minor_single"> Minor, single break</label>
+          <label><input type="radio" name="corners_colorbreak_front_level" value="multiple_prominent">
+            Multiple / prominent breaks
+          </label>
+        </div>
+      </div>
+
+      <div class="sub-row">
+        <div class="sub-label">Color Break – Back Cover</div>
+        <div class="sub-controls">
+          <label><input type="radio" name="corners_colorbreak_back_level" value="none" checked> No color break</label>
+          <label><input type="radio" name="corners_colorbreak_back_level" value="minor_single"> Minor, single break</label>
+          <label><input type="radio" name="corners_colorbreak_back_level" value="multiple_prominent">
+            Multiple / prominent breaks
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- d. Tears / Chips -->
+  <div class="element-group">
+    <div class="element-title-row">
+      <h3>Tears, Chips, Missing Corners</h3>
+      <div class="element-hint">
+        Tears at corners and missing chunks/chips.
+      </div>
+    </div>
+    <div class="element-box">
+      <!-- Tears at corners -->
+      <div class="sub-row">
+        <div class="sub-label">Tears at Corners – Front Cover</div>
+        <div class="sub-controls">
+          <label><input type="radio" name="corners_tears_front_level" value="none" checked> No corner nicks</label>
+          <label><input type="radio" name="corners_tears_front_level" value="tiny"> Tiny nicks</label>
+          <label><input type="radio" name="corners_tears_front_level" value="large">
+            Larger tears / missing tips
+          </label>
+        </div>
+      </div>
+
+      <div class="sub-row">
+        <div class="sub-label">Tears at Corners – Back Cover</div>
+        <div class="sub-controls">
+          <label><input type="radio" name="corners_tears_back_level" value="none" checked> No corner nicks</label>
+          <label><input type="radio" name="corners_tears_back_level" value="tiny"> Tiny nicks</label>
+          <label><input type="radio" name="corners_tears_back_level" value="large">
+            Larger tears / missing tips
+          </label>
+        </div>
+      </div>
+
+      <!-- Missing chunks / chips -->
+      <div class="sub-row">
+        <div class="sub-label">Missing Corners / Chips – Front Cover</div>
+        <div class="sub-controls">
+          <label><input type="radio" name="corners_missing_front_level" value="none" checked> No corners missing</label>
+          <label><input type="radio" name="corners_missing_front_level" value="missing"> Missing a corner</label>
+        </div>
+      </div>
+
+      <div class="sub-row">
+        <div class="sub-label">Missing Corners / Chips – Back Cover</div>
+        <div class="sub-controls">
+          <label><input type="radio" name="corners_missing_back_level" value="none" checked> No corners missing</label>
+          <label><input type="radio" name="corners_missing_back_level" value="missing"> Missing a corner</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- e. Fraying / Delamination -->
+  <div class="element-group">
+    <div class="element-title-row">
+      <h3>Fraying and Delamination</h3>
+      <div class="element-hint">
+        Both are signs of wear or moisture and affect eye appeal and grading.
+      </div>
+    </div>
+    <div class="element-box">
+      <!-- Fraying -->
+      <div class="sub-row">
+        <div class="sub-label">Fraying – Front Cover</div>
+        <div class="sub-controls">
+          <label><input type="radio" name="corners_fray_front_has" value="none" checked> No fraying</label>
+          <label><input type="radio" name="corners_fray_front_has" value="yes">
+            Paper fibers exposed / lifted
+          </label>
+          <span class="sub-toggle">
+            In more than one location?
+            <label><input type="radio" name="corners_fray_front_multi" value="no" checked> No</label>
+            <label><input type="radio" name="corners_fray_front_multi" value="yes"> Yes</label>
+          </span>
+        </div>
+      </div>
+
+      <div class="sub-row">
+        <div class="sub-label">Fraying – Back Cover</div>
+        <div class="sub-controls">
+          <label><input type="radio" name="corners_fray_back_has" value="none" checked> No fraying</label>
+          <label><input type="radio" name="corners_fray_back_has" value="yes">
+            Paper fibers exposed / lifted
+          </label>
+          <span class="sub-toggle">
+            In more than one location?
+            <label><input type="radio" name="corners_fray_back_multi" value="no" checked> No</label>
+            <label><input type="radio" name="corners_fray_back_multi" value="yes"> Yes</label>
+          </span>
+        </div>
+      </div>
+
+      <!-- Delamination -->
+      <div class="sub-row">
+        <div class="sub-label">Delamination – Front Cover</div>
+        <div class="sub-controls">
+          <label><input type="radio" name="corners_delam_front_has" value="none" checked> No delamination</label>
+          <label><input type="radio" name="corners_delam_front_has" value="yes">
+            Cover layer peeling / separating
+          </label>
+          <span class="sub-toggle">
+            In more than one location?
+            <label><input type="radio" name="corners_delam_front_multi" value="no" checked> No</label>
+            <label><input type="radio" name="corners_delam_front_multi" value="yes"> Yes</label>
+          </span>
+        </div>
+      </div>
+
+      <div class="sub-row">
+        <div class="sub-label">Delamination – Back Cover</div>
+        <div class="sub-controls">
+          <label><input type="radio" name="corners_delam_back_has" value="none" checked> No delamination</label>
+          <label><input type="radio" name="corners_delam_back_has" value="yes">
+            Cover layer peeling / separating
+          </label>
+          <span class="sub-toggle">
+            In more than one location?
+            <label><input type="radio" name="corners_delam_back_multi" value="no" checked> No</label>
+            <label><input type="radio" name="corners_delam_back_multi" value="yes"> Yes</label>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- f. Dirt / Smudges -->
+  <div class="element-group">
+    <div class="element-title-row">
+      <h3>Dirt / Smudges</h3>
+      <div class="element-hint">
+        Dirt tends to accumulate on corners from handling.
+      </div>
+    </div>
+    <div class="element-box">
+      <div class="sub-row">
+        <div class="sub-label">Light Dirt / Smudges – Front Cover</div>
+        <div class="sub-controls">
+          <label><input type="radio" name="corners_dirt_front_level" value="none" checked> No dirt or smudges</label>
+          <label><input type="radio" name="corners_dirt_front_level" value="light"> Light dirt / smudges</label>
+        </div>
+      </div>
+
+      <div class="sub-row">
+        <div class="sub-label">Light Dirt / Smudges – Back Cover</div>
+        <div class="sub-controls">
+          <label><input type="radio" name="corners_dirt_back_level" value="none" checked> No dirt or smudges</label>
+          <label><input type="radio" name="corners_dirt_back_level" value="light"> Light dirt / smudges</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- g. Stains -->
+  <div class="element-group">
+    <div class="element-title-row">
+      <h3>Stains (water, oil, ink)</h3>
+      <div class="element-hint">
+        Stains on corners significantly reduce eye appeal.
+      </div>
+    </div>
+    <div class="element-box">
+      <div class="sub-row">
+        <div class="sub-label">Stains – Front Cover</div>
+        <div class="sub-controls">
+          <label><input type="radio" name="corners_stain_front_level" value="none" checked> No stains</label>
+          <label><input type="radio" name="corners_stain_front_level" value="present"> Stains present</label>
+        </div>
+      </div>
+
+      <div class="sub-row">
+        <div class="sub-label">Stains – Back Cover</div>
+        <div class="sub-controls">
+          <label><input type="radio" name="corners_stain_back_level" value="none" checked> No stains</label>
+          <label><input type="radio" name="corners_stain_back_level" value="present"> Stains present</label>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
     
        <button type="submit">Estimate Grade</button>
