@@ -1215,41 +1215,51 @@ document.addEventListener("DOMContentLoaded", () => {
     btn.addEventListener("touchcancel", hideSample);
   });
 
-  /*- - - - - - - - - - - - - - - - - - - - - -
-   * Multi-location toggle rows (Corners)
-   *  - Shows/hides the "more than one location?" row
-   *    based on the main sub-element choice.
-   *- - - - - - - - - - - - - - - - - - - - - */
+/*-------------------------------------------------
+ * Multi-location follow-up toggle
+ * Shows "In more than one location?" ONLY when
+ * the main choice is not "none"
+ *-------------------------------------------------*/
+function setupMultiLocationToggle(form, baseName) {
+  const radios = form.elements[baseName];
+  const rowId = baseName + "_multi_row";
+  const row = document.getElementById(rowId);
 
-  function setupMultiLocationToggle(formEl, baseName) {
-    const radios = formEl.elements[baseName];
-    const row    = document.getElementById(baseName + "_multi_row");
-    if (!radios || !row) return;
+  if (!radios || !row) {
+    console.warn("Multi-location toggle missing for:", baseName);
+    return;
+  }
 
-    const update = () => {
-      let value = "none";
-      if (radios.length === undefined) {
-        if (radios.checked) value = radios.value;
-      } else {
-        for (const r of radios) {
-          if (r.checked) {
-            value = r.value;
-            break;
-          }
-        }
-      }
-      row.style.display = (value === "none") ? "none" : "block";
-    };
+  function updateVisibility() {
+    let selected = "none";
 
     if (radios.length === undefined) {
-      radios.addEventListener("change", update);
+      if (radios.checked) selected = radios.value;
     } else {
       for (const r of radios) {
-        r.addEventListener("change", update);
+        if (r.checked) {
+          selected = r.value;
+          break;
+        }
       }
     }
-    update();
+
+    // Show follow-up ONLY if not "none"
+    row.style.display = (selected === "none") ? "none" : "flex";
   }
+
+  // Attach listeners
+  if (radios.length === undefined) {
+    radios.addEventListener("change", updateVisibility);
+  } else {
+    for (const r of radios) {
+      r.addEventListener("change", updateVisibility);
+    }
+  }
+
+  // Run once on load
+  updateVisibility();
+}
 
   // Corners multi-location sub-elements
   setupMultiLocationToggle(form, "corner_blunt_front");
