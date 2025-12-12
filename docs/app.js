@@ -71,6 +71,114 @@ function choiceValue(form, name, fallback) {
 }
 
 /*-------------------------------------------------
+ * Multi-location toggle configuration
+ * Add new multi-location controls here only.
+ * base: the main radio group name (and base for IDs)
+ * showWhen: which main values should reveal the follow-up row
+ *           (usually anything except "none")
+ *-------------------------------------------------*/
+const MULTI_LOCATION_RULES = [
+  // Corners — Blunting
+  { base: "corner_blunt_front", showWhen: ["slight", "moderate", "heavy"] },
+  { base: "corner_blunt_back",  showWhen: ["slight", "moderate", "heavy"] },
+
+  // Corners — Creases (if you add a multi-location follow-up here)
+  { base: "corner_crease_front", showWhen: ["lt_quarter", "ge_quarter", "multiple"] },
+  { base: "corner_crease_back",  showWhen: ["lt_quarter", "ge_quarter", "multiple"] },
+
+  // Corners — Fraying / Delamination
+  { base: "corner_fray_front",  showWhen: ["present"] },
+  { base: "corner_fray_back",   showWhen: ["present"] },
+  { base: "corner_delam_front", showWhen: ["present"] },
+  { base: "corner_delam_back",  showWhen: ["present"] }
+];
+
+/*-------------------------------------------------
+ * Helpers: read checked value + set multi radio default
+ *-------------------------------------------------*/
+function getCheckedValue(field) {
+  if (!field) return null;
+
+  // single input
+  if (field.length === undefined) {
+    return field.checked ? field.value : null;
+  }
+
+  // radio group
+  for (const input of field) {
+    if (input.checked) return input.value;
+  }
+  return null;
+}
+
+function forceMultiDefaultNo(form, multiName) {
+  const multiField = form.elements[multiName];
+  if (!multiField) return;
+
+  // single input edge-case
+  if (multiField.length === undefined) {
+    if (multiField.value === "no") multiField.checked = true;
+    return;
+  }
+
+  for (const r of multiField) {
+    if (r.value === "no") r.checked = true;
+  }
+}
+
+/*-------------------------------------------------
+ * Multi-location follow-up toggle (auto-reset behavior)
+ *
+ * Expected HTML:
+ *   - main group name:  base
+ *   - follow-up row id: base + "_multi_row"
+ *   - follow-up group:  base + "_multi"   (values: "no" / "yes")
+ *-------------------------------------------------*/
+function setupMultiLocationToggle(form, baseName, showWhenValues) {
+  const radios = form.elements[baseName];
+  const rowId  = `${baseName}_multi_row`;
+  const row    = document.getElementById(rowId);
+  const multiName = `${baseName}_multi`;
+
+  if (!radios || !row) {
+    console.warn("Multi-location toggle wiring missing:", { baseName, rowId });
+    return;
+  }
+
+  function updateVisibility() {
+    const selected = getCheckedValue(radios) || "none";
+    const shouldShow = showWhenValues.includes(selected);
+
+    if (shouldShow) {
+      row.style.display = "flex";
+    } else {
+      // hide + auto reset to "No"
+      row.style.display = "none";
+      forceMultiDefaultNo(form, multiName);
+    }
+  }
+
+  // Attach listeners
+  if (radios.length === undefined) {
+    radios.addEventListener("change", updateVisibility);
+  } else {
+    for (const r of radios) r.addEventListener("change", updateVisibility);
+  }
+
+  // Run once on load
+  updateVisibility();
+}
+
+/*-------------------------------------------------
+ * Initialize all multi-location toggles from config
+ *-------------------------------------------------*/
+function initMultiLocationToggles(form) {
+  for (const rule of MULTI_LOCATION_RULES) {
+    setupMultiLocationToggle(form, rule.base, rule.showWhen);
+  }
+}
+
+/*-------------------------------------------------
  * 3. BINDERY SCORING
  *   - Uses numeric radio values (10, 9.2, etc.)
  *   - Elements:
@@ -1055,7 +1163,8 @@ function makeStampKey(title, issue) {
 document.addEventListener("DOMContentLoaded", () => {
   const form            = document.getElementById("grading-form");
   if (!form) return;
-
+initMultiLocationToggles(form);
+  
   const resultDiv       = document.getElementById("result");
   const resetBtn        = document.getElementById("reset-btn");
   const printBtn        = document.getElementById("print-btn");
