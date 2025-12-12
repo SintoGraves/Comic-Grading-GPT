@@ -197,6 +197,23 @@ button[type="reset"]:active,
   white-space: nowrap;
 }
 
+/* Follow-up row: "Is this in more than one location?" */
+.multi-location-row {
+  display: none;                 /* hidden until a non-perfect choice is picked */
+  margin: 0.25rem 0 0.6rem 260px;/* same indent as .subelement-label width */
+  font-size: 0.8rem;
+}
+
+.multi-location-row span.multi-label {
+  font-weight: 600;
+  margin-right: 0.75rem;
+}
+
+.multi-location-row label {
+  margin-right: 0.75rem;
+  white-space: nowrap;
+}
+
 .choice {
   white-space: nowrap;
   font-size: 0.95rem;
