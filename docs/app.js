@@ -200,16 +200,16 @@ const MULTI_LOCATION_RULES = [
   { base: "edge_clean_back",  showWhen: ["slight", "heavy_intact"] },
 
   // Edges — Chipping
-  { base: "edge_chip_front", showWhen: ["minor", "heavy"] },
-  { base: "edge_chip_back",  showWhen: ["minor", "heavy"] },
+  { base: "edge_chip_front",  showWhen: ["minor", "heavy"] },
+  { base: "edge_chip_back",   showWhen: ["minor", "heavy"] },
 
   // Edges — Nicks/Cuts
   { base: "edge_nicks_front", showWhen: ["small_1_16_to_1_4", "large_gt_1_4_no_art", "large_gt_1_4_into_art"] },
   { base: "edge_nicks_back",  showWhen: ["small_1_16_to_1_4", "large_gt_1_4_no_art", "large_gt_1_4_into_art"] },
 
   // Edges — Tears
-  { base: "edge_tears_front", showWhen: ["lt_1_4_clean", "multi_gt_1_4_no_art", "into_art_readability"] },
-  { base: "edge_tears_back",  showWhen: ["lt_1_4_clean", "multi_gt_1_4_no_art", "into_art_readability"] },
+ { base: "edge_tears_front", showWhen: ["lt_1_4_clean", "multi_gt_1_4_no_art", "into_art_readability"] },
+ { base: "edge_tears_back",  showWhen: ["lt_1_4_clean", "multi_gt_1_4_no_art", "into_art_readability"] },
 
   // Edges — Edge Creases
   { base: "edge_crease_front", showWhen: ["tiny_no_break", "with_color_break", "multi_deep"] },
@@ -222,7 +222,6 @@ const MULTI_LOCATION_RULES = [
   // Edges — Staining/Soiling
   { base: "edge_soil_front", showWhen: ["light_dirt", "staining", "dirt_and_staining"] },
   { base: "edge_soil_back",  showWhen: ["light_dirt", "staining", "dirt_and_staining"] },
-
 ];
 
 // Robust row finder (allows future HTML id pattern tweaks)
