@@ -130,7 +130,7 @@ const MULTI_LOCATION_RULES = [
    *-----------------------------------------------*/
   { base: "corner_blunt_front", showWhen: ["slight", "moderate", "heavy"] },
   { base: "corner_blunt_back",  showWhen: ["slight", "moderate", "heavy"] },
-
+  
   /*-----------------------------------------------
    * Corners — Creases
    * (HTML values: none / short_nobreak / long_color / multi_severe)
@@ -142,15 +142,15 @@ const MULTI_LOCATION_RULES = [
    * Corners — Fraying
    * (HTML values: none / fray)
    *-----------------------------------------------*/
-  { base: "corner_fray_front",  showWhen: ["fray"] },
-  { base: "corner_fray_back",   showWhen: ["fray"] },
+  { base: "corner_fray_front",   showWhen: ["fray"] },
+  { base: "corner_fray_back",    showWhen: ["fray"] },
 
   /*-----------------------------------------------
    * Corners — Delamination
    * (HTML values: none / delam)
    *-----------------------------------------------*/
-  { base: "corner_delam_front", showWhen: ["delam"] },
-  { base: "corner_delam_back",  showWhen: ["delam"] }
+  { base: "corner_delam_front",  showWhen: ["delam"] },
+  { base: "corner_delam_back",   showWhen: ["delam"] }
 
   /*-----------------------------------------------
    * Future: add new multi-location rules here only
