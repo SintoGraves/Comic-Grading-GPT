@@ -175,6 +175,18 @@ button[type="reset"]:active,
   box-shadow: 0 1px 0 var(--btn-gray-shadow);
 }
 
+/* Allow long radio labels to wrap and flow into two rows in the subelement box */
+.subelement-box .choice {
+  white-space: normal;          /* allow wrapping */
+  max-width: 310px;             /* forces wrap; tweak as needed */
+  line-height: 1.2;
+}
+
+/* Slightly tighter gap so two-row text doesn't balloon */
+.subelement-box {
+  gap: 0.8rem;
+}
+
 /* =========================
    SMALL UI BITS
    ========================= */
