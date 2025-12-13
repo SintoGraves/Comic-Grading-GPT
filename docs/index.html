@@ -928,6 +928,308 @@
 
 </section>
 
+<!-- =========================
+     EDGES SECTION
+     ========================= -->
+<section id="edges-section" class="grade-section">
+  <h2 class="section-title">Edge Evaluation</h2>
+  <p class="section-intro">
+    When grading a comic book, the edges are another critical area to inspect — they affect both the structural integrity and visual appeal of the book.
+  </p>
+
+  <!-- 1. CLEANLINESS / SHARPNESS -->
+  <h3 class="element-title">Cleanliness and Sharpness</h3>
+  <p class="element-note">
+    Ideal Condition: Straight, clean edges with no fraying or cuts
+  </p>
+
+  <div class="subelement-row">
+    <div class="subelement-label">Front Cover</div>
+    <div class="subelement-box">
+      <span class="subelement-desc">Edge wear</span>
+
+      <label class="choice"><input type="radio" name="edge_clean_front" value="none" checked> No wear</label>
+      <label class="choice"><input type="radio" name="edge_clean_front" value="slight"> Slight edge wear</label>
+      <label class="choice"><input type="radio" name="edge_clean_front" value="heavy_intact"> Heavier wear, but intact</label>
+    </div>
+  </div>
+  <div class="multi-location-row" id="edge_clean_front_multi_row">
+    <span class="multi-label">Is this occurring in more than one location?</span>
+    <label><input type="radio" name="edge_clean_front_multi" value="no" checked> No</label>
+    <label><input type="radio" name="edge_clean_front_multi" value="yes"> Yes</label>
+  </div>
+
+  <div class="subelement-row">
+    <div class="subelement-label">Back Cover</div>
+    <div class="subelement-box">
+      <span class="subelement-desc">Edge wear</span>
+
+      <label class="choice"><input type="radio" name="edge_clean_back" value="none" checked> No wear</label>
+      <label class="choice"><input type="radio" name="edge_clean_back" value="slight"> Slight edge wear</label>
+      <label class="choice"><input type="radio" name="edge_clean_back" value="heavy_intact"> Heavier wear, but intact</label>
+    </div>
+  </div>
+  <div class="multi-location-row" id="edge_clean_back_multi_row">
+    <span class="multi-label">Is this occurring in more than one location?</span>
+    <label><input type="radio" name="edge_clean_back_multi" value="no" checked> No</label>
+    <label><input type="radio" name="edge_clean_back_multi" value="yes"> Yes</label>
+  </div>
+
+  <!-- 2. CHIPPING -->
+  <h3 class="element-title">Chipping</h3>
+  <p class="element-note">
+    Tiny pieces flaked off the edge (common in Golden Age books like Marvel's “Marvel Chipping”).
+  </p>
+
+  <div class="subelement-row">
+    <div class="subelement-label">Front Cover</div>
+    <div class="subelement-box">
+      <span class="subelement-desc">Chipping</span>
+
+      <label class="choice"><input type="radio" name="edge_chip_front" value="none" checked> No chipping</label>
+      <label class="choice"><input type="radio" name="edge_chip_front" value="minor"> Minor chipping</label>
+      <label class="choice"><input type="radio" name="edge_chip_front" value="heavy"> Heavy chipping</label>
+    </div>
+  </div>
+  <div class="multi-location-row" id="edge_chip_front_multi_row">
+    <span class="multi-label">Is this occurring in more than one location?</span>
+    <label><input type="radio" name="edge_chip_front_multi" value="no" checked> No</label>
+    <label><input type="radio" name="edge_chip_front_multi" value="yes"> Yes</label>
+  </div>
+
+  <div class="subelement-row">
+    <div class="subelement-label">Back Cover</div>
+    <div class="subelement-box">
+      <span class="subelement-desc">Chipping</span>
+
+      <label class="choice"><input type="radio" name="edge_chip_back" value="none" checked> No chipping</label>
+      <label class="choice"><input type="radio" name="edge_chip_back" value="minor"> Minor chipping</label>
+      <label class="choice"><input type="radio" name="edge_chip_back" value="heavy"> Heavy chipping</label>
+    </div>
+  </div>
+  <div class="multi-location-row" id="edge_chip_back_multi_row">
+    <span class="multi-label">Is this occurring in more than one location?</span>
+    <label><input type="radio" name="edge_chip_back_multi" value="no" checked> No</label>
+    <label><input type="radio" name="edge_chip_back_multi" value="yes"> Yes</label>
+  </div>
+
+  <!-- 3. NICKS & CUTS -->
+  <h3 class="element-title">Nicks and Cuts</h3>
+  <p class="element-note">Small edge nicks</p>
+
+  <div class="subelement-row">
+    <div class="subelement-label">Front Cover</div>
+    <div class="subelement-box">
+      <span class="subelement-desc">Nicks/Cuts</span>
+
+      <label class="choice"><input type="radio" name="edge_nicks_front" value="none" checked> No nicks or cuts</label>
+      <label class="choice"><input type="radio" name="edge_nicks_front" value="small_1_16_to_1_4"> Small edge nicks (1/16&quot; to 1/4&quot;)</label>
+      <label class="choice"><input type="radio" name="edge_nicks_front" value="large_gt_1_4_no_art"> Large cuts (&gt; 1/4&quot;, not into artwork)</label>
+      <label class="choice"><input type="radio" name="edge_nicks_front" value="large_gt_1_4_into_art"> Large cuts (&gt; 1/4&quot;, extending into artwork)</label>
+    </div>
+  </div>
+  <div class="multi-location-row" id="edge_nicks_front_multi_row">
+    <span class="multi-label">Is this occurring in more than one location?</span>
+    <label><input type="radio" name="edge_nicks_front_multi" value="no" checked> No</label>
+    <label><input type="radio" name="edge_nicks_front_multi" value="yes"> Yes</label>
+  </div>
+
+  <div class="subelement-row">
+    <div class="subelement-label">Back Cover</div>
+    <div class="subelement-box">
+      <span class="subelement-desc">Nicks/Cuts</span>
+
+      <label class="choice"><input type="radio" name="edge_nicks_back" value="none" checked> No nicks or cuts</label>
+      <label class="choice"><input type="radio" name="edge_nicks_back" value="small_1_16_to_1_4"> Small edge nicks (1/16&quot; to 1/4&quot;)</label>
+      <label class="choice"><input type="radio" name="edge_nicks_back" value="large_gt_1_4_no_art"> Large cuts (&gt; 1/4&quot;, not into artwork)</label>
+      <label class="choice"><input type="radio" name="edge_nicks_back" value="large_gt_1_4_into_art"> Large cuts (&gt; 1/4&quot;, extending into artwork)</label>
+    </div>
+  </div>
+  <div class="multi-location-row" id="edge_nicks_back_multi_row">
+    <span class="multi-label">Is this occurring in more than one location?</span>
+    <label><input type="radio" name="edge_nicks_back_multi" value="no" checked> No</label>
+    <label><input type="radio" name="edge_nicks_back_multi" value="yes"> Yes</label>
+  </div>
+
+  <!-- 4. TEARS -->
+  <h3 class="element-title">Tears</h3>
+  <p class="element-note">Small horizontal or vertical tears along the edge</p>
+
+  <div class="subelement-row">
+    <div class="subelement-label">Front Cover</div>
+    <div class="subelement-box">
+      <span class="subelement-desc">Tears</span>
+
+      <label class="choice"><input type="radio" name="edge_tears_front" value="none" checked> No tears</label>
+      <label class="choice"><input type="radio" name="edge_tears_front" value="lt_1_4_clean"> Less than 1/4&quot; tear (clean edges)</label>
+      <label class="choice"><input type="radio" name="edge_tears_front" value="multi_gt_1_4_no_art"> Multiple tears &gt; 1/4&quot; (not into artwork)</label>
+      <label class="choice"><input type="radio" name="edge_tears_front" value="into_art_readability"> Tears into artwork / affects readability</label>
+    </div>
+  </div>
+  <div class="multi-location-row" id="edge_tears_front_multi_row">
+    <span class="multi-label">Is this occurring in more than one location?</span>
+    <label><input type="radio" name="edge_tears_front_multi" value="no" checked> No</label>
+    <label><input type="radio" name="edge_tears_front_multi" value="yes"> Yes</label>
+  </div>
+
+  <div class="subelement-row">
+    <div class="subelement-label">Back Cover</div>
+    <div class="subelement-box">
+      <span class="subelement-desc">Tears</span>
+
+      <label class="choice"><input type="radio" name="edge_tears_back" value="none" checked> No tears</label>
+      <label class="choice"><input type="radio" name="edge_tears_back" value="lt_1_4_clean"> Less than 1/4&quot; tear (clean edges)</label>
+      <label class="choice"><input type="radio" name="edge_tears_back" value="multi_gt_1_4_no_art"> Multiple tears &gt; 1/4&quot; (not into artwork)</label>
+      <label class="choice"><input type="radio" name="edge_tears_back" value="into_art_readability"> Tears into artwork / affects readability</label>
+    </div>
+  </div>
+  <div class="multi-location-row" id="edge_tears_back_multi_row">
+    <span class="multi-label">Is this occurring in more than one location?</span>
+    <label><input type="radio" name="edge_tears_back_multi" value="no" checked> No</label>
+    <label><input type="radio" name="edge_tears_back_multi" value="yes"> Yes</label>
+  </div>
+
+  <!-- 5. EDGE CREASES -->
+  <h3 class="element-title">Edge Creases (with or without color breaks)</h3>
+  <p class="element-note">Creases along the top or bottom edge from handling or stacking</p>
+
+  <div class="subelement-row">
+    <div class="subelement-label">Front Cover</div>
+    <div class="subelement-box">
+      <span class="subelement-desc">Edge creases</span>
+
+      <label class="choice"><input type="radio" name="edge_crease_front" value="none" checked> No creases</label>
+      <label class="choice"><input type="radio" name="edge_crease_front" value="tiny_no_break"> Tiny creases (no color break)</label>
+      <label class="choice"><input type="radio" name="edge_crease_front" value="with_color_break"> Creases with color break</label>
+      <label class="choice"><input type="radio" name="edge_crease_front" value="multi_deep"> Multiple or deep creases</label>
+    </div>
+  </div>
+  <div class="multi-location-row" id="edge_crease_front_multi_row">
+    <span class="multi-label">Is this occurring in more than one location?</span>
+    <label><input type="radio" name="edge_crease_front_multi" value="no" checked> No</label>
+    <label><input type="radio" name="edge_crease_front_multi" value="yes"> Yes</label>
+  </div>
+
+  <div class="subelement-row">
+    <div class="subelement-label">Back Cover</div>
+    <div class="subelement-box">
+      <span class="subelement-desc">Edge creases</span>
+
+      <label class="choice"><input type="radio" name="edge_crease_back" value="none" checked> No creases</label>
+      <label class="choice"><input type="radio" name="edge_crease_back" value="tiny_no_break"> Tiny creases (no color break)</label>
+      <label class="choice"><input type="radio" name="edge_crease_back" value="with_color_break"> Creases with color break</label>
+      <label class="choice"><input type="radio" name="edge_crease_back" value="multi_deep"> Multiple or deep creases</label>
+    </div>
+  </div>
+  <div class="multi-location-row" id="edge_crease_back_multi_row">
+    <span class="multi-label">Is this occurring in more than one location?</span>
+    <label><input type="radio" name="edge_crease_back_multi" value="no" checked> No</label>
+    <label><input type="radio" name="edge_crease_back_multi" value="yes"> Yes</label>
+  </div>
+
+  <!-- 6. OVERHANG DAMAGE -->
+  <h3 class="element-title">Overhang Damage</h3>
+  <p class="element-note">Overhang is when the cover is slightly larger than the interior pages</p>
+
+  <div class="subelement-row">
+    <div class="subelement-label">Front Cover</div>
+    <div class="subelement-box">
+      <span class="subelement-desc">Overhang</span>
+
+      <label class="choice"><input type="radio" name="edge_overhang_front" value="none" checked> No cover overhang damage</label>
+      <label class="choice"><input type="radio" name="edge_overhang_front" value="minor"> Minor overhang wear</label>
+      <label class="choice"><input type="radio" name="edge_overhang_front" value="major"> Major overhang wear</label>
+      <label class="choice"><input type="radio" name="edge_overhang_front" value="loss_material"> Loss of cover material</label>
+    </div>
+  </div>
+  <div class="multi-location-row" id="edge_overhang_front_multi_row">
+    <span class="multi-label">Is this occurring in more than one location?</span>
+    <label><input type="radio" name="edge_overhang_front_multi" value="no" checked> No</label>
+    <label><input type="radio" name="edge_overhang_front_multi" value="yes"> Yes</label>
+  </div>
+
+  <div class="subelement-row">
+    <div class="subelement-label">Back Cover</div>
+    <div class="subelement-box">
+      <span class="subelement-desc">Overhang</span>
+
+      <label class="choice"><input type="radio" name="edge_overhang_back" value="none" checked> No cover overhang damage</label>
+      <label class="choice"><input type="radio" name="edge_overhang_back" value="minor"> Minor overhang wear</label>
+      <label class="choice"><input type="radio" name="edge_overhang_back" value="major"> Major overhang wear</label>
+      <label class="choice"><input type="radio" name="edge_overhang_back" value="loss_material"> Loss of cover material</label>
+    </div>
+  </div>
+  <div class="multi-location-row" id="edge_overhang_back_multi_row">
+    <span class="multi-label">Is this occurring in more than one location?</span>
+    <label><input type="radio" name="edge_overhang_back_multi" value="no" checked> No</label>
+    <label><input type="radio" name="edge_overhang_back_multi" value="yes"> Yes</label>
+  </div>
+
+  <!-- 7. TRIM / BINDERY CUTS -->
+  <h3 class="element-title">Trim / Bindery Cuts</h3>
+  <p class="element-note">Uneven or rough cuts, a sign of bindery flaw</p>
+
+  <div class="subelement-row">
+    <div class="subelement-label">Front Cover</div>
+    <div class="subelement-box">
+      <span class="subelement-desc">Trim/cuts</span>
+
+      <label class="choice"><input type="radio" name="edge_trim_front" value="none" checked> No trim/bindery cut problems</label>
+      <label class="choice"><input type="radio" name="edge_trim_front" value="slightly_uneven"> Slightly uneven</label>
+      <label class="choice"><input type="radio" name="edge_trim_front" value="very_rough"> Very rough, crooked, or irregular</label>
+    </div>
+  </div>
+
+  <div class="subelement-row">
+    <div class="subelement-label">Back Cover</div>
+    <div class="subelement-box">
+      <span class="subelement-desc">Trim/cuts</span>
+
+      <label class="choice"><input type="radio" name="edge_trim_back" value="none" checked> No trim/bindery cut problems</label>
+      <label class="choice"><input type="radio" name="edge_trim_back" value="slightly_uneven"> Slightly uneven</label>
+      <label class="choice"><input type="radio" name="edge_trim_back" value="very_rough"> Very rough, crooked, or irregular</label>
+    </div>
+  </div>
+
+  <!-- 8. STAINING / SOILING -->
+  <h3 class="element-title">Staining or Soiling</h3>
+  <p class="element-note">Light dirt along edges: often seen in well-handled books</p>
+
+  <div class="subelement-row">
+    <div class="subelement-label">Front Cover</div>
+    <div class="subelement-box">
+      <span class="subelement-desc">Soiling</span>
+
+      <label class="choice"><input type="radio" name="edge_soil_front" value="none" checked> No stains or dirt</label>
+      <label class="choice"><input type="radio" name="edge_soil_front" value="light_dirt"> Light dirt along edges</label>
+      <label class="choice"><input type="radio" name="edge_soil_front" value="staining"> Staining (water, oil, etc.)</label>
+      <label class="choice"><input type="radio" name="edge_soil_front" value="dirt_and_staining"> Dirt and staining</label>
+    </div>
+  </div>
+  <div class="multi-location-row" id="edge_soil_front_multi_row">
+    <span class="multi-label">Is this occurring in more than one location?</span>
+    <label><input type="radio" name="edge_soil_front_multi" value="no" checked> No</label>
+    <label><input type="radio" name="edge_soil_front_multi" value="yes"> Yes</label>
+  </div>
+
+  <div class="subelement-row">
+    <div class="subelement-label">Back Cover</div>
+    <div class="subelement-box">
+      <span class="subelement-desc">Soiling</span>
+
+      <label class="choice"><input type="radio" name="edge_soil_back" value="none" checked> No stains or dirt</label>
+      <label class="choice"><input type="radio" name="edge_soil_back" value="light_dirt"> Light dirt along edges</label>
+      <label class="choice"><input type="radio" name="edge_soil_back" value="staining"> Staining (water, oil, etc.)</label>
+      <label class="choice"><input type="radio" name="edge_soil_back" value="dirt_and_staining"> Dirt and staining</label>
+    </div>
+  </div>
+  <div class="multi-location-row" id="edge_soil_back_multi_row">
+    <span class="multi-label">Is this occurring in more than one location?</span>
+    <label><input type="radio" name="edge_soil_back_multi" value="no" checked> No</label>
+    <label><input type="radio" name="edge_soil_back_multi" value="yes"> Yes</label>
+  </div>
+
+</section>
     
        <button type="submit">Estimate Grade</button>
     <button type="reset" id="reset-btn">Reset Form</button>
