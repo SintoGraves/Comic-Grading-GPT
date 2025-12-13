@@ -152,6 +152,43 @@ const MULTI_LOCATION_RULES = [
   { base: "corner_delam_front",  showWhen: ["delam"] },
   { base: "corner_delam_back",   showWhen: ["delam"] }
 
+/*-------------------------------------------------
+ * EDGE EVALUATION — MULTI-LOCATION RULES
+ *-------------------------------------------------*/
+
+  // Edge Cleanliness / Sharpness
+  { base: "edge_clean_front", showWhen: ["slight", "heavy"] },
+  { base: "edge_clean_back",  showWhen: ["slight", "heavy"] },
+
+  // Edge Chipping
+  { base: "edge_chip_front",  showWhen: ["minor", "heavy"] },
+  { base: "edge_chip_back",   showWhen: ["minor", "heavy"] },
+
+  // Edge Nicks / Cuts
+  { base: "edge_nicks_front", showWhen: ["small", "large_no_art", "large_art"] },
+  { base: "edge_nicks_back",  showWhen: ["small", "large_no_art", "large_art"] },
+
+  // Edge Tears
+  { base: "edge_tears_front", showWhen: ["short", "multi_long", "art"] },
+  { base: "edge_tears_back",  showWhen: ["short", "multi_long", "art"] },
+
+  // Edge Creases
+  { base: "edge_crease_front", showWhen: ["tiny", "color", "deep"] },
+  { base: "edge_crease_back",  showWhen: ["tiny", "color", "deep"] },
+
+  // Overhang Damage
+  { base: "edge_overhang_front", showWhen: ["minor", "major", "loss"] },
+  { base: "edge_overhang_back",  showWhen: ["minor", "major", "loss"] },
+
+  // Trim / Bindery Cuts
+  // (NO multi-location — scoring is single-state)
+  // intentionally omitted
+
+  // Edge Staining / Soiling
+  { base: "edge_stain_front", showWhen: ["dirt", "stain", "both"] },
+  { base: "edge_stain_back",  showWhen: ["dirt", "stain", "both"] }
+
+  
   /*-----------------------------------------------
    * Future: add new multi-location rules here only
    * Example:
