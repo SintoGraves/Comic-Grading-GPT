@@ -1,4 +1,14 @@
 /*-------------------------------------------------
+ * app.js — Comic Grading Tool (Beta)
+ * Full consolidated JS (Bindery + Corners in current build)
+ *
+ * Design goals:
+ *  - Centralized multi-location logic (easy future drop-ins)
+ *  - No duplicate toggle functions
+ *  - Clear section labeling for maintainability
+ *-------------------------------------------------*/
+
+/*-------------------------------------------------
  * 1. GRADE SCALE & GRADE PICKER
  *-------------------------------------------------*/
 
@@ -45,7 +55,6 @@ function getRadioValue(form, name) {
   const field = form.elements[name];
   if (!field) return 10.0;
 
-  // single input vs. NodeList
   if (field.length === undefined) {
     return field.checked ? (parseFloat(field.value) || 10.0) : 10.0;
   }
@@ -56,7 +65,7 @@ function getRadioValue(form, name) {
   return 10.0;
 }
 
-// String radio group -> string
+// String radio group -> string (fallback if none selected)
 function choiceValue(form, name, fallback) {
   const field = form.elements[name];
   if (!field) return fallback;
@@ -82,7 +91,7 @@ function getCheckedValue(field) {
   for (const input of field) {
     if (input.checked) return input.value;
   }
-  return nullnull;
+  return null;
 }
 
 // Force a follow-up yes/no radio group to "no"
@@ -115,34 +124,51 @@ function forceMultiDefaultNo(form, multiName) {
  *-------------------------------------------------*/
 
 const MULTI_LOCATION_RULES = [
-  // Corners — Blunting (show when NOT "none")
+  /*-----------------------------------------------
+   * Corners — Blunting
+   * (HTML values: none / slight / moderate / heavy)
+   *-----------------------------------------------*/
   { base: "corner_blunt_front", showWhen: ["slight", "moderate", "heavy"] },
   { base: "corner_blunt_back",  showWhen: ["slight", "moderate", "heavy"] },
 
-  // Corners — Creases (your scoring uses multi-location)
+  /*-----------------------------------------------
+   * Corners — Creases
+   * (HTML values: none / short_nobreak / long_color / multi_severe)
+   *-----------------------------------------------*/
   { base: "corner_crease_front", showWhen: ["short_nobreak", "long_color", "multi_severe"] },
   { base: "corner_crease_back",  showWhen: ["short_nobreak", "long_color", "multi_severe"] },
 
-  // Corners — Fraying / Delamination
-  { base: "corner_fray_front",  showWhen: ["present"] },
-  { base: "corner_fray_back",   showWhen: ["present"] },
-  { base: "corner_delam_front", showWhen: ["present"] },
-  { base: "corner_delam_back",  showWhen: ["present"] }
+  /*-----------------------------------------------
+   * Corners — Fraying
+   * (HTML values: none / fray)
+   *-----------------------------------------------*/
+  { base: "corner_fray_front",  showWhen: ["fray"] },
+  { base: "corner_fray_back",   showWhen: ["fray"] },
+
+  /*-----------------------------------------------
+   * Corners — Delamination
+   * (HTML values: none / delam)
+   *-----------------------------------------------*/
+  { base: "corner_delam_front", showWhen: ["delam"] },
+  { base: "corner_delam_back",  showWhen: ["delam"] }
+
+  /*-----------------------------------------------
+   * Future: add new multi-location rules here only
+   * Example:
+   * { base: "spine_ticks_front", showWhen: ["light", "moderate", "heavy"] }
+   *-----------------------------------------------*/
 ];
 
-// More robust row finder (so minor id drift doesn’t break everything)
+// Robust row finder (allows future HTML id pattern tweaks)
 function findMultiRowElement(baseName) {
   const id1 = `${baseName}_multi_row`;
   const el1 = document.getElementById(id1);
   if (el1) return el1;
 
-  // Optional fallback patterns if you ever change HTML later:
   const id2 = `${baseName}-multi-row`;
   const el2 = document.getElementById(id2);
   if (el2) return el2;
 
-  // Optional fallback via data attribute:
-  // <div class="multi-row" data-multi-base="corner_blunt_front">
   const el3 = document.querySelector(`[data-multi-base="${baseName}"]`);
   if (el3) return el3;
 
@@ -226,12 +252,12 @@ function computeBinderyScore(form) {
 
   const elements = [
     { id: "Staple Placement",                  score: staplePlacement },
-    { id: "Staple Tightness & Attachment",    score: stapleTightness },
-    { id: "Spine Fold (Bind) Alignment",      score: spineFoldAlign },
-    { id: "Staples (Rust)",                   score: stapleRust },
-    { id: "Cover Trim and Cuts",              score: coverTrimCuts },
-    { id: "Printing/Bindery Tears",           score: printingTears },
-    { id: "Cover/Interior Page Registration", score: registration }
+    { id: "Staple Tightness & Attachment",     score: stapleTightness },
+    { id: "Spine Fold (Bind) Alignment",       score: spineFoldAlign },
+    { id: "Staples (Rust)",                    score: stapleRust },
+    { id: "Cover Trim and Cuts",               score: coverTrimCuts },
+    { id: "Printing/Bindery Tears",            score: printingTears },
+    { id: "Cover/Interior Page Registration",  score: registration }
   ];
 
   const baseScore = Math.min(...elements.map(e => e.score));
@@ -333,7 +359,9 @@ function scoreStain(choice) {
 }
 
 function computeCornersScore(form) {
-  // A. Blunting
+  /*-----------------------------------------------
+   * A. Sharpness / Blunting
+   *-----------------------------------------------*/
   const bluntFront = scoreBlunting(
     choiceValue(form, "corner_blunt_front", "none"),
     choiceValue(form, "corner_blunt_front_multi", "no")
@@ -344,7 +372,9 @@ function computeCornersScore(form) {
   );
   const sharpnessScore = Math.min(bluntFront, bluntBack);
 
-  // B. Creases
+  /*-----------------------------------------------
+   * B. Corner Creases
+   *-----------------------------------------------*/
   const creaseFront = scoreCrease(
     choiceValue(form, "corner_crease_front", "none"),
     choiceValue(form, "corner_crease_front_multi", "no")
@@ -355,19 +385,25 @@ function computeCornersScore(form) {
   );
   const creaseScore = Math.min(creaseFront, creaseBack);
 
-  // C. Color Breaks
+  /*-----------------------------------------------
+   * C. Color Breaks
+   *-----------------------------------------------*/
   const colorFront = scoreColorBreak(choiceValue(form, "corner_colorbreak_front", "none"));
   const colorBack  = scoreColorBreak(choiceValue(form, "corner_colorbreak_back", "none"));
   const colorBreakScore = Math.min(colorFront, colorBack);
 
-  // D. Tears / Missing
+  /*-----------------------------------------------
+   * D. Tears / Chips / Missing Corners
+   *-----------------------------------------------*/
   const tearsFront = scoreTears(choiceValue(form, "corner_tears_front", "none"));
   const tearsBack  = scoreTears(choiceValue(form, "corner_tears_back", "none"));
   const missingFront = scoreMissing(choiceValue(form, "corner_missing_front", "none"));
   const missingBack  = scoreMissing(choiceValue(form, "corner_missing_back", "none"));
   const tearsChipsScore = Math.min(tearsFront, tearsBack, missingFront, missingBack);
 
-  // E. Fray / Delam
+  /*-----------------------------------------------
+   * E. Fraying & Delamination
+   *-----------------------------------------------*/
   const frayFront = scoreFray(
     choiceValue(form, "corner_fray_front", "none"),
     choiceValue(form, "corner_fray_front_multi", "no")
@@ -386,7 +422,9 @@ function computeCornersScore(form) {
   );
   const frayDelamScore = Math.min(frayFront, frayBack, delamFront, delamBack);
 
-  // F. Dirt / Stains
+  /*-----------------------------------------------
+   * F. Dirt / Smudges / Stains
+   *-----------------------------------------------*/
   const dirtFront = scoreDirt(choiceValue(form, "corner_dirt_front", "none"));
   const dirtBack  = scoreDirt(choiceValue(form, "corner_dirt_back", "none"));
   const stainFront = scoreStain(choiceValue(form, "corner_stain_front", "none"));
@@ -394,12 +432,12 @@ function computeCornersScore(form) {
   const dirtStainScore = Math.min(dirtFront, dirtBack, stainFront, stainBack);
 
   const elements = [
-    { id: "Sharpness / Blunting",          score: sharpnessScore },
-    { id: "Corner Creases",               score: creaseScore },
-    { id: "Color Breaks",                 score: colorBreakScore },
-    { id: "Tears, Chips, Missing Corners",score: tearsChipsScore },
-    { id: "Fraying & Delamination",       score: frayDelamScore },
-    { id: "Dirt / Smudges / Stains",      score: dirtStainScore }
+    { id: "Sharpness / Blunting",           score: sharpnessScore },
+    { id: "Corner Creases",                score: creaseScore },
+    { id: "Color Breaks",                  score: colorBreakScore },
+    { id: "Tears, Chips, Missing Corners", score: tearsChipsScore },
+    { id: "Fraying & Delamination",        score: frayDelamScore },
+    { id: "Dirt / Smudges / Stains",       score: dirtStainScore }
   ];
 
   const baseScore = Math.min(...elements.map(e => e.score));
@@ -979,7 +1017,9 @@ const VALUE_STAMP_INDEX = {
   "worlds unknown#8": true
 };
 
-const KNOWN_TITLES = Array.from(new Set(Object.keys(VALUE_STAMP_INDEX).map(k => k.split("#")[0])));
+const KNOWN_TITLES = Array.from(
+  new Set(Object.keys(VALUE_STAMP_INDEX).map(k => k.split("#")[0]))
+);
 
 /*-------------------------------------------------
  * 8. TITLE NORMALIZATION & SUGGESTION
@@ -992,6 +1032,7 @@ function normalizeTitle(rawTitle) {
   if (t.startsWith("the ")) t = t.slice(4);
   t = t.replace(/\s+/g, " ");
 
+  // common glued words
   t = t.replace(/spiderman/g, "spider-man");
   t = t.replace(/xmen/g, "x-men");
   t = t.replace(/ironman/g, "iron man");
@@ -1000,15 +1041,20 @@ function normalizeTitle(rawTitle) {
   t = t.replace(/dr\.\s*strange/g, "doctor strange");
   t = t.replace(/newmutants/g, "new mutants");
 
+  // abbreviations
   t = t.replace(/^asm\s*/, "amazing spider-man ");
   t = t.replace(/^tmnt\s*/, "teenage mutant ninja turtles ");
   t = t.replace(/^tmt\s*/, "teenage mutant turtles ");
   t = t.replace(/^bprd\s*/, "bprd ");
   t = t.replace(/^ff\s*(?!#)/g, "fantastic four ");
 
+  // "x men" -> "x-men"
   t = t.replace(/\bx men\b/g, "x-men");
+
+  // & -> and
   t = t.replace(/ & /g, " and ");
 
+  // strip punctuation
   t = t.replace(/[^a-z0-9\- ]+/g, "");
   t = t.replace(/\s\s+/g, " ");
 
@@ -1019,6 +1065,7 @@ function editDistance(a, b) {
   const lenA = a.length;
   const lenB = b.length;
   const dp = Array.from({ length: lenA + 1 }, () => new Array(lenB + 1).fill(0));
+
   for (let i = 0; i <= lenA; i++) dp[i][0] = i;
   for (let j = 0; j <= lenB; j++) dp[0][j] = j;
 
@@ -1053,17 +1100,22 @@ function suggestTitle(rawTitle) {
   if (!bestTitle) return null;
   if (bestDistance === 0) return null;
   if (bestDistance > 3) return null;
+
   return { normalized: bestTitle, distance: bestDistance };
 }
 
 function displayTitleFromNormalized(norm) {
-  return norm.split(" ").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+  return norm
+    .split(" ")
+    .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");
 }
 
 function makeStampKey(title, issue) {
   const normTitle = normalizeTitle(title);
-  let normIssue = `${issue}`.trim().toLowerCase().replace(/^#/, "");
-  return `${normTitle}#${normIssue}`;
+  let normIssue = `${issue}`.trim().toLowerCase();
+  normIssue = normIssue.replace(/^#/, "");
+  return normTitle + "#" + normIssue;
 }
 
 /*-------------------------------------------------
@@ -1089,15 +1141,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let stampApplies = false;
 
-  /*- - - - - - - - - - - - - - - - - - - - - -
+  /*-------------------------------------------------
    * Multi-location toggles (RUN EARLY)
-   *- - - - - - - - - - - - - - - - - - - - - */
+   *-------------------------------------------------*/
   initMultiLocationToggles(form);
 
-  /*- - - - - - - - - - - - - - - - - - - - - -
+  /*-------------------------------------------------
    * Value stamp lookup (title + issue)
-   *- - - - - - - - - - - - - - - - - - - - - */
-
+   *-------------------------------------------------*/
   function updateStampLookup() {
     const title = titleInput ? titleInput.value.trim() : "";
     const issue = issueInput ? issueInput.value.trim() : "";
@@ -1132,10 +1183,9 @@ document.addEventListener("DOMContentLoaded", () => {
     issueInput.addEventListener("input", updateStampLookup);
   }
 
-  /*- - - - - - - - - - - - - - - - - - - - - -
+  /*-------------------------------------------------
    * Title suggestion (Did you mean ... ?)
-   *- - - - - - - - - - - - - - - - - - - - - */
-
+   *-------------------------------------------------*/
   if (titleInput && titleSuggestion) {
     const runTitleSuggestion = () => {
       const raw = titleInput.value;
@@ -1173,10 +1223,9 @@ document.addEventListener("DOMContentLoaded", () => {
     titleInput.addEventListener("change", runTitleSuggestion);
   }
 
-  /*- - - - - - - - - - - - - - - - - - - - - -
+  /*-------------------------------------------------
    * Cover image upload preview
-   *- - - - - - - - - - - - - - - - - - - - - */
-
+   *-------------------------------------------------*/
   if (coverInput && coverPreview) {
     coverInput.addEventListener("change", (e) => {
       const file = e.target.files && e.target.files[0];
@@ -1195,10 +1244,10 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  /*- - - - - - - - - - - - - - - - - - - - - -
+  /*-------------------------------------------------
    * Sample-image overlay (press-and-hold)
-   *- - - - - - - - - - - - - - - - - - - - - */
-
+   *  - Any button with .sample-btn and data-sample-img
+   *-------------------------------------------------*/
   const sampleOverlay = document.createElement("div");
   sampleOverlay.id = "sample-overlay";
   sampleOverlay.innerHTML = `<img id="sample-overlay-img" alt="Grading example" />`;
@@ -1234,12 +1283,11 @@ document.addEventListener("DOMContentLoaded", () => {
     btn.addEventListener("touchcancel", hideSample);
   });
 
-  /*- - - - - - - - - - - - - - - - - - - - - -
+  /*-------------------------------------------------
    * Submit handler: compute sections and report
    *  - Current build: Bindery + Corners
    *  - Overall score: min(section scores)
-   *- - - - - - - - - - - - - - - - - - - - - */
-
+   *-------------------------------------------------*/
   if (resultDiv) {
     form.addEventListener("submit", (e) => {
       e.preventDefault();
@@ -1247,10 +1295,13 @@ document.addEventListener("DOMContentLoaded", () => {
       const bindery = computeBinderyScore(form);
       const corners = computeCornersScore(form);
 
-      // Future drop-ins
-      // const spine = computeSpineScore(form);
-      // const pages = computePagesScore(form);
-      // const cover = computeCoverScore(form);
+      /*---------------------------------------------
+       * Future drop-ins (placeholder wiring)
+       *---------------------------------------------
+       * const spine = computeSpineScore(form);
+       * const pages = computePagesScore(form);
+       * const cover = computeCoverScore(form);
+       */
 
       const sectionScores = [
         bindery.finalScore,
@@ -1320,14 +1371,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  /*- - - - - - - - - - - - - - - - - - - - - -
+  /*-------------------------------------------------
    * Reset handler
    *  - Clears stamp UI
    *  - Clears report
    *  - Clears cover preview
    *  - Re-applies multi-location visibility + resets hidden to No
-   *- - - - - - - - - - - - - - - - - - - - - */
-
+   *-------------------------------------------------*/
   if (resetBtn) {
     resetBtn.addEventListener("click", () => {
       stampApplies = false;
@@ -1346,10 +1396,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  /*- - - - - - - - - - - - - - - - - - - - - -
+  /*-------------------------------------------------
    * Print handler
-   *- - - - - - - - - - - - - - - - - - - - - */
-
+   *-------------------------------------------------*/
   if (printBtn && resultDiv) {
     printBtn.addEventListener("click", () => {
       if (!resultDiv.innerHTML.trim()) {
