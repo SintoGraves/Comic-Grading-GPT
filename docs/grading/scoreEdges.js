@@ -157,10 +157,9 @@ CGT.computeEdgesScore = function computeEdgesScore(form) {
   const overhangScore = Math.min(overhangFront, overhangBack);
 
   // 7) Trim / bindery cuts
-  const trimFront = scoreEdgeTrim(CGT.choiceValue(form, "edge_trim_front", "none"));
-  const trimBack  = scoreEdgeTrim(CGT.choiceValue(form, "edge_trim_back", "none"));
-);
-  const trimScore = Math.min(trimFront, trimBack);
+const trimFront = scoreEdgeTrim(CGT.choiceValue(form, "edge_trim_front", "none"));
+const trimBack  = scoreEdgeTrim(CGT.choiceValue(form, "edge_trim_back", "none"));
+const trimScore = Math.min(trimFront, trimBack);
 
   // 8) Staining / Soiling
   const soilFront = scoreEdgeSoiling(
