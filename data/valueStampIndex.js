@@ -8,7 +8,7 @@
 (function () {
   "use strict";
 
-  window.CGT = window.CGT || {};
+  const CGT = (window.CGT = window.CGT || {});
 
   CGT.VALUE_STAMP_INDEX = {
 
