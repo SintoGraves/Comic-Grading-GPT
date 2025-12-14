@@ -6,7 +6,7 @@
 (function () {
   "use strict";
 
-  const CGT = (window.CGT = window.CGT || {});
+  window.CGT = window.CGT || {};
 
   function scoreBlunting(choice, multi) {
     if (choice === "none") return 10.0;
