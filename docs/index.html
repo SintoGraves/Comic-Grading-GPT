@@ -23,68 +23,23 @@
   </div>
 
   <form id="grading-form">
-    <!-- Comic Info Fields -->
-    <div include-html="partials/info-fields.html"></div>
-
-    <!-- Gem Mint Checkbox -->
-    <fieldset>
-      <legend>Top Condition / Gem Mint Check</legend>
-      <label>
-        <input type="checkbox" id="gm_candidate" />
-        This copy looks absolutely perfect to you (Gem Mint 10.0 candidate if no discrepancies).
-      </label>
-    </fieldset>
-
-    <!-- Optional Cover Upload -->
-    <fieldset>
-      <legend>Comic Image (Optional)</legend>
-      <label>
-        Front cover image:
-        <input type="file" id="cover_image" accept="image/*" />
-      </label>
-      <div id="cover-preview-wrapper">
-        <p class="hint" id="cover-preview-hint">
-          Optional: upload a photo/scan of the front cover. This will be shown on screen
-          and included with your printed report.
-        </p>
-        <img id="cover-preview" alt="Comic cover preview" />
-      </div>
-    </fieldset>
+    <!-- Comic Info Fields (Title, Issue, Gem Mint, Cover Upload) -->
+    <include src="partials/info-fields.html"></include>
 
     <!-- Marvel Value Stamp -->
-    <div include-html="partials/value-stamp.html"></div>
+    <include src="partials/value-stamp.html"></include>
 
     <!-- Grading Sections -->
-    <div include-html="sections/bindery.html"></div>
-    <div include-html="sections/corners.html"></div>
-    <div include-html="sections/edges.html"></div>
-    <div include-html="sections/spine.html"></div>
+    <include src="sections/bindery.html"></include>
+    <include src="sections/corners.html"></include>
+    <include src="sections/edges.html"></include>
+    <include src="sections/spine.html"></include>
 
     <!-- Action Buttons -->
-    <div include-html="partials/buttons.html"></div>
+    <include src="partials/buttons.html"></include>
   </form>
 
   <section id="result" style="margin-top:1.5rem;"></section>
-
-  <!-- JavaScript for client-side includes -->
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const includeElements = document.querySelectorAll('[include-html]');
-      includeElements.forEach(async (el) => {
-        const file = el.getAttribute('include-html');
-        try {
-          const response = await fetch(file);
-          if (!response.ok) throw new Error('Failed to fetch ' + file);
-          const content = await response.text();
-          el.innerHTML = content;
-          el.removeAttribute('include-html');
-        } catch (err) {
-          el.innerHTML = `<p style="color:red;">Error loading ${file}</p>`;
-          console.warn(err);
-        }
-      });
-    });
-  </script>
 
   <!-- JS Utilities and Grading Logic -->
   <script src="grading/scoringUtils.js"></script>
