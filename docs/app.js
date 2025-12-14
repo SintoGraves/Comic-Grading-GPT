@@ -3,7 +3,7 @@
  * Main entry (Bindery + Corners + Edges)
  * Namespace: window.CGT (aliased locally as CGT)
  *-------------------------------------------------*/
-const CGT = (window.CGT = window.CGT || {});
+var CGT = (window.CGT = window.CGT || {});
 
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("grading-form");
