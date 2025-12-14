@@ -113,80 +113,97 @@ function forceMultiDefaultNo(form, multiName) {
  * 3. MULTI-LOCATION TOGGLE (CENTRALIZED)
  *
  * Expected HTML wiring:
- *  - Main radio group name:  base
- *  - Follow-up row element:  id = base + "_multi_row"
- *  - Follow-up radio group:  name = base + "_multi"
+ *  - Base radio group name:      base
+ *  - Follow-up row element id:   base + "_multi_row"
+ *  - Follow-up radio group name: base + "_multi"
  *    values must be "no" and "yes"
  *
- * Behavior:
+ * Rule:
  *  - Show follow-up row ONLY when selected value is in showWhen[]
- *  - Hide follow-up row otherwise AND auto-reset follow-up to "no"
+ *  - Hide otherwise AND auto-reset follow-up to "no"
  *-------------------------------------------------*/
 
 const MULTI_LOCATION_RULES = [
   /*-----------------------------------------------
-   * Corners — Blunting
-   * (HTML values: none / slight / moderate / heavy)
+   * CORNERS — Sharpness / Blunting
+   * HTML values: none / slight / moderate / heavy
    *-----------------------------------------------*/
   { base: "corner_blunt_front", showWhen: ["slight", "moderate", "heavy"] },
   { base: "corner_blunt_back",  showWhen: ["slight", "moderate", "heavy"] },
-  
+
   /*-----------------------------------------------
-   * Corners — Creases
-   * (HTML values: none / short_nobreak / long_color / multi_severe)
+   * CORNERS — Creases
+   * HTML values: none / short_nobreak / long_color / multi_severe
    *-----------------------------------------------*/
   { base: "corner_crease_front", showWhen: ["short_nobreak", "long_color", "multi_severe"] },
   { base: "corner_crease_back",  showWhen: ["short_nobreak", "long_color", "multi_severe"] },
 
   /*-----------------------------------------------
-   * Corners — Fraying
-   * (HTML values: none / fray)
+   * CORNERS — Fraying
+   * HTML values: none / fray
    *-----------------------------------------------*/
-  { base: "corner_fray_front",   showWhen: ["fray"] },
-  { base: "corner_fray_back",    showWhen: ["fray"] },
+  { base: "corner_fray_front", showWhen: ["fray"] },
+  { base: "corner_fray_back",  showWhen: ["fray"] },
 
   /*-----------------------------------------------
-   * Corners — Delamination
-   * (HTML values: none / delam)
+   * CORNERS — Delamination
+   * HTML values: none / delam
    *-----------------------------------------------*/
-  { base: "corner_delam_front",  showWhen: ["delam"] },
-  { base: "corner_delam_back",   showWhen: ["delam"] }
+  { base: "corner_delam_front", showWhen: ["delam"] },
+  { base: "corner_delam_back",  showWhen: ["delam"] },
 
-/*-------------------------------------------------
- * EDGE EVALUATION — MULTI-LOCATION RULES
- *-------------------------------------------------*/
+  /*-----------------------------------------------
+   * EDGES — Cleanliness / Sharpness
+   * HTML values: none / slight / heavy_intact
+   *-----------------------------------------------*/
+  { base: "edge_clean_front", showWhen: ["slight", "heavy_intact"] },
+  { base: "edge_clean_back",  showWhen: ["slight", "heavy_intact"] },
 
-  // Edge Cleanliness / Sharpness
-  { base: "edge_clean_front", showWhen: ["slight", "heavy"] },
-  { base: "edge_clean_back",  showWhen: ["slight", "heavy"] },
+  /*-----------------------------------------------
+   * EDGES — Chipping
+   * HTML values: none / minor / heavy
+   *-----------------------------------------------*/
+  { base: "edge_chip_front", showWhen: ["minor", "heavy"] },
+  { base: "edge_chip_back",  showWhen: ["minor", "heavy"] },
 
-  // Edge Chipping
-  { base: "edge_chip_front",  showWhen: ["minor", "heavy"] },
-  { base: "edge_chip_back",   showWhen: ["minor", "heavy"] },
+  /*-----------------------------------------------
+   * EDGES — Nicks / Cuts
+   * HTML values:
+   *  none / small_1_16_to_1_4 / large_gt_1_4_no_art / large_gt_1_4_into_art
+   *-----------------------------------------------*/
+  { base: "edge_nicks_front", showWhen: ["small_1_16_to_1_4", "large_gt_1_4_no_art", "large_gt_1_4_into_art"] },
+  { base: "edge_nicks_back",  showWhen: ["small_1_16_to_1_4", "large_gt_1_4_no_art", "large_gt_1_4_into_art"] },
 
-  // Edge Nicks / Cuts
-  { base: "edge_nicks_front", showWhen: ["small", "large_no_art", "large_art"] },
-  { base: "edge_nicks_back",  showWhen: ["small", "large_no_art", "large_art"] },
+  /*-----------------------------------------------
+   * EDGES — Tears
+   * HTML values:
+   *  none / lt_1_4_clean / multi_gt_1_4_no_art / into_art_readability
+   *-----------------------------------------------*/
+  { base: "edge_tears_front", showWhen: ["lt_1_4_clean", "multi_gt_1_4_no_art", "into_art_readability"] },
+  { base: "edge_tears_back",  showWhen: ["lt_1_4_clean", "multi_gt_1_4_no_art", "into_art_readability"] },
 
-  // Edge Tears
-  { base: "edge_tears_front", showWhen: ["short", "multi_long", "art"] },
-  { base: "edge_tears_back",  showWhen: ["short", "multi_long", "art"] },
+  /*-----------------------------------------------
+   * EDGES — Edge Creases
+   * HTML values:
+   *  none / tiny_no_break / with_color_break / multi_deep
+   *-----------------------------------------------*/
+  { base: "edge_crease_front", showWhen: ["tiny_no_break", "with_color_break", "multi_deep"] },
+  { base: "edge_crease_back",  showWhen: ["tiny_no_break", "with_color_break", "multi_deep"] },
 
-  // Edge Creases
-  { base: "edge_crease_front", showWhen: ["tiny", "color", "deep"] },
-  { base: "edge_crease_back",  showWhen: ["tiny", "color", "deep"] },
+  /*-----------------------------------------------
+   * EDGES — Overhang Damage
+   * HTML values: none / minor / major / loss_material
+   *-----------------------------------------------*/
+  { base: "edge_overhang_front", showWhen: ["minor", "major", "loss_material"] },
+  { base: "edge_overhang_back",  showWhen: ["minor", "major", "loss_material"] },
 
-  // Overhang Damage
-  { base: "edge_overhang_front", showWhen: ["minor", "major", "loss"] },
-  { base: "edge_overhang_back",  showWhen: ["minor", "major", "loss"] },
-
-  // Trim / Bindery Cuts
-  // (NO multi-location — scoring is single-state)
-  // intentionally omitted
-
-  // Edge Staining / Soiling
-  { base: "edge_stain_front", showWhen: ["dirt", "stain", "both"] },
-  { base: "edge_stain_back",  showWhen: ["dirt", "stain", "both"] }
+  /*-----------------------------------------------
+   * EDGES — Staining/Soiling
+   * HTML values: none / light_dirt / staining / dirt_and_staining
+   *-----------------------------------------------*/
+  { base: "edge_soil_front", showWhen: ["light_dirt", "staining", "dirt_and_staining"] },
+  { base: "edge_soil_back",  showWhen: ["light_dirt", "staining", "dirt_and_staining"] }
+];
 
   
   /*-----------------------------------------------
@@ -224,18 +241,19 @@ const MULTI_LOCATION_RULES = [
   { base: "edge_soil_back",  showWhen: ["light_dirt", "staining", "dirt_and_staining"] },
 ];
 
-// Robust row finder (allows future HTML id pattern tweaks)
+// Robust row finder
 function findMultiRowElement(baseName) {
-  const id1 = `${baseName}_multi_row`;
-  const el1 = document.getElementById(id1);
-  if (el1) return el1;
+  // Your HTML uses id="${base}_multi_row"
+  const id = `${baseName}_multi_row`;
+  const el = document.getElementById(id);
+  if (el) return el;
 
-  const id2 = `${baseName}-multi-row`;
-  const el2 = document.getElementById(id2);
-  if (el2) return el2;
+  // Fallback patterns if you ever change markup later
+  const alt = document.getElementById(`${baseName}-multi-row`);
+  if (alt) return alt;
 
-  const el3 = document.querySelector(`[data-multi-base="${baseName}"]`);
-  if (el3) return el3;
+  const dataEl = document.querySelector(`[data-multi-base="${baseName}"]`);
+  if (dataEl) return dataEl;
 
   return null;
 }
@@ -245,31 +263,28 @@ function setupMultiLocationToggle(form, baseName, showWhenValues) {
   const row = findMultiRowElement(baseName);
   const multiName = `${baseName}_multi`;
 
-  if (!radios || !row) {
-    console.warn("Multi-location toggle wiring missing:", { baseName });
-    return;
-  }
+  if (!radios || !row) return;
 
   function updateVisibility() {
     const selected = getCheckedValue(radios) || "none";
     const shouldShow = showWhenValues.includes(selected);
 
     if (shouldShow) {
-      row.style.display = "flex";
+      row.style.display = "flex";     // your rows use flex styling
     } else {
       row.style.display = "none";
       forceMultiDefaultNo(form, multiName);
     }
   }
 
-  // Attach listeners
+  // listeners
   if (radios.length === undefined) {
     radios.addEventListener("change", updateVisibility);
   } else {
     for (const r of radios) r.addEventListener("change", updateVisibility);
   }
 
-  // Run once on load
+  // initial state
   updateVisibility();
 }
 
@@ -278,6 +293,7 @@ function initMultiLocationToggles(form) {
     setupMultiLocationToggle(form, rule.base, rule.showWhen);
   }
 }
+
 
 /*-------------------------------------------------
  * 4. BINDERY SCORING
@@ -1577,12 +1593,12 @@ const sectionScores = [
   bindery.finalScore,
   corners.finalScore,
   edges.finalScore
+  // Future:
+  // spine.finalScore,
+  // pages.finalScore,
+  // cover.finalScore
 ];
-       
-        // spine.finalScore,
-        // pages.finalScore,
-        // cover.finalScore
-      ];
+
 
       const overallScore = Math.min(...sectionScores);
       const overallGrade = pickGrade(GRADES, overallScore);
