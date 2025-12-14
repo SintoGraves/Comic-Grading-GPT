@@ -1,1 +1,32 @@
-
+[
+  {
+    "id": "spine_near_perfect",
+    "description": "No visible stress lines, no roll, no splits, staples clean",
+    "max_score": 9.6,
+    "deduction": 0
+  },
+  {
+    "id": "spine_minor_stress",
+    "description": "1–2 tiny stress lines, no color break, no roll, no splits",
+    "max_score": 9.0,
+    "deduction": 0.6
+  },
+  {
+    "id": "spine_multiple_stress_color_break",
+    "description": "Multiple spine stress lines with color break",
+    "max_score": 6.0,
+    "deduction": 3.0
+  },
+  {
+    "id": "spine_small_split",
+    "description": "Small spine split under 1/4 inch",
+    "max_score": 6.5,
+    "deduction": 3.0
+  },
+  {
+    "id": "spine_large_split_or_roll",
+    "description": "Spine roll or split over 1 inch",
+    "max_score": 3.0,
+    "deduction": 6.0
+  }
+]
