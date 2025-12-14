@@ -1,95 +1,112 @@
-<!-- sections/bindery.html -->
-<fieldset>
-  <legend>Bindery Section</legend>
+<fieldset class="grade-section">
+  <legend class="section-title">Bindery (Staples, Spine, Trim)</legend>
+  <p class="section-intro">Issues introduced during binding and finishing.</p>
 
-  <!-- Staple Placement -->
-  <label for="bind_sp_height">Staple Placement – Height:</label>
-  <select name="bind_sp_height" id="bind_sp_height">
-    <option value="10.0">Perfect</option>
-    <option value="9.2">Slightly uneven</option>
-    <option value="6.5">Very uneven</option>
-  </select>
+  <div class="form-row">
+    <label for="bind_sp_height">Staple Height</label>
+    <select name="bind_sp_height" id="bind_sp_height">
+      <option value="10.0">Perfect (no rise above surface)</option>
+      <option value="9.0">Slightly raised</option>
+      <option value="6.0">Significantly raised</option>
+    </select>
+  </div>
 
-  <label for="bind_sp_crooked">Staple Placement – Crookedness:</label>
-  <select name="bind_sp_crooked" id="bind_sp_crooked">
-    <option value="10.0">Straight</option>
-    <option value="9.0">Slightly crooked</option>
-    <option value="6.0">Very crooked</option>
-  </select>
+  <div class="form-row">
+    <label for="bind_sp_crooked">Staple Crookedness</label>
+    <select name="bind_sp_crooked" id="bind_sp_crooked">
+      <option value="10.0">Perfectly aligned</option>
+      <option value="9.0">Slight angle</option>
+      <option value="6.0">Very crooked</option>
+    </select>
+  </div>
 
-  <label for="bind_sp_pulling">Staple Placement – Pulling through:</label>
-  <select name="bind_sp_pulling" id="bind_sp_pulling">
-    <option value="10.0">No pulling</option>
-    <option value="9.0">Slight pull</option>
-    <option value="5.0">Obvious damage</option>
-  </select>
+  <div class="form-row">
+    <label for="bind_sp_pulling">Staple Pulling</label>
+    <select name="bind_sp_pulling" id="bind_sp_pulling">
+      <option value="10.0">Flush</option>
+      <option value="9.0">Minor pull</option>
+      <option value="6.0">Pulled away from surface</option>
+    </select>
+  </div>
 
-  <!-- Staple Tightness & Attachment -->
-  <label for="bind_cover_attach">Staple Tightness – Cover Attachment:</label>
-  <select name="bind_cover_attach" id="bind_cover_attach">
-    <option value="10.0">Very tight</option>
-    <option value="9.2">Slightly loose</option>
-    <option value="7.0">Loose or detached</option>
-  </select>
+  <div class="form-row">
+    <label for="bind_cover_attach">Cover Attachment</label>
+    <select name="bind_cover_attach" id="bind_cover_attach">
+      <option value="10.0">Tightly attached</option>
+      <option value="9.0">Slight give</option>
+      <option value="6.0">Loose or detached</option>
+    </select>
+  </div>
 
-  <label for="bind_centerfold_secure">Staple Tightness – Centerfold Secure:</label>
-  <select name="bind_centerfold_secure" id="bind_centerfold_secure">
-    <option value="10.0">Tight and secure</option>
-    <option value="9.0">Slightly loose</option>
-    <option value="6.5">Detached or very loose</option>
-  </select>
+  <div class="form-row">
+    <label for="bind_centerfold_secure">Centerfold Secure</label>
+    <select name="bind_centerfold_secure" id="bind_centerfold_secure">
+      <option value="10.0">Fully attached</option>
+      <option value="9.0">Slight looseness</option>
+      <option value="6.0">Detached or loose</option>
+    </select>
+  </div>
 
-  <!-- Spine Fold Alignment -->
-  <label for="bind_spine_align">Spine Fold Alignment:</label>
-  <select name="bind_spine_align" id="bind_spine_align">
-    <option value="10.0">Perfect</option>
-    <option value="9.0">Slight misalignment</option>
-    <option value="7.0">Obvious misalignment</option>
-  </select>
+  <div class="form-row">
+    <label for="bind_spine_align">Spine Fold Alignment</label>
+    <select name="bind_spine_align" id="bind_spine_align">
+      <option value="10.0">Perfect alignment</option>
+      <option value="9.0">Slight offset</option>
+      <option value="6.0">Major misalignment</option>
+    </select>
+  </div>
 
-  <!-- Staple Rust -->
-  <label for="bind_staple_rust">Staples – Rust:</label>
-  <select name="bind_staple_rust" id="bind_staple_rust">
-    <option value="10.0">No rust</option>
-    <option value="8.5">Light rust</option>
-    <option value="6.0">Heavy rust</option>
-  </select>
+  <div class="form-row">
+    <label for="bind_staple_rust">Staple Rust</label>
+    <select name="bind_staple_rust" id="bind_staple_rust">
+      <option value="10.0">No rust</option>
+      <option value="9.0">Tiny specks</option>
+      <option value="6.0">Visible or flaking rust</option>
+    </select>
+  </div>
 
-  <!-- Cover Trim and Cuts -->
-  <label for="bind_trim_uneven">Trim Cuts – Uneven:</label>
-  <select name="bind_trim_uneven" id="bind_trim_uneven">
-    <option value="10.0">Even</option>
-    <option value="9.0">Slightly uneven</option>
-    <option value="7.0">Very uneven</option>
-  </select>
+  <div class="form-row">
+    <label for="bind_trim_uneven">Trim: Uneven</label>
+    <select name="bind_trim_uneven" id="bind_trim_uneven">
+      <option value="10.0">Even trim</option>
+      <option value="9.0">Minor unevenness</option>
+      <option value="6.0">Rough/obvious uneven</option>
+    </select>
+  </div>
 
-  <label for="bind_trim_frayed">Trim Cuts – Fraying:</label>
-  <select name="bind_trim_frayed" id="bind_trim_frayed">
-    <option value="10.0">Clean edges</option>
-    <option value="8.5">Some fraying</option>
-    <option value="6.0">Heavy fraying</option>
-  </select>
+  <div class="form-row">
+    <label for="bind_trim_frayed">Trim: Frayed Fibers</label>
+    <select name="bind_trim_frayed" id="bind_trim_frayed">
+      <option value="10.0">Clean edge</option>
+      <option value="9.0">Minor fiber fray</option>
+      <option value="6.0">Heavy or visible fray</option>
+    </select>
+  </div>
 
-  <label for="bind_trim_overcut">Trim Cuts – Overcut:</label>
-  <select name="bind_trim_overcut" id="bind_trim_overcut">
-    <option value="10.0">Properly trimmed</option>
-    <option value="8.5">Slight overcut</option>
-    <option value="5.5">Heavy overcut or damage</option>
-  </select>
+  <div class="form-row">
+    <label for="bind_trim_overcut">Trim: Overcut</label>
+    <select name="bind_trim_overcut" id="bind_trim_overcut">
+      <option value="10.0">Normal trim margin</option>
+      <option value="9.0">Slight overcut</option>
+      <option value="6.0">Art or text affected</option>
+    </select>
+  </div>
 
-  <!-- Tears -->
-  <label for="bind_tears">Printing/Bindery Tears:</label>
-  <select name="bind_tears" id="bind_tears">
-    <option value="10.0">No tears</option>
-    <option value="8.0">Minor tears</option>
-    <option value="5.0">Obvious or multiple tears</option>
-  </select>
+  <div class="form-row">
+    <label for="bind_tears">Tears (Binding Related)</label>
+    <select name="bind_tears" id="bind_tears">
+      <option value="10.0">No tears</option>
+      <option value="9.0">Tiny edge tears</option>
+      <option value="6.0">Noticeable or multiple tears</option>
+    </select>
+  </div>
 
-  <!-- Registration -->
-  <label for="bind_registration">Cover/Interior Page Registration:</label>
-  <select name="bind_registration" id="bind_registration">
-    <option value="10.0">Perfect registration</option>
-    <option value="8.5">Minor misalignment</option>
-    <option value="6.0">Obvious or major misalignment</option>
-  </select>
+  <div class="form-row">
+    <label for="bind_registration">Cover Registration</label>
+    <select name="bind_registration" id="bind_registration">
+      <option value="10.0">Perfect alignment</option>
+      <option value="9.0">Minor shift</option>
+      <option value="6.0">Major misalignment</option>
+    </select>
+  </div>
 </fieldset>
