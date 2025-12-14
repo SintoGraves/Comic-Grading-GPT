@@ -158,7 +158,7 @@ CGT.computeEdgesScore = function computeEdgesScore(form) {
 
   // 7) Trim / bindery cuts
   const trimFront = scoreEdgeTrim(CGT.choiceValue(form, "edge_trim_front", "none"));
-  const trimBack  = scoreEdgeTrim(CGT.choiceValue(for
+  const trimBack  = scoreEdgeTrim(CGT.choiceValue(form, "edge_trim_back", "none"));
 
     const trimBack  = scoreEdgeTrim(CGT.choiceValue(form, "edge_trim_back", "none"));
   const trimScore = Math.min(trimFront, trimBack);
