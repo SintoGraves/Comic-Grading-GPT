@@ -1,10 +1,9 @@
 /*-------------------------------------------------
  * grading/scoreEdges.js
  * Edges scoring
- * Global namespace: window.CGT
+ * Namespace: window.CGT (aliased locally as CGT)
  *-------------------------------------------------*/
-/* grading/scoreEdges.js */
-window.CGT = window.CGT || {};
+const CGT = (window.CGT = window.CGT || {});
 
 function scoreEdgeClean(choice, multi) {
   if (choice === "none") return 10.0;
@@ -52,10 +51,10 @@ function scoreEdgeCreases(choice, multi) {
   if (choice === "none") return 10.0;
   const many = (multi === "yes");
   switch (choice) {
-    case "tiny_no_break":    return many ? 7.5 : 8.5;
-    case "with_color_break": return many ? 6.0 : 7.0;
-    case "multi_deep":       return many ? 2.5 : 4.5;
-    default:                 return 10.0;
+    case "tiny_no_break":     return many ? 7.5 : 8.5;
+    case "with_color_break":  return many ? 6.0 : 7.0;
+    case "multi_deep":        return many ? 2.5 : 4.5;
+    default:                  return 10.0;
   }
 }
 
@@ -91,6 +90,7 @@ function scoreEdgeSoiling(choice, multi) {
 }
 
 CGT.computeEdgesScore = function computeEdgesScore(form) {
+  // 1) Cleanliness / Sharpness
   const cleanFront = scoreEdgeClean(
     CGT.choiceValue(form, "edge_clean_front", "none"),
     CGT.choiceValue(form, "edge_clean_front_multi", "no")
@@ -101,6 +101,7 @@ CGT.computeEdgesScore = function computeEdgesScore(form) {
   );
   const cleanScore = Math.min(cleanFront, cleanBack);
 
+  // 2) Chipping
   const chipFront = scoreEdgeChipping(
     CGT.choiceValue(form, "edge_chip_front", "none"),
     CGT.choiceValue(form, "edge_chip_front_multi", "no")
@@ -111,6 +112,7 @@ CGT.computeEdgesScore = function computeEdgesScore(form) {
   );
   const chippingScore = Math.min(chipFront, chipBack);
 
+  // 3) Nicks and Cuts
   const nicksFront = scoreEdgeNicksCuts(
     CGT.choiceValue(form, "edge_nicks_front", "none"),
     CGT.choiceValue(form, "edge_nicks_front_multi", "no")
@@ -121,6 +123,7 @@ CGT.computeEdgesScore = function computeEdgesScore(form) {
   );
   const nicksCutsScore = Math.min(nicksFront, nicksBack);
 
+  // 4) Tears
   const tearsFront = scoreEdgeTears(
     CGT.choiceValue(form, "edge_tears_front", "none"),
     CGT.choiceValue(form, "edge_tears_front_multi", "no")
@@ -131,6 +134,7 @@ CGT.computeEdgesScore = function computeEdgesScore(form) {
   );
   const tearsScore = Math.min(tearsFront, tearsBack);
 
+  // 5) Edge Creases
   const creaseFront = scoreEdgeCreases(
     CGT.choiceValue(form, "edge_crease_front", "none"),
     CGT.choiceValue(form, "edge_crease_front_multi", "no")
@@ -141,6 +145,7 @@ CGT.computeEdgesScore = function computeEdgesScore(form) {
   );
   const edgeCreaseScore = Math.min(creaseFront, creaseBack);
 
+  // 6) Overhang damage
   const overhangFront = scoreEdgeOverhang(
     CGT.choiceValue(form, "edge_overhang_front", "none"),
     CGT.choiceValue(form, "edge_overhang_front_multi", "no")
@@ -151,10 +156,12 @@ CGT.computeEdgesScore = function computeEdgesScore(form) {
   );
   const overhangScore = Math.min(overhangFront, overhangBack);
 
+  // 7) Trim / bindery cuts
   const trimFront = scoreEdgeTrim(CGT.choiceValue(form, "edge_trim_front", "none"));
   const trimBack  = scoreEdgeTrim(CGT.choiceValue(form, "edge_trim_back", "none"));
   const trimScore = Math.min(trimFront, trimBack);
 
+  // 8) Staining / Soiling
   const soilFront = scoreEdgeSoiling(
     CGT.choiceValue(form, "edge_soil_front", "none"),
     CGT.choiceValue(form, "edge_soil_front_multi", "no")
@@ -167,13 +174,13 @@ CGT.computeEdgesScore = function computeEdgesScore(form) {
 
   const elements = [
     { id: "Cleanliness and Sharpness", score: cleanScore },
-    { id: "Chipping",                 score: chippingScore },
-    { id: "Nicks and Cuts",           score: nicksCutsScore },
-    { id: "Tears",                    score: tearsScore },
-    { id: "Edge Creases",             score: edgeCreaseScore },
-    { id: "Overhang Damage",          score: overhangScore },
-    { id: "Trim/Bindery Cuts",        score: trimScore },
-    { id: "Staining or Soiling",      score: soilScore }
+    { id: "Chipping",                  score: chippingScore },
+    { id: "Nicks and Cuts",            score: nicksCutsScore },
+    { id: "Tears",                     score: tearsScore },
+    { id: "Edge Creases",              score: edgeCreaseScore },
+    { id: "Overhang Damage",           score: overhangScore },
+    { id: "Trim/Bindery Cuts",         score: trimScore },
+    { id: "Staining or Soiling",       score: soilScore }
   ];
 
   return CGT.finalizeSection(elements);
