@@ -1,0 +1,241 @@
+<fieldset>
+  <legend>Edges</legend>
+
+  <label>
+    Cleanliness (Front Edge):
+    <select name="edge_clean_front">
+      <option value="none">None</option>
+      <option value="slight">Slight Dirt</option>
+      <option value="heavy_intact">Heavy (edges still intact)</option>
+    </select>
+  </label>
+
+  <label>
+    Multiple areas (Front Edge)?
+    <input type="radio" name="edge_clean_front_multi" value="yes" /> Yes
+    <input type="radio" name="edge_clean_front_multi" value="no" checked /> No
+  </label>
+
+  <label>
+    Cleanliness (Back Edge):
+    <select name="edge_clean_back">
+      <option value="none">None</option>
+      <option value="slight">Slight Dirt</option>
+      <option value="heavy_intact">Heavy (edges still intact)</option>
+    </select>
+  </label>
+
+  <label>
+    Multiple areas (Back Edge)?
+    <input type="radio" name="edge_clean_back_multi" value="yes" /> Yes
+    <input type="radio" name="edge_clean_back_multi" value="no" checked /> No
+  </label>
+
+  <label>
+    Chipping (Front Edge):
+    <select name="edge_chip_front">
+      <option value="none">None</option>
+      <option value="minor">Minor</option>
+      <option value="heavy">Heavy</option>
+    </select>
+  </label>
+
+  <label>
+    Multiple chips (Front)?
+    <input type="radio" name="edge_chip_front_multi" value="yes" /> Yes
+    <input type="radio" name="edge_chip_front_multi" value="no" checked /> No
+  </label>
+
+  <label>
+    Chipping (Back Edge):
+    <select name="edge_chip_back">
+      <option value="none">None</option>
+      <option value="minor">Minor</option>
+      <option value="heavy">Heavy</option>
+    </select>
+  </label>
+
+  <label>
+    Multiple chips (Back)?
+    <input type="radio" name="edge_chip_back_multi" value="yes" /> Yes
+    <input type="radio" name="edge_chip_back_multi" value="no" checked /> No
+  </label>
+
+  <label>
+    Nicks or Cuts (Front Edge):
+    <select name="edge_nicks_front">
+      <option value="none">None</option>
+      <option value="small_1_16_to_1_4">Small (1/16"–1/4")</option>
+      <option value="large_gt_1_4_no_art">Large (no art impact)</option>
+      <option value="large_gt_1_4_into_art">Large (into art)</option>
+    </select>
+  </label>
+
+  <label>
+    Multiple nicks/cuts (Front)?
+    <input type="radio" name="edge_nicks_front_multi" value="yes" /> Yes
+    <input type="radio" name="edge_nicks_front_multi" value="no" checked /> No
+  </label>
+
+  <label>
+    Nicks or Cuts (Back Edge):
+    <select name="edge_nicks_back">
+      <option value="none">None</option>
+      <option value="small_1_16_to_1_4">Small (1/16"–1/4")</option>
+      <option value="large_gt_1_4_no_art">Large (no art impact)</option>
+      <option value="large_gt_1_4_into_art">Large (into art)</option>
+    </select>
+  </label>
+
+  <label>
+    Multiple nicks/cuts (Back)?
+    <input type="radio" name="edge_nicks_back_multi" value="yes" /> Yes
+    <input type="radio" name="edge_nicks_back_multi" value="no" checked /> No
+  </label>
+
+  <label>
+    Tears (Front Edge):
+    <select name="edge_tears_front">
+      <option value="none">None</option>
+      <option value="lt_1_4_clean">Tear < 1/4", clean</option>
+      <option value="multi_gt_1_4_no_art">Multiple >1/4", no art</option>
+      <option value="into_art_readability">Affects art/readability</option>
+    </select>
+  </label>
+
+  <label>
+    Multiple tears (Front)?
+    <input type="radio" name="edge_tears_front_multi" value="yes" /> Yes
+    <input type="radio" name="edge_tears_front_multi" value="no" checked /> No
+  </label>
+
+  <label>
+    Tears (Back Edge):
+    <select name="edge_tears_back">
+      <option value="none">None</option>
+      <option value="lt_1_4_clean">Tear < 1/4", clean</option>
+      <option value="multi_gt_1_4_no_art">Multiple >1/4", no art</option>
+      <option value="into_art_readability">Affects art/readability</option>
+    </select>
+  </label>
+
+  <label>
+    Multiple tears (Back)?
+    <input type="radio" name="edge_tears_back_multi" value="yes" /> Yes
+    <input type="radio" name="edge_tears_back_multi" value="no" checked /> No
+  </label>
+
+  <label>
+    Edge Creases (Front):
+    <select name="edge_crease_front">
+      <option value="none">None</option>
+      <option value="tiny_no_break">Tiny (no break)</option>
+      <option value="with_color_break">With color break</option>
+      <option value="multi_deep">Multiple / deep</option>
+    </select>
+  </label>
+
+  <label>
+    Multiple edge creases (Front)?
+    <input type="radio" name="edge_crease_front_multi" value="yes" /> Yes
+    <input type="radio" name="edge_crease_front_multi" value="no" checked /> No
+  </label>
+
+  <label>
+    Edge Creases (Back):
+    <select name="edge_crease_back">
+      <option value="none">None</option>
+      <option value="tiny_no_break">Tiny (no break)</option>
+      <option value="with_color_break">With color break</option>
+      <option value="multi_deep">Multiple / deep</option>
+    </select>
+  </label>
+
+  <label>
+    Multiple edge creases (Back)?
+    <input type="radio" name="edge_crease_back_multi" value="yes" /> Yes
+    <input type="radio" name="edge_crease_back_multi" value="no" checked /> No
+  </label>
+
+  <label>
+    Overhang damage (Front):
+    <select name="edge_overhang_front">
+      <option value="none">None</option>
+      <option value="minor">Minor</option>
+      <option value="major">Major</option>
+      <option value="loss_material">Loss of material</option>
+    </select>
+  </label>
+
+  <label>
+    Multiple overhang issues (Front)?
+    <input type="radio" name="edge_overhang_front_multi" value="yes" /> Yes
+    <input type="radio" name="edge_overhang_front_multi" value="no" checked /> No
+  </label>
+
+  <label>
+    Overhang damage (Back):
+    <select name="edge_overhang_back">
+      <option value="none">None</option>
+      <option value="minor">Minor</option>
+      <option value="major">Major</option>
+      <option value="loss_material">Loss of material</option>
+    </select>
+  </label>
+
+  <label>
+    Multiple overhang issues (Back)?
+    <input type="radio" name="edge_overhang_back_multi" value="yes" /> Yes
+    <input type="radio" name="edge_overhang_back_multi" value="no" checked /> No
+  </label>
+
+  <label>
+    Trim or Bindery Cuts (Front):
+    <select name="edge_trim_front">
+      <option value="none">None</option>
+      <option value="slightly_uneven">Slightly uneven</option>
+      <option value="very_rough">Very rough</option>
+    </select>
+  </label>
+
+  <label>
+    Trim or Bindery Cuts (Back):
+    <select name="edge_trim_back">
+      <option value="none">None</option>
+      <option value="slightly_uneven">Slightly uneven</option>
+      <option value="very_rough">Very rough</option>
+    </select>
+  </label>
+
+  <label>
+    Soiling or Staining (Front):
+    <select name="edge_soil_front">
+      <option value="none">None</option>
+      <option value="light_dirt">Light Dirt</option>
+      <option value="staining">Staining</option>
+      <option value="dirt_and_staining">Dirt + Staining</option>
+    </select>
+  </label>
+
+  <label>
+    Multiple soiling/staining areas (Front)?
+    <input type="radio" name="edge_soil_front_multi" value="yes" /> Yes
+    <input type="radio" name="edge_soil_front_multi" value="no" checked /> No
+  </label>
+
+  <label>
+    Soiling or Staining (Back):
+    <select name="edge_soil_back">
+      <option value="none">None</option>
+      <option value="light_dirt">Light Dirt</option>
+      <option value="staining">Staining</option>
+      <option value="dirt_and_staining">Dirt + Staining</option>
+    </select>
+  </label>
+
+  <label>
+    Multiple soiling/staining areas (Back)?
+    <input type="radio" name="edge_soil_back_multi" value="yes" /> Yes
+    <input type="radio" name="edge_soil_back_multi" value="no" checked /> No
+  </label>
+</fieldset>
