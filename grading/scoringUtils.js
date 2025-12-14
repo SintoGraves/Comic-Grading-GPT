@@ -1,13 +1,13 @@
 /*-------------------------------------------------
  * grading/scoringUtils.js
  * Shared grade scale, grade picker, penalties, and form helpers
- * Global namespace: window.CGT
+ * Namespace: window.CGT (aliased locally as CGT)
  *-------------------------------------------------*/
-/* grading/scoringUtils.js
- * Grades + shared helpers
- */
-window.CGT = window.CGT || {};
+const CGT = (window.CGT = window.CGT || {});
 
+/*-------------------------------------------------
+ * 1) Grade scale
+ *-------------------------------------------------*/
 CGT.GRADES = [
   { score: 10.0, code: "GM",    label: "Gem Mint",               short: "10.0 GM" },
   { score: 9.9,  code: "MT",    label: "Mint",                   short: "9.9 MT" },
@@ -39,6 +39,10 @@ CGT.pickGrade = function pickGrade(grades, score) {
   }
   return best;
 };
+
+/*-------------------------------------------------
+ * 2) Form helpers
+ *-------------------------------------------------*/
 
 // Numeric radio group -> number (default 10.0)
 CGT.getRadioValue = function getRadioValue(form, name) {
@@ -84,7 +88,26 @@ CGT.getCheckedValue = function getCheckedValue(field) {
   return null;
 };
 
-// Penalty ladder used across sections
+// Force a follow-up yes/no radio group to "no"
+CGT.forceMultiDefaultNo = function forceMultiDefaultNo(form, multiName) {
+  const multiField = form.elements[multiName];
+  if (!multiField) return;
+
+  if (multiField.length === undefined) {
+    // single element
+    if (multiField.value === "no") multiField.checked = true;
+    return;
+  }
+
+  for (const r of multiField) {
+    if (r.value === "no") r.checked = true;
+  }
+};
+
+/*-------------------------------------------------
+ * 3) Penalty ladder and shared section finalizer
+ *-------------------------------------------------*/
+
 CGT.penaltyForScore = function penaltyForScore(score) {
   if (score >= 9.95) return 0.0;     // treat 10 as perfect
   if (score >= 6.1 && score <= 9.9) return 0.1;
@@ -93,7 +116,6 @@ CGT.penaltyForScore = function penaltyForScore(score) {
   return 0.0;
 };
 
-// Common section reducer: base = min(elements); penalties for others above base
 CGT.finalizeSection = function finalizeSection(elements) {
   const baseScore = Math.min(...elements.map(e => e.score));
 
