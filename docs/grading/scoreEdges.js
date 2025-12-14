@@ -3,7 +3,7 @@
  * Edges scoring
  * Namespace: window.CGT (aliased locally as CGT)
  *-------------------------------------------------*/
-const CGT = (window.CGT = window.CGT || {});
+var CGT = (window.CGT = window.CGT || {});
 
 function scoreEdgeClean(choice, multi) {
   if (choice === "none") return 10.0;
