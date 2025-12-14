@@ -1,13 +1,22 @@
 /*-------------------------------------------------
  * ui/multiLocation.js
- * Centralized multi-location toggle logic (single implementation)
- * Global namespace: window.CGT
+ * Centralized multi-location toggle rules + wiring
+ * Namespace: window.CGT (aliased locally as CGT)
  *-------------------------------------------------*/
-/* ui/multiLocation.js
- * Centralized multi-location toggles
- */
-window.CGT = window.CGT || {};
+const CGT = (window.CGT = window.CGT || {});
 
+/*-------------------------------------------------
+ * Rules: base radio group -> follow-up row + follow-up yes/no group
+ * Expected HTML wiring:
+ *  - Base radio group name:      base
+ *  - Follow-up row element id:   base + "_multi_row"
+ *  - Follow-up radio group name: base + "_multi"
+ *    values must be "no" and "yes"
+ *
+ * Rule:
+ *  - Show follow-up row ONLY when selected value is in showWhen[]
+ *  - Hide otherwise AND auto-reset follow-up to "no"
+ *-------------------------------------------------*/
 CGT.MULTI_LOCATION_RULES = [
   // CORNERS — Sharpness / Blunting
   { base: "corner_blunt_front", showWhen: ["slight", "moderate", "heavy"] },
@@ -54,6 +63,7 @@ CGT.MULTI_LOCATION_RULES = [
   { base: "edge_soil_back",  showWhen: ["light_dirt", "staining", "dirt_and_staining"] }
 ];
 
+// Robust row finder
 CGT.findMultiRowElement = function findMultiRowElement(baseName) {
   const id = `${baseName}_multi_row`;
   const el = document.getElementById(id);
@@ -68,20 +78,6 @@ CGT.findMultiRowElement = function findMultiRowElement(baseName) {
   return null;
 };
 
-CGT.forceMultiDefaultNo = function forceMultiDefaultNo(form, multiName) {
-  const multiField = form.elements[multiName];
-  if (!multiField) return;
-
-  if (multiField.length === undefined) {
-    if (multiField.value === "no") multiField.checked = true;
-    return;
-  }
-
-  for (const r of multiField) {
-    if (r.value === "no") r.checked = true;
-  }
-};
-
 CGT.setupMultiLocationToggle = function setupMultiLocationToggle(form, baseName, showWhenValues) {
   const radios = form.elements[baseName];
   const row = CGT.findMultiRowElement(baseName);
@@ -94,19 +90,21 @@ CGT.setupMultiLocationToggle = function setupMultiLocationToggle(form, baseName,
     const shouldShow = showWhenValues.includes(selected);
 
     if (shouldShow) {
-      row.style.display = "flex";
+      row.style.display = "flex"; // your rows use flex styling
     } else {
       row.style.display = "none";
       CGT.forceMultiDefaultNo(form, multiName);
     }
   }
 
+  // listeners
   if (radios.length === undefined) {
     radios.addEventListener("change", updateVisibility);
   } else {
     for (const r of radios) r.addEventListener("change", updateVisibility);
   }
 
+  // initial state
   updateVisibility();
 };
 
