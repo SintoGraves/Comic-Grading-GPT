@@ -3,7 +3,7 @@
  * Centralized multi-location toggle rules + wiring
  * Namespace: window.CGT (aliased locally as CGT)
  *-------------------------------------------------*/
-const CGT = (window.CGT = window.CGT || {});
+var CGT = (window.CGT = window.CGT || {});
 
 /*-------------------------------------------------
  * Rules: base radio group -> follow-up row + follow-up yes/no group
