@@ -3,7 +3,7 @@
  * Spine scoring (placeholder)
  * Namespace: window.CGT (aliased locally as CGT)
  *-------------------------------------------------*/
-const CGT = (window.CGT = window.CGT || {});
+var CGT = (window.CGT = window.CGT || {});
 
 CGT.computeSpineScore = function computeSpineScore(_form) {
   return {
