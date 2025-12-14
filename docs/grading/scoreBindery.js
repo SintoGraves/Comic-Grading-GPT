@@ -3,7 +3,7 @@
  * Bindery scoring
  * Namespace: window.CGT (aliased locally as CGT)
  *-------------------------------------------------*/
-const CGT = (window.CGT = window.CGT || {});
+var CGT = (window.CGT = window.CGT || {});
 
 CGT.computeBinderyScore = function computeBinderyScore(form) {
   const staplePlacement = Math.min(
