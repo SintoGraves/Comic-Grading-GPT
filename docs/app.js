@@ -1,102 +1,9 @@
-/* app.js — orchestration only (no scoring logic) */
-window.CGT = window.CGT || {};
-
 /*-------------------------------------------------
- * Title normalization + suggestion + stamp key
+ * app.js — Comic Grading Tool (Beta)
+ * Main entry (Bindery + Corners + Edges)
+ * Namespace: window.CGT (aliased locally as CGT)
  *-------------------------------------------------*/
-
-function normalizeTitle(rawTitle) {
-  if (!rawTitle) return "";
-  let t = rawTitle.trim().toLowerCase();
-
-  if (t.startsWith("the ")) t = t.slice(4);
-  t = t.replace(/\s+/g, " ");
-
-  t = t.replace(/spiderman/g, "spider-man");
-  t = t.replace(/xmen/g, "x-men");
-  t = t.replace(/ironman/g, "iron man");
-  t = t.replace(/captainamerica/g, "captain america");
-  t = t.replace(/doctorstrange/g, "doctor strange");
-  t = t.replace(/dr\.\s*strange/g, "doctor strange");
-  t = t.replace(/newmutants/g, "new mutants");
-
-  t = t.replace(/^asm\s*/, "amazing spider-man ");
-  t = t.replace(/^tmnt\s*/, "teenage mutant ninja turtles ");
-  t = t.replace(/^tmt\s*/, "teenage mutant turtles ");
-  t = t.replace(/^bprd\s*/, "bprd ");
-  t = t.replace(/^ff\s*(?!#)/g, "fantastic four ");
-
-  t = t.replace(/\bx men\b/g, "x-men");
-  t = t.replace(/ & /g, " and ");
-
-  t = t.replace(/[^a-z0-9\- ]+/g, "");
-  t = t.replace(/\s\s+/g, " ");
-
-  return t;
-}
-
-function editDistance(a, b) {
-  const lenA = a.length;
-  const lenB = b.length;
-  const dp = Array.from({ length: lenA + 1 }, () => new Array(lenB + 1).fill(0));
-
-  for (let i = 0; i <= lenA; i++) dp[i][0] = i;
-  for (let j = 0; j <= lenB; j++) dp[0][j] = j;
-
-  for (let i = 1; i <= lenA; i++) {
-    for (let j = 1; j <= lenB; j++) {
-      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
-      dp[i][j] = Math.min(
-        dp[i - 1][j] + 1,
-        dp[i][j - 1] + 1,
-        dp[i - 1][j - 1] + cost
-      );
-    }
-  }
-  return dp[lenA][lenB];
-}
-
-function suggestTitle(rawTitle) {
-  const KNOWN_TITLES = (window.CGT && CGT.KNOWN_TITLES) ? CGT.KNOWN_TITLES : [];
-  const normUser = normalizeTitle(rawTitle);
-
-  if (!normUser || normUser.length < 3 || !KNOWN_TITLES.length) return null;
-
-  let bestTitle = null;
-  let bestDistance = Infinity;
-
-  for (const t of KNOWN_TITLES) {
-    const d = editDistance(normUser, t);
-    if (d < bestDistance) {
-      bestDistance = d;
-      bestTitle = t;
-    }
-  }
-
-  if (!bestTitle) return null;
-  if (bestDistance === 0) return null;
-  if (bestDistance > 3) return null;
-
-  return { normalized: bestTitle, distance: bestDistance };
-}
-
-function displayTitleFromNormalized(norm) {
-  return norm
-    .split(" ")
-    .map(w => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(" ");
-}
-
-function makeStampKey(title, issue) {
-  const normTitle = normalizeTitle(title);
-  let normIssue = `${issue}`.trim().toLowerCase();
-  normIssue = normIssue.replace(/^#/, "");
-  return normTitle + "#" + normIssue;
-}
-
-/*-------------------------------------------------
- * DOM init
- *-------------------------------------------------*/
+const CGT = (window.CGT = window.CGT || {});
 
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("grading-form");
@@ -115,36 +22,137 @@ document.addEventListener("DOMContentLoaded", () => {
   const coverInput      = document.getElementById("cover_image");
   const coverPreview    = document.getElementById("cover-preview");
 
-  const VALUE_STAMP_INDEX =
-    (window.CGT && CGT.VALUE_STAMP_INDEX) ? CGT.VALUE_STAMP_INDEX : {};
+  // Data comes from data/valueStampIndex.js
+  const VALUE_STAMP_INDEX = CGT.VALUE_STAMP_INDEX || {};
+  const KNOWN_TITLES      = CGT.KNOWN_TITLES || [];
 
   if (!Object.keys(VALUE_STAMP_INDEX).length) {
     console.warn("[stamp] VALUE_STAMP_INDEX not loaded — stamp lookup disabled");
   }
 
-  /* Multi-location toggles */
-  if (CGT.initMultiLocationToggles) CGT.initMultiLocationToggles(form);
+  let stampApplies = false;
 
-  /* Value stamp lookup */
+  /*-------------------------------------------------
+   * Multi-location toggles (RUN EARLY)
+   *-------------------------------------------------*/
+  if (typeof CGT.initMultiLocationToggles === "function") {
+    CGT.initMultiLocationToggles(form);
+  }
+
+  /*-------------------------------------------------
+   * Title normalization & suggestion
+   *-------------------------------------------------*/
+  function normalizeTitle(rawTitle) {
+    if (!rawTitle) return "";
+    let t = rawTitle.trim().toLowerCase();
+
+    if (t.startsWith("the ")) t = t.slice(4);
+    t = t.replace(/\s+/g, " ");
+
+    t = t.replace(/spiderman/g, "spider-man");
+    t = t.replace(/xmen/g, "x-men");
+    t = t.replace(/ironman/g, "iron man");
+    t = t.replace(/captainamerica/g, "captain america");
+    t = t.replace(/doctorstrange/g, "doctor strange");
+    t = t.replace(/dr\.\s*strange/g, "doctor strange");
+    t = t.replace(/newmutants/g, "new mutants");
+
+    t = t.replace(/^asm\s*/, "amazing spider-man ");
+    t = t.replace(/^tmnt\s*/, "teenage mutant ninja turtles ");
+    t = t.replace(/^tmt\s*/, "teenage mutant turtles ");
+    t = t.replace(/^bprd\s*/, "bprd ");
+    t = t.replace(/^ff\s*(?!#)/g, "fantastic four ");
+
+    t = t.replace(/\bx men\b/g, "x-men");
+    t = t.replace(/ & /g, " and ");
+
+    t = t.replace(/[^a-z0-9\- ]+/g, "");
+    t = t.replace(/\s\s+/g, " ");
+
+    return t;
+  }
+
+  function editDistance(a, b) {
+    const lenA = a.length;
+    const lenB = b.length;
+    const dp = Array.from({ length: lenA + 1 }, () => new Array(lenB + 1).fill(0));
+
+    for (let i = 0; i <= lenA; i++) dp[i][0] = i;
+    for (let j = 0; j <= lenB; j++) dp[0][j] = j;
+
+    for (let i = 1; i <= lenA; i++) {
+      for (let j = 1; j <= lenB; j++) {
+        const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+        dp[i][j] = Math.min(
+          dp[i - 1][j] + 1,
+          dp[i][j - 1] + 1,
+          dp[i - 1][j - 1] + cost
+        );
+      }
+    }
+    return dp[lenA][lenB];
+  }
+
+  function suggestTitle(rawTitle) {
+    const normUser = normalizeTitle(rawTitle);
+    if (!normUser || normUser.length < 3) return null;
+
+    let bestTitle = null;
+    let bestDistance = Infinity;
+
+    for (const t of KNOWN_TITLES) {
+      const d = editDistance(normUser, t);
+      if (d < bestDistance) {
+        bestDistance = d;
+        bestTitle = t;
+      }
+    }
+
+    if (!bestTitle) return null;
+    if (bestDistance === 0) return null;
+    if (bestDistance > 3) return null;
+
+    return { normalized: bestTitle, distance: bestDistance };
+  }
+
+  function displayTitleFromNormalized(norm) {
+    return norm
+      .split(" ")
+      .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+      .join(" ");
+  }
+
+  function makeStampKey(title, issue) {
+    const normTitle = normalizeTitle(title);
+    let normIssue = `${issue}`.trim().toLowerCase();
+    normIssue = normIssue.replace(/^#/, "");
+    return normTitle + "#" + normIssue;
+  }
+
+  /*-------------------------------------------------
+   * Value stamp lookup (title + issue)
+   *-------------------------------------------------*/
   function updateStampLookup() {
     const title = titleInput ? titleInput.value.trim() : "";
     const issue = issueInput ? issueInput.value.trim() : "";
 
     if (!title || !issue) {
+      stampApplies = false;
       if (stampFieldset) stampFieldset.style.display = "none";
       if (stampHint) stampHint.textContent = "";
       return;
     }
 
     const key = makeStampKey(title, issue);
-
     if (VALUE_STAMP_INDEX[key]) {
+      stampApplies = true;
       if (stampFieldset) stampFieldset.style.display = "block";
       if (stampHint) {
         stampHint.textContent =
           "This issue is known to include a value stamp or coupon. Please answer the question below.";
       }
     } else {
+      stampApplies = false;
       if (stampFieldset) stampFieldset.style.display = "none";
       if (stampHint) {
         stampHint.textContent =
@@ -158,7 +166,9 @@ document.addEventListener("DOMContentLoaded", () => {
     issueInput.addEventListener("input", updateStampLookup);
   }
 
-  /* Title suggestion */
+  /*-------------------------------------------------
+   * Title suggestion (Did you mean ... ?)
+   *-------------------------------------------------*/
   if (titleInput && titleSuggestion) {
     const runTitleSuggestion = () => {
       const raw = titleInput.value;
@@ -196,7 +206,9 @@ document.addEventListener("DOMContentLoaded", () => {
     titleInput.addEventListener("change", runTitleSuggestion);
   }
 
-  /* Cover preview */
+  /*-------------------------------------------------
+   * Cover image upload preview
+   *-------------------------------------------------*/
   if (coverInput && coverPreview) {
     coverInput.addEventListener("change", (e) => {
       const file = e.target.files && e.target.files[0];
@@ -215,7 +227,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  /* Sample overlay */
+  /*-------------------------------------------------
+   * Sample-image overlay (press-and-hold)
+   *-------------------------------------------------*/
   const sampleOverlay = document.createElement("div");
   sampleOverlay.id = "sample-overlay";
   sampleOverlay.innerHTML = `<img id="sample-overlay-img" alt="Grading example" />`;
@@ -251,7 +265,9 @@ document.addEventListener("DOMContentLoaded", () => {
     btn.addEventListener("touchcancel", hideSample);
   });
 
-  /* Submit -> compute + report */
+  /*-------------------------------------------------
+   * Submit handler: compute sections and report
+   *-------------------------------------------------*/
   if (resultDiv) {
     form.addEventListener("submit", (e) => {
       e.preventDefault();
@@ -259,13 +275,21 @@ document.addEventListener("DOMContentLoaded", () => {
       const bindery = CGT.computeBinderyScore(form);
       const corners = CGT.computeCornersScore(form);
       const edges   = CGT.computeEdgesScore(form);
+      // const spine = CGT.computeSpineScore(form);
 
-      const sectionScores = [bindery.finalScore, corners.finalScore, edges.finalScore];
+      const sectionScores = [
+        bindery.finalScore,
+        corners.finalScore,
+        edges.finalScore
+        // spine.finalScore
+      ];
+
       const overallScore = Math.min(...sectionScores);
       const overallGrade = CGT.pickGrade(CGT.GRADES, overallScore);
 
       const titleText = titleInput ? titleInput.value.trim() : "";
       const issueText = issueInput ? issueInput.value.trim() : "";
+
       const displayHeading = (titleText || issueText)
         ? `${titleText || "Unknown Title"}${issueText ? " #" + issueText : ""}`
         : "Comic Book Grading Report";
@@ -317,10 +341,12 @@ document.addEventListener("DOMContentLoaded", () => {
             <p><em>Note:</em> Spine, Pages, and Cover sections will be added later.</p>
           </div>
 
-          ${coverSrc ? `
-            <div class="print-cover-wrapper">
-              <img class="print-cover" src="${coverSrc}" alt="Comic cover preview" />
-            </div>` : ""
+          ${
+            coverSrc
+              ? `<div class="print-cover-wrapper">
+                   <img class="print-cover" src="${coverSrc}" alt="Comic cover preview" />
+                 </div>`
+              : ""
           }
         </div>
       `;
@@ -329,9 +355,12 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  /* Reset */
+  /*-------------------------------------------------
+   * Reset handler
+   *-------------------------------------------------*/
   if (resetBtn) {
     resetBtn.addEventListener("click", () => {
+      stampApplies = false;
       if (stampFieldset) stampFieldset.style.display = "none";
       if (stampHint) stampHint.textContent = "";
       if (resultDiv) resultDiv.innerHTML = "";
@@ -342,11 +371,15 @@ document.addEventListener("DOMContentLoaded", () => {
         coverPreview.style.display = "none";
       }
 
-      if (CGT.initMultiLocationToggles) CGT.initMultiLocationToggles(form);
+      if (typeof CGT.initMultiLocationToggles === "function") {
+        CGT.initMultiLocationToggles(form);
+      }
     });
   }
 
-  /* Print */
+  /*-------------------------------------------------
+   * Print handler
+   *-------------------------------------------------*/
   if (printBtn && resultDiv) {
     printBtn.addEventListener("click", () => {
       if (!resultDiv.innerHTML.trim()) {
