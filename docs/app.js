@@ -29,6 +29,9 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!Object.keys(VALUE_STAMP_INDEX).length) {
     console.warn("[stamp] VALUE_STAMP_INDEX not loaded — stamp lookup disabled");
   }
+  if (!KNOWN_TITLES.length) {
+    console.warn("[stamp] KNOWN_TITLES not loaded — title suggestion disabled");
+  }
 
   let stampApplies = false;
 
@@ -49,6 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (t.startsWith("the ")) t = t.slice(4);
     t = t.replace(/\s+/g, " ");
 
+    // common glued words
     t = t.replace(/spiderman/g, "spider-man");
     t = t.replace(/xmen/g, "x-men");
     t = t.replace(/ironman/g, "iron man");
@@ -57,15 +61,20 @@ document.addEventListener("DOMContentLoaded", () => {
     t = t.replace(/dr\.\s*strange/g, "doctor strange");
     t = t.replace(/newmutants/g, "new mutants");
 
+    // abbreviations
     t = t.replace(/^asm\s*/, "amazing spider-man ");
     t = t.replace(/^tmnt\s*/, "teenage mutant ninja turtles ");
     t = t.replace(/^tmt\s*/, "teenage mutant turtles ");
     t = t.replace(/^bprd\s*/, "bprd ");
     t = t.replace(/^ff\s*(?!#)/g, "fantastic four ");
 
+    // "x men" -> "x-men"
     t = t.replace(/\bx men\b/g, "x-men");
+
+    // & -> and
     t = t.replace(/ & /g, " and ");
 
+    // strip punctuation
     t = t.replace(/[^a-z0-9\- ]+/g, "");
     t = t.replace(/\s\s+/g, " ");
 
@@ -100,11 +109,13 @@ document.addEventListener("DOMContentLoaded", () => {
     let bestTitle = null;
     let bestDistance = Infinity;
 
+    // Normalize dataset titles too (hardening)
     for (const t of KNOWN_TITLES) {
-      const d = editDistance(normUser, t);
+      const normT = normalizeTitle(t);
+      const d = editDistance(normUser, normT);
       if (d < bestDistance) {
         bestDistance = d;
-        bestTitle = t;
+        bestTitle = normT;
       }
     }
 
@@ -272,16 +283,23 @@ document.addEventListener("DOMContentLoaded", () => {
     form.addEventListener("submit", (e) => {
       e.preventDefault();
 
-      const bindery = CGT.computeBinderyScore(form);
-      const corners = CGT.computeCornersScore(form);
-      const edges   = CGT.computeEdgesScore(form);
-      // const spine = CGT.computeSpineScore(form);
+      // Hardened calls: avoid runtime crash if a scoring file fails to load
+      const bindery = (typeof CGT.computeBinderyScore === "function")
+        ? CGT.computeBinderyScore(form)
+        : { finalScore: 10.0, baseScore: 10.0, penaltyTotal: 0.0, grade: CGT.pickGrade(CGT.GRADES, 10.0), elements: [], placeholder: true };
+
+      const corners = (typeof CGT.computeCornersScore === "function")
+        ? CGT.computeCornersScore(form)
+        : { finalScore: 10.0, baseScore: 10.0, penaltyTotal: 0.0, grade: CGT.pickGrade(CGT.GRADES, 10.0), elements: [], placeholder: true };
+
+      const edges = (typeof CGT.computeEdgesScore === "function")
+        ? CGT.computeEdgesScore(form)
+        : { finalScore: 10.0, baseScore: 10.0, penaltyTotal: 0.0, grade: CGT.pickGrade(CGT.GRADES, 10.0), elements: [], placeholder: true };
 
       const sectionScores = [
         bindery.finalScore,
         corners.finalScore,
         edges.finalScore
-        // spine.finalScore
       ];
 
       const overallScore = Math.min(...sectionScores);
