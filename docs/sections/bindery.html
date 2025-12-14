@@ -1,0 +1,51 @@
+<fieldset>
+  <legend>Bindery (Printing/Manufacturing)</legend>
+
+  <label>
+    Bindery tears at staples:
+    <select name="bindery_tears">
+      <option value="none">None</option>
+      <option value="tiny_1_16_or_less">Tiny (1/16" or less)</option>
+      <option value="small_1_8">Small (1/8")</option>
+      <option value="visible_1_4">Visible (1/4")</option>
+      <option value="large_gt_1_4">Large (over 1/4")</option>
+    </select>
+  </label>
+
+  <label>
+    Offset spine miswrap:
+    <select name="bindery_spine_wrap">
+      <option value="none">None (fully centered)</option>
+      <option value="slight_lt_1_8">Slight (less than 1/8")</option>
+      <option value="medium_1_4">Medium (1/4")</option>
+      <option value="large_gt_1_4">Large (over 1/4")</option>
+    </select>
+  </label>
+
+  <label>
+    Off-center trimming:
+    <select name="bindery_trim">
+      <option value="none">None (even trim)</option>
+      <option value="slight_uneven">Slightly uneven</option>
+      <option value="noticeable_crooked">Noticeable or crooked</option>
+    </select>
+  </label>
+
+  <label>
+    Registration (color layer) misalignment:
+    <select name="bindery_color_register">
+      <option value="none">None</option>
+      <option value="minor">Minor blur / ghosting</option>
+      <option value="noticeable">Noticeable misalignment</option>
+    </select>
+  </label>
+
+  <label>
+    Ink smears or press marks:
+    <select name="bindery_ink_smear">
+      <option value="none">None</option>
+      <option value="minor">Minor</option>
+      <option value="major">Major / distracting</option>
+    </select>
+  </label>
+</fieldset>
