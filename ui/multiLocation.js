@@ -6,7 +6,7 @@
 (function () {
   "use strict";
 
-  const CGT = (window.CGT = window.CGT || {});
+  window.CGT = window.CGT || {};
 
   /*-------------------------------------------------
    * Central rules list (add new rules ONLY here)
