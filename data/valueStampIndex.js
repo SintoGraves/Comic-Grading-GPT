@@ -524,4 +524,8 @@
     "worlds unknown#8": true
   };
 
-  })();
+  // Derived convenience list used by title suggestion logic (already normalized)
+  CGT.KNOWN_TITLES = Array.from(
+    new Set(Object.keys(CGT.VALUE_STAMP_INDEX).map(k => k.split("#")[0]))
+  );
+})();
