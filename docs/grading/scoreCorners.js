@@ -3,7 +3,7 @@
  * Corners scoring
  * Namespace: window.CGT (aliased locally as CGT)
  *-------------------------------------------------*/
-const CGT = (window.CGT = window.CGT || {});
+var CGT = (window.CGT = window.CGT || {});
 
 function scoreBlunting(choice, multi) {
   if (choice === "none") return 10.0;
