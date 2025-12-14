@@ -3,7 +3,7 @@
  * Shared grade scale, grade picker, penalties, and form helpers
  * Namespace: window.CGT (aliased locally as CGT)
  *-------------------------------------------------*/
-const CGT = (window.CGT = window.CGT || {});
+var CGT = (window.CGT = window.CGT || {});
 
 /*-------------------------------------------------
  * 1) Grade scale
