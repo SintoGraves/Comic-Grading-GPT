@@ -8,7 +8,7 @@
 (function () {
   "use strict";
 
-  const CGT = (window.CGT = window.CGT || {});
+  var CGT = (window.CGT = window.CGT || {});
 
   CGT.VALUE_STAMP_INDEX = {
     // Adventure Into Fear
