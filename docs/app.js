@@ -1431,6 +1431,18 @@ document.addEventListener("DOMContentLoaded", () => {
    *-------------------------------------------------*/
   initMultiLocationToggles(form);
 
+/* ===== Debug: confirm multi-location wiring is alive ===== */
+console.log("[multi] init start", MULTI_LOCATION_RULES.length);
+
+for (const rule of MULTI_LOCATION_RULES) {
+  const row = document.getElementById(`${rule.base}_multi_row`);
+  const radios = form.elements[rule.base];
+  if (!row || !radios) {
+    console.warn("[multi] missing wiring:", rule.base, { row: !!row, radios: !!radios });
+  }
+}
+console.log("[multi] init done");
+  
   /*-------------------------------------------------
    * Value stamp lookup (title + issue)
    *-------------------------------------------------*/
