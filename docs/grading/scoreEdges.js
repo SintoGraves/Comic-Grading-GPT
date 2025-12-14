@@ -159,3 +159,32 @@ CGT.computeEdgesScore = function computeEdgesScore(form) {
   // 7) Trim / bindery cuts
   const trimFront = scoreEdgeTrim(CGT.choiceValue(form, "edge_trim_front", "none"));
   const trimBack  = scoreEdgeTrim(CGT.choiceValue(for
+
+    const trimBack  = scoreEdgeTrim(CGT.choiceValue(form, "edge_trim_back", "none"));
+  const trimScore = Math.min(trimFront, trimBack);
+
+  // 8) Staining / Soiling
+  const soilFront = scoreEdgeSoiling(
+    CGT.choiceValue(form, "edge_soil_front", "none"),
+    CGT.choiceValue(form, "edge_soil_front_multi", "no")
+  );
+  const soilBack = scoreEdgeSoiling(
+    CGT.choiceValue(form, "edge_soil_back", "none"),
+    CGT.choiceValue(form, "edge_soil_back_multi", "no")
+  );
+  const soilScore = Math.min(soilFront, soilBack);
+
+  const elements = [
+    { id: "Cleanliness and Sharpness", score: cleanScore },
+    { id: "Chipping",                  score: chippingScore },
+    { id: "Nicks and Cuts",            score: nicksCutsScore },
+    { id: "Tears",                     score: tearsScore },
+    { id: "Edge Creases",              score: edgeCreaseScore },
+    { id: "Overhang Damage",           score: overhangScore },
+    { id: "Trim/Bindery Cuts",         score: trimScore },
+    { id: "Staining or Soiling",       score: soilScore }
+  ];
+
+  return CGT.finalizeSection(elements);
+};
+                                
