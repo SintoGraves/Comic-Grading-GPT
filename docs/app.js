@@ -1,6 +1,6 @@
 /*-------------------------------------------------
  * app.js — Comic Grading Tool (Beta)
- * Full consolidated JS (Bindery + Corners in current build)
+ * Full consolidated JS (Bindery + Corners + Edges in current build)
  *
  * Design goals:
  *  - Centralized multi-location logic (easy future drop-ins)
@@ -124,87 +124,50 @@ function forceMultiDefaultNo(form, multiName) {
  *-------------------------------------------------*/
 
 const MULTI_LOCATION_RULES = [
-  /*-----------------------------------------------
-   * CORNERS — Sharpness / Blunting
-   * HTML values: none / slight / moderate / heavy
-   *-----------------------------------------------*/
+  // CORNERS — Sharpness / Blunting
   { base: "corner_blunt_front", showWhen: ["slight", "moderate", "heavy"] },
   { base: "corner_blunt_back",  showWhen: ["slight", "moderate", "heavy"] },
 
-  /*-----------------------------------------------
-   * CORNERS — Creases
-   * HTML values: none / short_nobreak / long_color / multi_severe
-   *-----------------------------------------------*/
+  // CORNERS — Creases
   { base: "corner_crease_front", showWhen: ["short_nobreak", "long_color", "multi_severe"] },
   { base: "corner_crease_back",  showWhen: ["short_nobreak", "long_color", "multi_severe"] },
 
-  /*-----------------------------------------------
-   * CORNERS — Fraying
-   * HTML values: none / fray
-   *-----------------------------------------------*/
+  // CORNERS — Fraying
   { base: "corner_fray_front", showWhen: ["fray"] },
   { base: "corner_fray_back",  showWhen: ["fray"] },
 
-  /*-----------------------------------------------
-   * CORNERS — Delamination
-   * HTML values: none / delam
-   *-----------------------------------------------*/
+  // CORNERS — Delamination
   { base: "corner_delam_front", showWhen: ["delam"] },
   { base: "corner_delam_back",  showWhen: ["delam"] },
 
-  /*-----------------------------------------------
-   * EDGES — Cleanliness / Sharpness
-   * HTML values: none / slight / heavy_intact
-   *-----------------------------------------------*/
+  // EDGES — Cleanliness / Sharpness
   { base: "edge_clean_front", showWhen: ["slight", "heavy_intact"] },
   { base: "edge_clean_back",  showWhen: ["slight", "heavy_intact"] },
 
-  /*-----------------------------------------------
-   * EDGES — Chipping
-   * HTML values: none / minor / heavy
-   *-----------------------------------------------*/
+  // EDGES — Chipping
   { base: "edge_chip_front", showWhen: ["minor", "heavy"] },
   { base: "edge_chip_back",  showWhen: ["minor", "heavy"] },
 
-  /*-----------------------------------------------
-   * EDGES — Nicks / Cuts
-   * HTML values:
-   *  none / small_1_16_to_1_4 / large_gt_1_4_no_art / large_gt_1_4_into_art
-   *-----------------------------------------------*/
+  // EDGES — Nicks / Cuts
   { base: "edge_nicks_front", showWhen: ["small_1_16_to_1_4", "large_gt_1_4_no_art", "large_gt_1_4_into_art"] },
   { base: "edge_nicks_back",  showWhen: ["small_1_16_to_1_4", "large_gt_1_4_no_art", "large_gt_1_4_into_art"] },
 
-  /*-----------------------------------------------
-   * EDGES — Tears
-   * HTML values:
-   *  none / lt_1_4_clean / multi_gt_1_4_no_art / into_art_readability
-   *-----------------------------------------------*/
+  // EDGES — Tears
   { base: "edge_tears_front", showWhen: ["lt_1_4_clean", "multi_gt_1_4_no_art", "into_art_readability"] },
   { base: "edge_tears_back",  showWhen: ["lt_1_4_clean", "multi_gt_1_4_no_art", "into_art_readability"] },
 
-  /*-----------------------------------------------
-   * EDGES — Edge Creases
-   * HTML values:
-   *  none / tiny_no_break / with_color_break / multi_deep
-   *-----------------------------------------------*/
+  // EDGES — Edge Creases
   { base: "edge_crease_front", showWhen: ["tiny_no_break", "with_color_break", "multi_deep"] },
   { base: "edge_crease_back",  showWhen: ["tiny_no_break", "with_color_break", "multi_deep"] },
 
-  /*-----------------------------------------------
-   * EDGES — Overhang Damage
-   * HTML values: none / minor / major / loss_material
-   *-----------------------------------------------*/
+  // EDGES — Overhang Damage
   { base: "edge_overhang_front", showWhen: ["minor", "major", "loss_material"] },
   { base: "edge_overhang_back",  showWhen: ["minor", "major", "loss_material"] },
 
-  /*-----------------------------------------------
-   * EDGES — Staining/Soiling
-   * HTML values: none / light_dirt / staining / dirt_and_staining
-   *-----------------------------------------------*/
+  // EDGES — Staining/Soiling
   { base: "edge_soil_front", showWhen: ["light_dirt", "staining", "dirt_and_staining"] },
   { base: "edge_soil_back",  showWhen: ["light_dirt", "staining", "dirt_and_staining"] }
 ];
-
   
   /*-----------------------------------------------
    * Future: add new multi-location rules here only
@@ -1629,7 +1592,7 @@ const sectionScores = [
           <div class="print-main-meta">
             <h2 class="print-book-title">${displayHeading}</h2>
 
-            <p><strong>Overall Grade (current build – Bindery &amp; Corners):</strong>
+           <p><strong>Overall Grade (current build – Bindery, Corners &amp; Edges):</strong>
               ${overallGrade.short} (${overallGrade.label}) – numeric ${overallScore.toFixed(1)}
             </p>
 
