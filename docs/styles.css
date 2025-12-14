@@ -586,3 +586,42 @@ button[type="reset"]:active,
     display: none !important;
   }
 }
+/* =========================
+   DROPDOWN ROWS (for grading fields)
+   ========================= */
+
+.form-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0.6rem 0;
+  gap: 1rem;
+}
+
+.form-row label {
+  flex: 1;
+  font-weight: 600;
+}
+
+.form-row select {
+  flex: 1;
+  max-width: 300px;
+  padding: 0.35rem 0.5rem;
+  font-size: 0.95rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #fff;
+}
+
+/* Mobile-friendly fallback */
+@media (max-width: 600px) {
+  .form-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .form-row select {
+    width: 100%;
+    max-width: 100%;
+  }
+}
