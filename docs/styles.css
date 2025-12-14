@@ -304,6 +304,30 @@ button[type="reset"]:active,
 }
 
 /* =========================
+   MULTI-LOCATION ROW SAFETY
+   ========================= */
+
+/* When JS shows the row, it uses display:flex. Ensure flex looks correct. */
+.multi-location-row {
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+/* Prevent the multi-row labels from inheriting block label spacing */
+.multi-location-row label {
+  display: inline-flex;
+  align-items: center;
+  margin: 0 0.75rem 0 0;
+}
+
+/* Keep the question prompt inline and tidy */
+.multi-location-row .multi-label {
+  display: inline-block;
+  margin-right: 0.6rem;
+}
+
+/* =========================
    RESULT CARD (ON SCREEN)
    ========================= */
 
