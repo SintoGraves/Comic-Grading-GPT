@@ -1,1 +1,23 @@
-
+[
+  { "score": 10.0, "code": "GM",    "label": "Gem Mint",          "short": "10.0 GM" },
+  { "score": 9.9, "code": "MT",    "label": "Mint",              "short": "9.9 MT" },
+  { "score": 9.8, "code": "NM/MT", "label": "Near Mint/Mint",    "short": "9.8 NM/MT" },
+  { "score": 9.6, "code": "NM+",   "label": "Near Mint Plus",    "short": "9.6 NM+" },
+  { "score": 9.4, "code": "NM",    "label": "Near Mint",         "short": "9.4 NM" },
+  { "score": 9.2, "code": "NM–",   "label": "Near Mint Minus",   "short": "9.2 NM–" },
+  { "score": 9.0, "code": "VF/NM", "label": "Very Fine/Near Mint","short": "9.0 VF/NM" },
+  { "score": 8.5, "code": "VF+",   "label": "Very Fine Plus",    "short": "8.5 VF+" },
+  { "score": 8.0, "code": "VF",    "label": "Very Fine",         "short": "8.0 VF" },
+  { "score": 7.5, "code": "VF–",   "label": "Very Fine Minus",   "short": "7.5 VF–" },
+  { "score": 7.0, "code": "FN/VF", "label": "Fine/Very Fine",    "short": "7.0 FN/VF" },
+  { "score": 6.5, "code": "FN+",   "label": "Fine Plus",         "short": "6.5 FN+" },
+  { "score": 6.0, "code": "FN",    "label": "Fine",              "short": "6.0 FN" },
+  { "score": 5.5, "code": "FN–",   "label": "Fine Minus",        "short": "5.5 FN–" },
+  { "score": 5.0, "code": "VG/FN", "label": "Very Good/Fine",    "short": "5.0 VG/FN" },
+  { "score": 4.5, "code": "VG+",   "label": "Very Good Plus",    "short": "4.5 VG+" },
+  { "score": 4.0, "code": "VG",    "label": "Very Good",         "short": "4.0 VG" },
+  { "score": 3.0, "code": "GD/VG", "label": "Good/Very Good",    "short": "3.0 GD/VG" },
+  { "score": 2.0, "code": "GD",    "label": "Good",              "short": "2.0 GD" },
+  { "score": 1.0, "code": "FR",    "label": "Fair",              "short": "1.0 FR" },
+  { "score": 0.5, "code": "PR",    "label": "Poor",              "short": "0.5 PR" }
+]
