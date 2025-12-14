@@ -1,12 +1,11 @@
 /*-------------------------------------------------
  * grading/scoreSpine.js
- * Spine scoring stub (placeholder)
- * Global namespace: window.CGT
+ * Spine scoring (placeholder)
+ * Namespace: window.CGT (aliased locally as CGT)
  *-------------------------------------------------*/
-/* grading/scoreSpine.js */
-window.CGT = window.CGT || {};
+const CGT = (window.CGT = window.CGT || {});
 
-CGT.computeSpineScore = function computeSpineScore(form) {
+CGT.computeSpineScore = function computeSpineScore(_form) {
   return {
     finalScore: 10.0,
     baseScore: 10.0,
