@@ -373,27 +373,40 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  /*-------------------------------------------------
-   * Reset handler
-   *-------------------------------------------------*/
-  if (resetBtn) {
-    resetBtn.addEventListener("click", () => {
-      stampApplies = false;
-      if (stampFieldset) stampFieldset.style.display = "none";
-      if (stampHint) stampHint.textContent = "";
-      if (resultDiv) resultDiv.innerHTML = "";
+/*-------------------------------------------------
+ * Reset handler
+ *-------------------------------------------------*/
+if (resetBtn) {
+  resetBtn.addEventListener("click", () => {
+    // 1) Reset all form controls back to defaults (first <option>, default radios, etc.)
+    form.reset();
 
-      if (coverInput) coverInput.value = "";
-      if (coverPreview) {
-        coverPreview.src = "";
-        coverPreview.style.display = "none";
-      }
+    // 2) Clear derived UI state
+    stampApplies = false;
+    if (stampFieldset) stampFieldset.style.display = "none";
+    if (stampHint) stampHint.textContent = "";
+    if (resultDiv) resultDiv.innerHTML = "";
 
-      if (typeof CGT.initMultiLocationToggles === "function") {
-        CGT.initMultiLocationToggles(form);
-      }
-    });
-  }
+    // Clear title suggestion text
+    if (titleSuggestion) titleSuggestion.textContent = "";
+
+    // 3) Clear cover preview
+    if (coverInput) coverInput.value = "";
+    if (coverPreview) {
+      coverPreview.src = "";
+      coverPreview.style.display = "none";
+    }
+
+    // 4) Re-apply multi-location toggle rules to the now-reset defaults
+    if (typeof CGT.initMultiLocationToggles === "function") {
+      CGT.initMultiLocationToggles(form);
+    }
+
+    // 5) Recompute stamp lookup based on cleared title/issue
+    updateStampLookup();
+  });
+}
+
 
   /*-------------------------------------------------
    * Print handler
