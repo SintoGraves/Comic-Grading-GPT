@@ -1,170 +1,133 @@
-<section class="grade-section" id="bindery-section">
-  <h2 class="section-title">Bindery Scoring</h2>
-  <p class="section-intro">Evaluate the staples, spine, cover trimming, and other bindery elements.</p>
+<section class="grade-section" id="bindery">
+  <h2 class="section-title">Bindery</h2>
+  <p class="section-intro">Scoring based on physical production characteristics and printing alignment.</p>
 
-  <!-- Staple Placement -->
+  <!-- 1. Staple Placement -->
   <h2>Staple Placement</h2>
 
   <div class="subelement-row">
-    <label class="subelement-label" for="bind_sp_height">
-      Staples too high/low or unevenly spaced
-    </label>
-    <select name="bind_sp_height" id="bind_sp_height">
-      <option value="">-- Select --</option>
-      <option value="10">Even height and spacing</option>
-      <option value="7">Slight variation</option>
-      <option value="3">Major offset or uneven spacing</option>
+    <label class="subelement-label" for="bindery_staple_highlow">Staples too high/low or unevenly spaced</label>
+    <select id="bindery_staple_highlow" name="bindery_staple_highlow">
+      <option value="10.0">Centered</option>
+      <option value="9.2">Slightly Off</option>
+      <option value="8.0">Significantly misaligned or tearing paper</option>
     </select>
   </div>
 
   <div class="subelement-row">
-    <label class="subelement-label" for="bind_sp_crooked">
-      Staples inserted crooked
-    </label>
-    <select name="bind_sp_crooked" id="bind_sp_crooked">
-      <option value="">-- Select --</option>
-      <option value="10">Straight</option>
-      <option value="7">Slightly crooked</option>
-      <option value="4">Very crooked</option>
+    <label class="subelement-label" for="bindery_staple_crooked">Staples inserted crooked</label>
+    <select id="bindery_staple_crooked" name="bindery_staple_crooked">
+      <option value="10.0">Straight</option>
+      <option value="9.2">Slightly Off</option>
+      <option value="8.0">Significantly misaligned or tearing paper</option>
     </select>
   </div>
 
   <div class="subelement-row">
-    <label class="subelement-label" for="bind_sp_pulling">
-      Staples pulling at paper
-    </label>
-    <select name="bind_sp_pulling" id="bind_sp_pulling">
-      <option value="">-- Select --</option>
-      <option value="10">Flat and tight</option>
-      <option value="8">Slight pull</option>
-      <option value="5">Noticeable tearing or distortion</option>
+    <label class="subelement-label" for="bindery_staple_pull">Staples pulling at the paper</label>
+    <select id="bindery_staple_pull" name="bindery_staple_pull">
+      <option value="10.0">Normal</option>
+      <option value="9.2">Slightly Off</option>
+      <option value="8.0">Significantly misaligned or tearing paper</option>
     </select>
   </div>
 
-  <!-- Staple Tightness -->
-  <h2>Staple Tightness</h2>
+  <!-- 2. Staple Tightness & Attachment -->
+  <h2>Staple Tightness & Attachment</h2>
 
   <div class="subelement-row">
-    <label class="subelement-label" for="bind_cover_attach">
-      Cover securely attached at staples
-    </label>
-    <select name="bind_cover_attach" id="bind_cover_attach">
-      <option value="">-- Select --</option>
-      <option value="10">Firmly attached</option>
-      <option value="8">Slight looseness</option>
-      <option value="5">Loose or detached</option>
+    <label class="subelement-label" for="bindery_cover_attach">Cover is firmly attached</label>
+    <select id="bindery_cover_attach" name="bindery_cover_attach">
+      <option value="10.0">Both attached</option>
+      <option value="4.0">One staple loose</option>
+      <option value="2.0">Both staples detached</option>
     </select>
   </div>
 
   <div class="subelement-row">
-    <label class="subelement-label" for="bind_centerfold_secure">
-      Centerfold firmly secured
-    </label>
-    <select name="bind_centerfold_secure" id="bind_centerfold_secure">
-      <option value="">-- Select --</option>
-      <option value="10">Firmly attached</option>
-      <option value="8">Slight looseness</option>
-      <option value="5">Loose or detached</option>
+    <label class="subelement-label" for="bindery_centerfold">Centerfold is secure</label>
+    <select id="bindery_centerfold" name="bindery_centerfold">
+      <option value="10.0">Both attached</option>
+      <option value="4.0">One staple loose</option>
+      <option value="2.0">Both staples detached</option>
     </select>
   </div>
 
-  <!-- Spine Fold Alignment -->
-  <h2>Spine Fold Alignment</h2>
+  <!-- 3. Spine Fold (Bind Alignment) -->
+  <h2>Spine Fold (Bind Alignment)</h2>
 
   <div class="subelement-row">
-    <label class="subelement-label" for="bind_spine_align">
-      Folded exactly on spine
-    </label>
-    <select name="bind_spine_align" id="bind_spine_align">
-      <option value="">-- Select --</option>
-      <option value="10">Perfectly centered</option>
-      <option value="8">Slight offset</option>
-      <option value="4">Major misfold</option>
+    <label class="subelement-label" for="bindery_alignment">Bind Alignment</label>
+    <select id="bindery_alignment" name="bindery_alignment">
+      <option value="10.0">Normal</option>
+      <option value="8.5">Slight Miswrap</option>
+      <option value="4.5">Major Miswrap affecting art or text</option>
     </select>
   </div>
 
-  <!-- Staple Rust -->
-  <h2>Staple Rust</h2>
+  <!-- 4. Staples -->
+  <h3>Staples</h3>
 
   <div class="subelement-row">
-    <label class="subelement-label" for="bind_staple_rust">
-      Staple rust or oxidation
-    </label>
-    <select name="bind_staple_rust" id="bind_staple_rust">
-      <option value="">-- Select --</option>
-      <option value="10">No rust</option>
-      <option value="8">Light rust</option>
-      <option value="5">Heavy rust or migration</option>
+    <label class="subelement-label" for="bindery_rust">Staple Rust</label>
+    <select id="bindery_rust" name="bindery_rust">
+      <option value="10.0">None</option>
+      <option value="7.0">Slight Surface Rust</option>
+      <option value="4.0">Rust Migration to page/Cover</option>
     </select>
   </div>
 
-  <!-- Cover Trim and Cuts -->
+  <!-- 5. Cover Trim and Cuts -->
   <h2>Cover Trim and Cuts</h2>
 
   <div class="subelement-row">
-    <label class="subelement-label" for="bind_trim_uneven">
-      Uneven cut
-    </label>
-    <select name="bind_trim_uneven" id="bind_trim_uneven">
-      <option value="">-- Select --</option>
-      <option value="10">Even</option>
-      <option value="8">Slightly uneven</option>
-      <option value="5">Jagged or noticeably uneven</option>
+    <label class="subelement-label" for="bindery_trim">Uneven Trimming</label>
+    <select id="bindery_trim" name="bindery_trim">
+      <option value="10.0">No defects</option>
+      <option value="9.1">Minor</option>
+      <option value="7.0">Noticeable</option>
     </select>
   </div>
 
   <div class="subelement-row">
-    <label class="subelement-label" for="bind_trim_frayed">
-      Frayed edge
-    </label>
-    <select name="bind_trim_frayed" id="bind_trim_frayed">
-      <option value="">-- Select --</option>
-      <option value="10">Clean</option>
-      <option value="7">Minor fray</option>
-      <option value="4">Heavy fray</option>
+    <label class="subelement-label" for="bindery_frayed">Frayed edges</label>
+    <select id="bindery_frayed" name="bindery_frayed">
+      <option value="10.0">No defects</option>
+      <option value="9.1">Minor</option>
+      <option value="7.0">Noticeable</option>
     </select>
   </div>
 
   <div class="subelement-row">
-    <label class="subelement-label" for="bind_trim_overcut">
-      Overcut into artwork
-    </label>
-    <select name="bind_trim_overcut" id="bind_trim_overcut">
-      <option value="">-- Select --</option>
-      <option value="10">No overcut</option>
-      <option value="6">Near art</option>
-      <option value="3">Into art</option>
+    <label class="subelement-label" for="bindery_overcut">Overcut</label>
+    <select id="bindery_overcut" name="bindery_overcut">
+      <option value="10.0">No defects</option>
+      <option value="9.1">Minor</option>
+      <option value="7.0">Noticeable</option>
     </select>
   </div>
 
-  <!-- Printing/Bindery Tears -->
+  <!-- 6. Printing/Bindery Tears -->
   <h2>Printing/Bindery Tears</h2>
 
   <div class="subelement-row">
-    <label class="subelement-label" for="bind_tears">
-      Tears
-    </label>
-    <select name="bind_tears" id="bind_tears">
-      <option value="">-- Select --</option>
-      <option value="10">No Tears</option>
+    <label class="subelement-label" for="bindery_tears">Tears</label>
+    <select id="bindery_tears" name="bindery_tears">
+      <option value="10.0">No Tears</option>
       <option value="9.1">Less than 1/16 inch</option>
-      <option value="6">Greater than 1/16 inch</option>
-      <option value="3">Large tear or separation</option>
+      <option value="6.0">Greater than 1/16 inch</option>
     </select>
   </div>
 
-  <!-- Cover/Interior Page Registration -->
+  <!-- 7. Cover / Interior Page Registration -->
   <h2>Cover / Interior Page Registration</h2>
 
   <div class="subelement-row">
-    <label class="subelement-label" for="bind_registration">
-      Page Alignment
-    </label>
-    <select name="bind_registration" id="bind_registration">
-      <option value="">-- Select --</option>
-      <option value="10">Aligned</option>
-      <option value="7">Slight Shift</option>
-      <option value="4">Noticeable Shift</option>
+    <label class="subelement-label" for="bindery_registration">Page Alignment</label>
+    <select id="bindery_registration" name="bindery_registration">
+      <option value="10.0">No Misalignment</option>
+      <option value="7.0">Minor Misalignment</option>
+      <option value="5.0">Major Misalignment</option>
     </select>
   </div>
 </section>
