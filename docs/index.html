@@ -11,22 +11,14 @@
   <div class="top-bar">
     <div class="title-block">
       <h1>Comic Grading Beta .6 - In Editing Mode</h1>
-      <p class="tagline">
-        Quick visual grading helper – spine, cover, corners, and interior.
-      </p>
+      <p class="tagline">Quick visual grading helper – spine, cover, corners, and interior.</p>
     </div>
-    <img
-      src="images/sinto-graves-logo2.png"
-      alt="Sinto Gra'Ves Comic Grading"
-      class="logo"
-    />
+    <img src="images/sinto-graves-logo2.png" alt="Sinto Gra'Ves Comic Grading" class="logo" />
   </div>
 
   <form id="grading-form">
-    <!-- Comic Info Fields -->
     <div include-html="partials/info-fields.html"></div>
 
-    <!-- Gem Mint Checkbox -->
     <fieldset>
       <legend>Top Condition / Gem Mint Check</legend>
       <label>
@@ -35,7 +27,6 @@
       </label>
     </fieldset>
 
-    <!-- Optional Cover Upload -->
     <fieldset>
       <legend>Comic Image (Optional)</legend>
       <label>
@@ -51,59 +42,35 @@
       </div>
     </fieldset>
 
-    <!-- Marvel Value Stamp -->
     <div include-html="partials/value-stamp.html"></div>
 
-    <!-- Grading Sections -->
     <div include-html="sections/bindery.html"></div>
     <div include-html="sections/corners.html"></div>
     <div include-html="sections/edges.html"></div>
     <div include-html="sections/spine.html"></div>
 
-    <!-- Action Buttons -->
     <div include-html="partials/buttons.html"></div>
   </form>
 
   <section id="result" style="margin-top:1.5rem;"></section>
 
-  <!-- JavaScript for client-side includes -->
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const includeElements = document.querySelectorAll('[include-html]');
-      includeElements.forEach(async (el) => {
-        const file = el.getAttribute('include-html');
-        try {
-          const response = await fetch(file);
-          if (!response.ok) throw new Error('Failed to fetch ' + file);
-          const content = await response.text();
-          el.innerHTML = content;
-          el.removeAttribute('include-html');
-        } catch (err) {
-          el.innerHTML = `<p style="color:red;">Error loading ${file}</p>`;
-          console.warn(err);
-        }
-      });
-    });
-  </script>
+  <!-- Includes loader (as its own file) -->
+  <script src="ui/includes.js"></script>
 
- <!-- Client-side HTML includes -->
-<script src="ui/includes.js"></script>
+  <!-- Data -->
+  <script src="data/valueStampIndex.js"></script>
 
-<!-- Data -->
-<script src="data/valueStampIndex.js"></script>
+  <!-- Grading logic -->
+  <script src="grading/scoringUtils.js"></script>
+  <script src="grading/scoreBindery.js"></script>
+  <script src="grading/scoreCorners.js"></script>
+  <script src="grading/scoreEdges.js"></script>
+  <script src="grading/scoreSpine.js"></script>
 
-<!-- Grading logic -->
-<script src="grading/scoringUtils.js"></script>
-<script src="grading/scoreBindery.js"></script>
-<script src="grading/scoreCorners.js"></script>
-<script src="grading/scoreEdges.js"></script>
-<script src="grading/scoreSpine.js"></script>
+  <!-- UI -->
+  <script src="ui/multiLocation.js"></script>
 
-<!-- UI helpers -->
-<script src="ui/multiLocation.js"></script>
-
-<!-- Main app (must run last) -->
-<script src="app.js"></script>
-
+  <!-- Main app -->
+  <script src="app.js"></script>
 </body>
 </html>
