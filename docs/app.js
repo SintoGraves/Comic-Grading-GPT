@@ -5,7 +5,7 @@
  *-------------------------------------------------*/
 var CGT = (window.CGT = window.CGT || {});
 
-document.addEventListener("DOMContentLoaded", () => {
+function CGT_bootstrapApp() {
   const form = document.getElementById("grading-form");
   if (!form) return;
 
@@ -22,14 +22,18 @@ document.addEventListener("DOMContentLoaded", () => {
   const coverInput      = document.getElementById("cover_image");
   const coverPreview    = document.getElementById("cover-preview");
 
-  // Data comes from data/valueStampIndex.js
-  const VALUE_STAMP_INDEX = CGT.VALUE_STAMP_INDEX || {};
-  const KNOWN_TITLES      = CGT.KNOWN_TITLES || [];
+  // Data comes from data/valueStampIndex.js (READ LIVE — do not capture empty objects)
+  function getValueStampIndex() {
+    return CGT.VALUE_STAMP_INDEX || {};
+  }
+  function getKnownTitles() {
+    return CGT.KNOWN_TITLES || [];
+  }
 
-  if (!Object.keys(VALUE_STAMP_INDEX).length) {
+  if (!Object.keys(getValueStampIndex()).length) {
     console.warn("[stamp] VALUE_STAMP_INDEX not loaded — stamp lookup disabled");
   }
-  if (!KNOWN_TITLES.length) {
+  if (!getKnownTitles().length) {
     console.warn("[stamp] KNOWN_TITLES not loaded — title suggestion disabled");
   }
 
@@ -420,4 +424,14 @@ if (resetBtn) {
       window.print();
     });
   }
-});
+}
+
+/*-------------------------------------------------
+ * BOOTSTRAP GATE — RUN AFTER INCLUDES
+ *-------------------------------------------------*/
+if (window.CGT_INCLUDES_READY && typeof window.CGT_INCLUDES_READY.then === "function") {
+  window.CGT_INCLUDES_READY.then(CGT_bootstrapApp);
+} else {
+  document.addEventListener("DOMContentLoaded", CGT_bootstrapApp);
+}
+
