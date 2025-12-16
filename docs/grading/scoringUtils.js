@@ -116,6 +116,18 @@ CGT.penaltyForScore = function penaltyForScore(score) {
 };
 
 CGT.finalizeSection = function finalizeSection(elements) {
+  // Defensive: avoid Infinity/NaN if a section fails to build its elements list
+  if (!Array.isArray(elements) || elements.length === 0) {
+    return {
+      finalScore: 10.0,
+      baseScore: 10.0,
+      penaltyTotal: 0.0,
+      grade: CGT.pickGrade(CGT.GRADES, 10.0),
+      elements: elements || [],
+      placeholder: true
+    };
+  }
+
   const baseScore = Math.min(...elements.map(e => e.score));
 
   let penaltyTotal = 0;
