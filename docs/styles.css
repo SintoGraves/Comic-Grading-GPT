@@ -610,3 +610,38 @@ button[type="reset"]:active,
     max-width: 100%;
   }
 }
+
+/* =========================
+   WIZARD PAGES (SECTION PAGING)
+   ========================= */
+
+.cgt-page { display: none; }
+.cgt-page.is-active { display: block; }
+
+.wizard-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border);
+}
+
+.wizard-nav .nav-left,
+.wizard-nav .nav-right {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.wizard-jumplinks {
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.9rem;
+}
+
+.wizard-jumplinks a {
+  margin-right: 0.75rem;
+  white-space: nowrap;
+}
