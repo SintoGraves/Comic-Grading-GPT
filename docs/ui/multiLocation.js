@@ -63,7 +63,56 @@ CGT.MULTI_LOCATION_RULES = [
   { base: "edge_soil_back",  showWhen: ["light_dirt", "staining", "dirt_and_staining"] }
 ];
 
-// Robust row finder
+/*-------------------------------------------------
+ * Fallback helpers (if not present in scoringUtils.js)
+ *-------------------------------------------------*/
+CGT.getCheckedValue = CGT.getCheckedValue || function getCheckedValue(radiosOrRadioNodeList) {
+  if (!radiosOrRadioNodeList) return null;
+
+  // RadioNodeList (from form.elements[name]) supports .value in modern browsers
+  if (typeof radiosOrRadioNodeList.value === "string") {
+    return radiosOrRadioNodeList.value || null;
+  }
+
+  // Single element
+  if (radiosOrRadioNodeList.tagName === "INPUT") {
+    return radiosOrRadioNodeList.checked ? radiosOrRadioNodeList.value : null;
+  }
+
+  // Collection
+  for (const r of radiosOrRadioNodeList) {
+    if (r && r.checked) return r.value;
+  }
+  return null;
+};
+
+CGT.forceMultiDefaultNo = CGT.forceMultiDefaultNo || function forceMultiDefaultNo(form, multiName) {
+  if (!form || !multiName) return;
+  const multi = form.elements[multiName];
+  if (!multi) return;
+
+  // RadioNodeList case
+  if (multi.length !== undefined) {
+    for (const r of multi) {
+      if (r && r.value === "no") {
+        r.checked = true;
+        return;
+      }
+    }
+    // If there is no explicit "no", default to first option
+    if (multi[0]) multi[0].checked = true;
+    return;
+  }
+
+  // Single radio
+  if (multi.value !== undefined) {
+    multi.value = "no";
+  }
+};
+
+/*-------------------------------------------------
+ * Robust row finder (supports id and optional fallbacks)
+ *-------------------------------------------------*/
 CGT.findMultiRowElement = function findMultiRowElement(baseName) {
   const id = `${baseName}_multi_row`;
   const el = document.getElementById(id);
@@ -78,12 +127,28 @@ CGT.findMultiRowElement = function findMultiRowElement(baseName) {
   return null;
 };
 
+/*-------------------------------------------------
+ * Setup one toggle (idempotent / avoids duplicate listeners)
+ *-------------------------------------------------*/
 CGT.setupMultiLocationToggle = function setupMultiLocationToggle(form, baseName, showWhenValues) {
-  const radios = form.elements[baseName];
-  const row = CGT.findMultiRowElement(baseName);
-  const multiName = `${baseName}_multi`;
+  if (!form || !baseName || !Array.isArray(showWhenValues)) return;
+
+  const radios = form.elements[baseName];                // RadioNodeList
+  const row    = CGT.findMultiRowElement(baseName);      // follow-up row
+  const multiName = `${baseName}_multi`;                 // yes/no follow-up group
 
   if (!radios || !row) return;
+
+  // Prevent duplicate binding if init is called again (e.g., on reset)
+  const bindKey = `cgtBound_${baseName}`;
+  if (row.dataset && row.dataset[bindKey] === "1") {
+    // Still update visibility on re-init
+    const selected = CGT.getCheckedValue(radios) || "none";
+    const shouldShow = showWhenValues.includes(selected);
+    row.style.display = shouldShow ? "flex" : "none";
+    if (!shouldShow) CGT.forceMultiDefaultNo(form, multiName);
+    return;
+  }
 
   function updateVisibility() {
     const selected = CGT.getCheckedValue(radios) || "none";
@@ -97,18 +162,27 @@ CGT.setupMultiLocationToggle = function setupMultiLocationToggle(form, baseName,
     }
   }
 
-  // listeners
+  // Bind change listeners
   if (radios.length === undefined) {
     radios.addEventListener("change", updateVisibility);
   } else {
-    for (const r of radios) r.addEventListener("change", updateVisibility);
+    for (const r of radios) {
+      if (r) r.addEventListener("change", updateVisibility);
+    }
   }
 
-  // initial state
+  // Mark as bound
+  if (row.dataset) row.dataset[bindKey] = "1";
+
+  // Initial state
   updateVisibility();
 };
 
+/*-------------------------------------------------
+ * Init all toggles for a form
+ *-------------------------------------------------*/
 CGT.initMultiLocationToggles = function initMultiLocationToggles(form) {
+  if (!form) return;
   for (const rule of CGT.MULTI_LOCATION_RULES) {
     CGT.setupMultiLocationToggle(form, rule.base, rule.showWhen);
   }
