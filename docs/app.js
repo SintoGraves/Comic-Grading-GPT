@@ -5,43 +5,25 @@
  *-------------------------------------------------*/
 var CGT = (window.CGT = window.CGT || {});
 
-function CGT_bootstrapApp() {
-  const form = document.getElementById("grading-form");
-  if (!form) return;
-
-  const resultDiv = document.getElementById("result");
-  const resetBtn  = document.getElementById("reset-btn");
-  const printBtn  = document.getElementById("print-btn");
-
-  const titleInput      = document.getElementById("comic_title");
-  const issueInput      = document.getElementById("comic_issue");
-  const stampFieldset   = document.getElementById("stamp-fieldset");
-  const stampHint       = document.getElementById("stamp-hint");
-  const titleSuggestion = document.getElementById("title-suggestion");
-
-  const coverInput   = document.getElementById("cover_image");
-  const coverPreview = document.getElementById("cover-preview");
-
 function CGT_initSampleClickPreview() {
   if (window.CGT && window.CGT.__sampleClickInit) return;
   if (window.CGT) window.CGT.__sampleClickInit = true;
 
   // Create overlay once
-  let overlay = document.getElementById("sample-overlay");
+  var overlay = document.getElementById("sample-overlay");
   if (!overlay) {
     overlay = document.createElement("div");
     overlay.id = "sample-overlay";
-    overlay.innerHTML = `
-      <div class="sample-overlay-inner">
-        <img id="sample-overlay-img" alt="Grading example" />
-        <button type="button" id="sample-overlay-close" aria-label="Close preview">Close</button>
-      </div>
-    `;
+    overlay.innerHTML = ''
+      + '<div class="sample-overlay-inner">'
+      + '  <img id="sample-overlay-img" alt="Grading example" />'
+      + '  <button type="button" id="sample-overlay-close" aria-label="Close preview">Close</button>'
+      + '</div>';
     document.body.appendChild(overlay);
   }
 
-  const img = overlay.querySelector("#sample-overlay-img");
-  const closeBtn = overlay.querySelector("#sample-overlay-close");
+  var img = overlay.querySelector("#sample-overlay-img");
+  var closeBtn = overlay.querySelector("#sample-overlay-close");
 
   function show(src) {
     if (!src) return;
@@ -53,42 +35,50 @@ function CGT_initSampleClickPreview() {
     img.src = "";
   }
 
-  closeBtn?.addEventListener("click", hide);
-  overlay.addEventListener("click", (e) => {
+  if (closeBtn) closeBtn.addEventListener("click", hide);
+  overlay.addEventListener("click", function (e) {
     if (e.target === overlay) hide();
   });
-  document.addEventListener("keydown", (e) => {
+  document.addEventListener("keydown", function (e) {
     if (e.key === "Escape") hide();
   });
 
-  // Delegated click handler: works for included HTML
-  document.addEventListener("click", (e) => {
-    const el = e.target && e.target.closest ? e.target.closest("[data-sample-img]") : null;
+  // Delegated click handler: works with included HTML
+  document.addEventListener("click", function (e) {
+    var el = e.target && e.target.closest ? e.target.closest("[data-sample-img]") : null;
     if (!el) return;
 
-    const src = el.getAttribute("data-sample-img");
+    var src = el.getAttribute("data-sample-img");
     if (src) show(src);
   });
 }
-  
+
+function CGT_bootstrapApp() {
+  var form = document.getElementById("grading-form");
+  if (!form) return;
+
+  var resultDiv = document.getElementById("result");
+  var resetBtn  = document.getElementById("reset-btn");
+  var printBtn  = document.getElementById("print-btn");
+
+  var titleInput      = document.getElementById("comic_title");
+  var issueInput      = document.getElementById("comic_issue");
+  var stampFieldset   = document.getElementById("stamp-fieldset");
+  var stampHint       = document.getElementById("stamp-hint");
+  var titleSuggestion = document.getElementById("title-suggestion");
+
+  var coverInput   = document.getElementById("cover_image");
+  var coverPreview = document.getElementById("cover-preview");
+
+  // Init sample preview (text-triggered via [data-sample-img])
+  CGT_initSampleClickPreview();
+
   // READ LIVE (do not capture empty objects at bootstrap time)
   function getValueStampIndex() {
     return CGT.VALUE_STAMP_INDEX || {};
   }
   function getKnownTitles() {
     return CGT.KNOWN_TITLES || [];
-  }
-
-  // Defensive grade pick (prevents crash if scoringUtils fails to load)
-  function safePickGrade(score) {
-    try {
-      if (typeof CGT.pickGrade === "function" && CGT.GRADES) {
-        return CGT.pickGrade(CGT.GRADES, score);
-      }
-    } catch (e) {
-      console.warn("[grade] safePickGrade fallback", e);
-    }
-    return { short: "N/A", label: "Unavailable" };
   }
 
   // Warn (not fatal)
@@ -99,8 +89,7 @@ function CGT_initSampleClickPreview() {
     console.warn("[stamp] KNOWN_TITLES not loaded — title suggestion disabled");
   }
 
-  // Reserved for future Pages/Cover logic; currently used only for UI display
-  let stampApplies = false;
+  var stampApplies = false;
 
   /*-------------------------------------------------
    * Multi-location toggles (RUN EARLY)
@@ -114,7 +103,7 @@ function CGT_initSampleClickPreview() {
    *-------------------------------------------------*/
   function normalizeTitle(rawTitle) {
     if (!rawTitle) return "";
-    let t = rawTitle.trim().toLowerCase();
+    var t = rawTitle.trim().toLowerCase();
 
     if (t.startsWith("the ")) t = t.slice(4);
     t = t.replace(/\s+/g, " ");
@@ -149,16 +138,18 @@ function CGT_initSampleClickPreview() {
   }
 
   function editDistance(a, b) {
-    const lenA = a.length;
-    const lenB = b.length;
-    const dp = Array.from({ length: lenA + 1 }, () => new Array(lenB + 1).fill(0));
+    var lenA = a.length;
+    var lenB = b.length;
+    var dp = Array.from({ length: lenA + 1 }, function () {
+      return new Array(lenB + 1).fill(0);
+    });
 
-    for (let i = 0; i <= lenA; i++) dp[i][0] = i;
-    for (let j = 0; j <= lenB; j++) dp[0][j] = j;
+    for (var i = 0; i <= lenA; i++) dp[i][0] = i;
+    for (var j = 0; j <= lenB; j++) dp[0][j] = j;
 
-    for (let i = 1; i <= lenA; i++) {
-      for (let j = 1; j <= lenB; j++) {
-        const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+    for (i = 1; i <= lenA; i++) {
+      for (j = 1; j <= lenB; j++) {
+        var cost = a[i - 1] === b[j - 1] ? 0 : 1;
         dp[i][j] = Math.min(
           dp[i - 1][j] + 1,
           dp[i][j - 1] + 1,
@@ -172,23 +163,23 @@ function CGT_initSampleClickPreview() {
   function displayTitleFromNormalized(norm) {
     return norm
       .split(" ")
-      .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+      .map(function (w) { return w.charAt(0).toUpperCase() + w.slice(1); })
       .join(" ");
   }
 
   function suggestTitle(rawTitle) {
-    const normUser = normalizeTitle(rawTitle);
+    var normUser = normalizeTitle(rawTitle);
     if (!normUser || normUser.length < 3) return null;
 
-    const titles = getKnownTitles(); // READ LIVE
+    var titles = getKnownTitles(); // READ LIVE
     if (!titles.length) return null;
 
-    let bestTitle = null;
-    let bestDistance = Infinity;
+    var bestTitle = null;
+    var bestDistance = Infinity;
 
-    for (const t of titles) {
-      const normT = normalizeTitle(t);
-      const d = editDistance(normUser, normT);
+    for (var k = 0; k < titles.length; k++) {
+      var normT = normalizeTitle(titles[k]);
+      var d = editDistance(normUser, normT);
       if (d < bestDistance) {
         bestDistance = d;
         bestTitle = normT;
@@ -203,8 +194,8 @@ function CGT_initSampleClickPreview() {
   }
 
   function makeStampKey(title, issue) {
-    const normTitle = normalizeTitle(title);
-    let normIssue = `${issue}`.trim().toLowerCase();
+    var normTitle = normalizeTitle(title);
+    var normIssue = String(issue).trim().toLowerCase();
     normIssue = normIssue.replace(/^#/, "");
     return normTitle + "#" + normIssue;
   }
@@ -213,8 +204,8 @@ function CGT_initSampleClickPreview() {
    * Value stamp lookup (title + issue)
    *-------------------------------------------------*/
   function updateStampLookup() {
-    const title = titleInput ? titleInput.value.trim() : "";
-    const issue = issueInput ? issueInput.value.trim() : "";
+    var title = titleInput ? titleInput.value.trim() : "";
+    var issue = issueInput ? issueInput.value.trim() : "";
 
     if (!title || !issue) {
       stampApplies = false;
@@ -223,8 +214,8 @@ function CGT_initSampleClickPreview() {
       return;
     }
 
-    const key = makeStampKey(title, issue);
-    const index = getValueStampIndex(); // READ LIVE
+    var key = makeStampKey(title, issue);
+    var index = getValueStampIndex(); // READ LIVE
 
     if (index[key]) {
       stampApplies = true;
@@ -252,35 +243,33 @@ function CGT_initSampleClickPreview() {
    * Title suggestion (Did you mean ... ?)
    *-------------------------------------------------*/
   if (titleInput && titleSuggestion) {
-    const runTitleSuggestion = () => {
-      const raw = titleInput.value || "";
+    var runTitleSuggestion = function () {
+      var raw = titleInput.value || "";
       if (!raw.trim()) {
         titleSuggestion.textContent = "";
         return;
       }
 
-      const suggestion = suggestTitle(raw);
+      var suggestion = suggestTitle(raw);
       if (!suggestion) {
         titleSuggestion.textContent = "";
         return;
       }
 
-      const display = displayTitleFromNormalized(suggestion.normalized);
-      titleSuggestion.innerHTML = `
-        Did you mean: <strong>${display}</strong>?
-        <button type="button" class="apply-title-suggestion-btn"
-                style="margin-left:0.5rem; font-size:0.8rem;">
-          Use this
-        </button>
-      `;
+      var display = displayTitleFromNormalized(suggestion.normalized);
+      titleSuggestion.innerHTML = ''
+        + 'Did you mean: <strong>' + display + '</strong>? '
+        + '<button type="button" id="apply-title-suggestion-btn" style="margin-left:0.5rem; font-size:0.8rem;">'
+        + 'Use this'
+        + '</button>';
 
-      const applyBtn = titleSuggestion.querySelector(".apply-title-suggestion-btn");
+      var applyBtn = document.getElementById("apply-title-suggestion-btn");
       if (applyBtn) {
-        applyBtn.addEventListener("click", () => {
+        applyBtn.addEventListener("click", function () {
           titleInput.value = display;
           titleSuggestion.textContent = "";
           updateStampLookup();
-        }, { once: true });
+        });
       }
     };
 
@@ -292,16 +281,16 @@ function CGT_initSampleClickPreview() {
    * Cover image upload preview
    *-------------------------------------------------*/
   if (coverInput && coverPreview) {
-    coverInput.addEventListener("change", (e) => {
-      const file = e.target.files && e.target.files[0];
+    coverInput.addEventListener("change", function (e) {
+      var file = e.target.files && e.target.files[0];
       if (!file) {
         coverPreview.src = "";
         coverPreview.style.display = "none";
         return;
       }
 
-      const reader = new FileReader();
-      reader.onload = (ev) => {
+      var reader = new FileReader();
+      reader.onload = function (ev) {
         coverPreview.src = ev.target.result;
         coverPreview.style.display = "block";
       };
@@ -310,157 +299,115 @@ function CGT_initSampleClickPreview() {
   }
 
   /*-------------------------------------------------
-   * Sample-image overlay (press-and-hold) — delegated
+   * Compute & render results (called by wizard and submit)
    *-------------------------------------------------*/
-  const sampleOverlay = document.createElement("div");
-  sampleOverlay.id = "sample-overlay";
-  sampleOverlay.innerHTML = `<img id="sample-overlay-img" alt="Grading example" />`;
-  document.body.appendChild(sampleOverlay);
+  function computeAndRenderResults() {
+    if (!resultDiv) return;
 
-  const sampleOverlayImg = sampleOverlay.querySelector("#sample-overlay-img");
+    // Hardened calls: avoid runtime crash if a scoring file fails to load
+    var bindery = (typeof CGT.computeBinderyScore === "function")
+      ? CGT.computeBinderyScore(form)
+      : { finalScore: 10.0, baseScore: 10.0, penaltyTotal: 0.0, grade: CGT.pickGrade(CGT.GRADES, 10.0), elements: [], placeholder: true };
 
-  function showSample(src) {
-    if (!src) return;
-    sampleOverlayImg.src = src;
-    sampleOverlay.style.display = "flex";
+    var corners = (typeof CGT.computeCornersScore === "function")
+      ? CGT.computeCornersScore(form)
+      : { finalScore: 10.0, baseScore: 10.0, penaltyTotal: 0.0, grade: CGT.pickGrade(CGT.GRADES, 10.0), elements: [], placeholder: true };
+
+    var edges = (typeof CGT.computeEdgesScore === "function")
+      ? CGT.computeEdgesScore(form)
+      : { finalScore: 10.0, baseScore: 10.0, penaltyTotal: 0.0, grade: CGT.pickGrade(CGT.GRADES, 10.0), elements: [], placeholder: true };
+
+    var sectionScores = [bindery.finalScore, corners.finalScore, edges.finalScore];
+    var overallScore = Math.min.apply(Math, sectionScores);
+    var overallGrade = CGT.pickGrade(CGT.GRADES, overallScore);
+
+    var titleText = titleInput ? titleInput.value.trim() : "";
+    var issueText = issueInput ? issueInput.value.trim() : "";
+
+    var displayHeading = (titleText || issueText)
+      ? (titleText || "Unknown Title") + (issueText ? " #" + issueText : "")
+      : "Comic Book Grading Report";
+
+    var coverSrc = coverPreview ? coverPreview.src : "";
+
+    resultDiv.innerHTML = ''
+      + '<div class="print-header-row">'
+      + '  <div class="print-main-meta">'
+      + '    <h2 class="print-book-title">' + displayHeading + '</h2>'
+      + '    <p><strong>Overall Grade (current build – Bindery, Corners &amp; Edges):</strong> '
+      +        overallGrade.short + ' (' + overallGrade.label + ') – numeric ' + overallScore.toFixed(1)
+      + '    </p>'
+
+      + '    <h3>Bindery Section</h3>'
+      + '    <p><strong>Bindery Grade:</strong> '
+      +        bindery.grade.short + ' (' + bindery.grade.label + ') – ' + bindery.finalScore.toFixed(1) + '<br/>'
+      + '      <strong>Base score:</strong> ' + bindery.baseScore.toFixed(1) + '<br/>'
+      + '      <strong>Total penalties:</strong> ' + bindery.penaltyTotal.toFixed(1)
+      + '    </p>'
+      + '    <ul>' + bindery.elements.map(function (e) {
+            return '<li>' + e.id + ': ' + e.score.toFixed(1) + '</li>';
+          }).join("") + '</ul>'
+
+      + '    <h3>Corners Section</h3>'
+      + '    <p><strong>Corners Grade:</strong> '
+      +        corners.grade.short + ' (' + corners.grade.label + ') – ' + corners.finalScore.toFixed(1) + '<br/>'
+      + '      <strong>Base score:</strong> ' + corners.baseScore.toFixed(1) + '<br/>'
+      + '      <strong>Total penalties:</strong> ' + corners.penaltyTotal.toFixed(1)
+      + '    </p>'
+      + '    <ul>' + corners.elements.map(function (e2) {
+            return '<li>' + e2.id + ': ' + e2.score.toFixed(1) + '</li>';
+          }).join("") + '</ul>'
+
+      + '    <h3>Edges Section</h3>'
+      + '    <p><strong>Edges Grade:</strong> '
+      +        edges.grade.short + ' (' + edges.grade.label + ') – ' + edges.finalScore.toFixed(1) + '<br/>'
+      + '      <strong>Base score:</strong> ' + edges.baseScore.toFixed(1) + '<br/>'
+      + '      <strong>Total penalties:</strong> ' + edges.penaltyTotal.toFixed(1)
+      + '    </p>'
+      + '    <ul>' + edges.elements.map(function (e3) {
+            return '<li>' + e3.id + ': ' + e3.score.toFixed(1) + '</li>';
+          }).join("") + '</ul>'
+
+      + '    <p><em>Note:</em> Spine, Pages, and Cover sections will be added later.</p>'
+      + '  </div>'
+
+      + (coverSrc
+          ? '  <div class="print-cover-wrapper"><img class="print-cover" src="' + coverSrc + '" alt="Comic cover preview" /></div>'
+          : ''
+        )
+      + '</div>';
   }
-  function hideSample() {
-    sampleOverlay.style.display = "none";
-    sampleOverlayImg.src = "";
-  }
-
-  function findSampleBtnTarget(evt) {
-    const t = evt.target;
-    if (!t) return null;
-    return t.closest ? t.closest(".sample-btn") : null;
-  }
-
-  document.addEventListener("mousedown", (evt) => {
-    const btn = findSampleBtnTarget(evt);
-    if (!btn) return;
-    const imgSrc = btn.getAttribute("data-sample-img");
-    if (imgSrc) showSample(imgSrc);
-  });
-
-  document.addEventListener("mouseup", () => hideSample());
-  document.addEventListener("mouseleave", () => hideSample());
-
-  document.addEventListener("touchstart", (evt) => {
-    const btn = findSampleBtnTarget(evt);
-    if (!btn) return;
-    evt.preventDefault();
-    const imgSrc = btn.getAttribute("data-sample-img");
-    if (imgSrc) showSample(imgSrc);
-  }, { passive: false });
-
-  document.addEventListener("touchend", () => hideSample());
-  document.addEventListener("touchcancel", () => hideSample());
 
   /*-------------------------------------------------
-   * Submit handler: compute sections and report
+   * Wizard init (separate file)
    *-------------------------------------------------*/
-  if (resultDiv) {
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-
-      const fallbackScoreObj = () => ({
-        finalScore: 10.0,
-        baseScore: 10.0,
-        penaltyTotal: 0.0,
-        grade: safePickGrade(10.0),
-        elements: [],
-        placeholder: true
-      });
-
-      // Hardened calls: avoid runtime crash if a scoring file fails to load
-      const bindery = (typeof CGT.computeBinderyScore === "function")
-        ? CGT.computeBinderyScore(form)
-        : fallbackScoreObj();
-
-      const corners = (typeof CGT.computeCornersScore === "function")
-        ? CGT.computeCornersScore(form)
-        : fallbackScoreObj();
-
-      const edges = (typeof CGT.computeEdgesScore === "function")
-        ? CGT.computeEdgesScore(form)
-        : fallbackScoreObj();
-
-      const sectionScores = [bindery.finalScore, corners.finalScore, edges.finalScore];
-      const overallScore = Math.min(...sectionScores);
-      const overallGrade = safePickGrade(overallScore);
-
-      const titleText = titleInput ? titleInput.value.trim() : "";
-      const issueText = issueInput ? issueInput.value.trim() : "";
-
-      const displayHeading = (titleText || issueText)
-        ? `${titleText || "Unknown Title"}${issueText ? " #" + issueText : ""}`
-        : "Comic Book Grading Report";
-
-      const coverSrc = coverPreview ? coverPreview.src : "";
-
-      resultDiv.innerHTML = `
-        <div class="print-header-row">
-          <div class="print-main-meta">
-            <h2 class="print-book-title">${displayHeading}</h2>
-
-            <p><strong>Overall Grade (current build – Bindery, Corners &amp; Edges):</strong>
-              ${overallGrade.short} (${overallGrade.label}) – numeric ${overallScore.toFixed(1)}
-            </p>
-
-            <h3>Bindery Section</h3>
-            <p>
-              <strong>Bindery Grade:</strong>
-              ${bindery.grade.short} (${bindery.grade.label}) – ${bindery.finalScore.toFixed(1)}<br/>
-              <strong>Base score:</strong> ${bindery.baseScore.toFixed(1)}<br/>
-              <strong>Total penalties:</strong> ${bindery.penaltyTotal.toFixed(1)}
-            </p>
-            <ul>
-              ${bindery.elements.map(e => `<li>${e.id}: ${e.score.toFixed(1)}</li>`).join("")}
-            </ul>
-
-            <h3>Corners Section</h3>
-            <p>
-              <strong>Corners Grade:</strong>
-              ${corners.grade.short} (${corners.grade.label}) – ${corners.finalScore.toFixed(1)}<br/>
-              <strong>Base score:</strong> ${corners.baseScore.toFixed(1)}<br/>
-              <strong>Total penalties:</strong> ${corners.penaltyTotal.toFixed(1)}
-            </p>
-            <ul>
-              ${corners.elements.map(e => `<li>${e.id}: ${e.score.toFixed(1)}</li>`).join("")}
-            </ul>
-
-            <h3>Edges Section</h3>
-            <p>
-              <strong>Edges Grade:</strong>
-              ${edges.grade.short} (${edges.grade.label}) – ${edges.finalScore.toFixed(1)}<br/>
-              <strong>Base score:</strong> ${edges.baseScore.toFixed(1)}<br/>
-              <strong>Total penalties:</strong> ${edges.penaltyTotal.toFixed(1)}
-            </p>
-            <ul>
-              ${edges.elements.map(e => `<li>${e.id}: ${e.score.toFixed(1)}</li>`).join("")}
-            </ul>
-
-            <p><em>Note:</em> Spine, Pages, and Cover sections will be added later.</p>
-          </div>
-
-          ${coverSrc
-            ? `<div class="print-cover-wrapper">
-                 <img class="print-cover" src="${coverSrc}" alt="Comic cover preview" />
-               </div>`
-            : ""
-          }
-        </div>
-      `;
-
-      resultDiv.scrollIntoView?.({ behavior: "smooth", block: "start" });
+  if (typeof CGT.initWizardNav === "function") {
+    CGT.initWizardNav(form, {
+      firstPageName: "info",
+      resultsPageName: "results",
+      pageOrder: ["info", "bindery", "corners", "edges", "spine", "results"],
+      onEnterResults: computeAndRenderResults
     });
+  } else {
+    console.warn("[wizard] ui/wizardNav.js not loaded; pages will not navigate");
   }
+
+  /*-------------------------------------------------
+   * Submit: treat Enter as "go to results"
+   *-------------------------------------------------*/
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    computeAndRenderResults();
+    if (CGT.wizard && typeof CGT.wizard.goTo === "function") {
+      CGT.wizard.goTo("results");
+    }
+  });
 
   /*-------------------------------------------------
    * Reset handler
    *-------------------------------------------------*/
   if (resetBtn) {
-    resetBtn.addEventListener("click", () => {
+    resetBtn.addEventListener("click", function () {
       form.reset();
 
       stampApplies = false;
@@ -481,6 +428,11 @@ function CGT_initSampleClickPreview() {
       }
 
       updateStampLookup();
+
+      // Return to first page
+      if (CGT.wizard && typeof CGT.wizard.goTo === "function") {
+        CGT.wizard.goTo("info");
+      }
     });
   }
 
@@ -488,14 +440,17 @@ function CGT_initSampleClickPreview() {
    * Print handler
    *-------------------------------------------------*/
   if (printBtn && resultDiv) {
-    printBtn.addEventListener("click", () => {
-      if (!resultDiv.innerHTML.trim()) {
-        alert("Please estimate a grade first, then print the results.");
+    printBtn.addEventListener("click", function () {
+      if (!resultDiv.innerHTML || !resultDiv.innerHTML.trim()) {
+        alert("Please view results first, then print the report.");
         return;
       }
       window.print();
     });
   }
+
+  // Initial stamp state
+  updateStampLookup();
 }
 
 /*-------------------------------------------------
