@@ -22,6 +22,55 @@ function CGT_bootstrapApp() {
   const coverInput   = document.getElementById("cover_image");
   const coverPreview = document.getElementById("cover-preview");
 
+function CGT_initSampleClickPreview() {
+  if (window.CGT && window.CGT.__sampleClickInit) return;
+  if (window.CGT) window.CGT.__sampleClickInit = true;
+
+  // Create overlay once
+  let overlay = document.getElementById("sample-overlay");
+  if (!overlay) {
+    overlay = document.createElement("div");
+    overlay.id = "sample-overlay";
+    overlay.innerHTML = `
+      <div class="sample-overlay-inner">
+        <img id="sample-overlay-img" alt="Grading example" />
+        <button type="button" id="sample-overlay-close" aria-label="Close preview">Close</button>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+  }
+
+  const img = overlay.querySelector("#sample-overlay-img");
+  const closeBtn = overlay.querySelector("#sample-overlay-close");
+
+  function show(src) {
+    if (!src) return;
+    img.src = src;
+    overlay.style.display = "flex";
+  }
+  function hide() {
+    overlay.style.display = "none";
+    img.src = "";
+  }
+
+  closeBtn?.addEventListener("click", hide);
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) hide();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") hide();
+  });
+
+  // Delegated click handler: works for included HTML
+  document.addEventListener("click", (e) => {
+    const el = e.target && e.target.closest ? e.target.closest("[data-sample-img]") : null;
+    if (!el) return;
+
+    const src = el.getAttribute("data-sample-img");
+    if (src) show(src);
+  });
+}
+  
   // READ LIVE (do not capture empty objects at bootstrap time)
   function getValueStampIndex() {
     return CGT.VALUE_STAMP_INDEX || {};
