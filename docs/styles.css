@@ -187,6 +187,14 @@ button[type="reset"]:active,
   gap: 0.8rem;
 }
 
+/* Action button row (Results page) */
+.form-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
 /* =========================
    SMALL UI BITS
    ========================= */
