@@ -9,9 +9,9 @@ function CGT_bootstrapApp() {
   const form = document.getElementById("grading-form");
   if (!form) return;
 
-  const resultDiv       = document.getElementById("result");
-  const resetBtn        = document.getElementById("reset-btn");
-  const printBtn        = document.getElementById("print-btn");
+  const resultDiv = document.getElementById("result");
+  const resetBtn  = document.getElementById("reset-btn");
+  const printBtn  = document.getElementById("print-btn");
 
   const titleInput      = document.getElementById("comic_title");
   const issueInput      = document.getElementById("comic_issue");
@@ -19,8 +19,8 @@ function CGT_bootstrapApp() {
   const stampHint       = document.getElementById("stamp-hint");
   const titleSuggestion = document.getElementById("title-suggestion");
 
-  const coverInput      = document.getElementById("cover_image");
-  const coverPreview    = document.getElementById("cover-preview");
+  const coverInput   = document.getElementById("cover_image");
+  const coverPreview = document.getElementById("cover-preview");
 
   // Data comes from data/valueStampIndex.js (READ LIVE — do not capture empty objects)
   function getValueStampIndex() {
@@ -110,11 +110,13 @@ function CGT_bootstrapApp() {
     const normUser = normalizeTitle(rawTitle);
     if (!normUser || normUser.length < 3) return null;
 
+    const titles = getKnownTitles(); // READ LIVE
+    if (!titles.length) return null;
+
     let bestTitle = null;
     let bestDistance = Infinity;
 
-    // Normalize dataset titles too (hardening)
-    for (const t of KNOWN_TITLES) {
+    for (const t of titles) {
       const normT = normalizeTitle(t);
       const d = editDistance(normUser, normT);
       if (d < bestDistance) {
@@ -159,7 +161,9 @@ function CGT_bootstrapApp() {
     }
 
     const key = makeStampKey(title, issue);
-    if (VALUE_STAMP_INDEX[key]) {
+    const index = getValueStampIndex(); // READ LIVE
+
+    if (index[key]) {
       stampApplies = true;
       if (stampFieldset) stampFieldset.style.display = "block";
       if (stampHint) {
@@ -199,13 +203,10 @@ function CGT_bootstrapApp() {
       }
 
       const display = displayTitleFromNormalized(suggestion.normalized);
-      titleSuggestion.innerHTML = `
-        Did you mean: <strong>${display}</strong>?
-        <button type="button" id="apply-title-suggestion-btn"
-                style="margin-left:0.5rem; font-size:0.8rem;">
-          Use this
-        </button>
-      `;
+      titleSuggestion.innerHTML =
+        `Did you mean: <strong>${display}</strong>? ` +
+        `<button type="button" id="apply-title-suggestion-btn" ` +
+        `style="margin-left:0.5rem; font-size:0.8rem;">Use this</button>`;
 
       const applyBtn = document.getElementById("apply-title-suggestion-btn");
       if (applyBtn) {
@@ -263,22 +264,29 @@ function CGT_bootstrapApp() {
     sampleOverlayImg.src = "";
   }
 
-  document.querySelectorAll(".sample-btn").forEach((btn) => {
+  // Bind sample buttons using event delegation (works even if includes load after)
+  document.addEventListener("mousedown", (e) => {
+    const btn = e.target && e.target.closest ? e.target.closest(".sample-btn") : null;
+    if (!btn) return;
     const imgSrc = btn.getAttribute("data-sample-img");
     if (!imgSrc) return;
-
-    btn.addEventListener("mousedown", () => showSample(imgSrc));
-    btn.addEventListener("mouseup", hideSample);
-    btn.addEventListener("mouseleave", hideSample);
-
-    btn.addEventListener("touchstart", (e) => {
-      e.preventDefault();
-      showSample(imgSrc);
-    }, { passive: false });
-
-    btn.addEventListener("touchend", hideSample);
-    btn.addEventListener("touchcancel", hideSample);
+    showSample(imgSrc);
   });
+
+  document.addEventListener("mouseup", () => hideSample());
+  document.addEventListener("mouseleave", () => hideSample());
+
+  document.addEventListener("touchstart", (e) => {
+    const btn = e.target && e.target.closest ? e.target.closest(".sample-btn") : null;
+    if (!btn) return;
+    const imgSrc = btn.getAttribute("data-sample-img");
+    if (!imgSrc) return;
+    e.preventDefault();
+    showSample(imgSrc);
+  }, { passive: false });
+
+  document.addEventListener("touchend", () => hideSample());
+  document.addEventListener("touchcancel", () => hideSample());
 
   /*-------------------------------------------------
    * Submit handler: compute sections and report
@@ -287,18 +295,24 @@ function CGT_bootstrapApp() {
     form.addEventListener("submit", (e) => {
       e.preventDefault();
 
-      // Hardened calls: avoid runtime crash if a scoring file fails to load
+      const safePickGrade = (score) => {
+        if (typeof CGT.pickGrade === "function" && CGT.GRADES) {
+          return CGT.pickGrade(CGT.GRADES, score);
+        }
+        return { short: "N/A", label: "Not available" };
+      };
+
       const bindery = (typeof CGT.computeBinderyScore === "function")
         ? CGT.computeBinderyScore(form)
-        : { finalScore: 10.0, baseScore: 10.0, penaltyTotal: 0.0, grade: CGT.pickGrade(CGT.GRADES, 10.0), elements: [], placeholder: true };
+        : { finalScore: 10.0, baseScore: 10.0, penaltyTotal: 0.0, grade: safePickGrade(10.0), elements: [], placeholder: true };
 
       const corners = (typeof CGT.computeCornersScore === "function")
         ? CGT.computeCornersScore(form)
-        : { finalScore: 10.0, baseScore: 10.0, penaltyTotal: 0.0, grade: CGT.pickGrade(CGT.GRADES, 10.0), elements: [], placeholder: true };
+        : { finalScore: 10.0, baseScore: 10.0, penaltyTotal: 0.0, grade: safePickGrade(10.0), elements: [], placeholder: true };
 
       const edges = (typeof CGT.computeEdgesScore === "function")
         ? CGT.computeEdgesScore(form)
-        : { finalScore: 10.0, baseScore: 10.0, penaltyTotal: 0.0, grade: CGT.pickGrade(CGT.GRADES, 10.0), elements: [], placeholder: true };
+        : { finalScore: 10.0, baseScore: 10.0, penaltyTotal: 0.0, grade: safePickGrade(10.0), elements: [], placeholder: true };
 
       const sectionScores = [
         bindery.finalScore,
@@ -307,7 +321,9 @@ function CGT_bootstrapApp() {
       ];
 
       const overallScore = Math.min(...sectionScores);
-      const overallGrade = CGT.pickGrade(CGT.GRADES, overallScore);
+      const overallGrade = (bindery.grade && typeof bindery.grade === "object" && bindery.grade.short)
+        ? safePickGrade(overallScore)
+        : safePickGrade(overallScore);
 
       const titleText = titleInput ? titleInput.value.trim() : "";
       const issueText = issueInput ? issueInput.value.trim() : "";
@@ -335,7 +351,7 @@ function CGT_bootstrapApp() {
               <strong>Total penalties:</strong> ${bindery.penaltyTotal.toFixed(1)}
             </p>
             <ul>
-              ${bindery.elements.map(e => `<li>${e.id}: ${e.score.toFixed(1)}</li>`).join("")}
+              ${(bindery.elements || []).map(e => `<li>${e.id}: ${Number(e.score).toFixed(1)}</li>`).join("")}
             </ul>
 
             <h3>Corners Section</h3>
@@ -346,7 +362,7 @@ function CGT_bootstrapApp() {
               <strong>Total penalties:</strong> ${corners.penaltyTotal.toFixed(1)}
             </p>
             <ul>
-              ${corners.elements.map(e => `<li>${e.id}: ${e.score.toFixed(1)}</li>`).join("")}
+              ${(corners.elements || []).map(e => `<li>${e.id}: ${Number(e.score).toFixed(1)}</li>`).join("")}
             </ul>
 
             <h3>Edges Section</h3>
@@ -357,7 +373,7 @@ function CGT_bootstrapApp() {
               <strong>Total penalties:</strong> ${edges.penaltyTotal.toFixed(1)}
             </p>
             <ul>
-              ${edges.elements.map(e => `<li>${e.id}: ${e.score.toFixed(1)}</li>`).join("")}
+              ${(edges.elements || []).map(e => `<li>${e.id}: ${e.id}: ${Number(e.score).toFixed(1)}</li>`).join("")}
             </ul>
 
             <p><em>Note:</em> Spine, Pages, and Cover sections will be added later.</p>
@@ -377,40 +393,39 @@ function CGT_bootstrapApp() {
     });
   }
 
-/*-------------------------------------------------
- * Reset handler
- *-------------------------------------------------*/
-if (resetBtn) {
-  resetBtn.addEventListener("click", () => {
-    // 1) Reset all form controls back to defaults (first <option>, default radios, etc.)
-    form.reset();
+  /*-------------------------------------------------
+   * Reset handler
+   *-------------------------------------------------*/
+  if (resetBtn) {
+    resetBtn.addEventListener("click", () => {
+      // 1) Reset all form controls back to defaults
+      form.reset();
 
-    // 2) Clear derived UI state
-    stampApplies = false;
-    if (stampFieldset) stampFieldset.style.display = "none";
-    if (stampHint) stampHint.textContent = "";
-    if (resultDiv) resultDiv.innerHTML = "";
+      // 2) Clear derived UI state
+      stampApplies = false;
+      if (stampFieldset) stampFieldset.style.display = "none";
+      if (stampHint) stampHint.textContent = "";
+      if (resultDiv) resultDiv.innerHTML = "";
 
-    // Clear title suggestion text
-    if (titleSuggestion) titleSuggestion.textContent = "";
+      // Clear title suggestion text
+      if (titleSuggestion) titleSuggestion.textContent = "";
 
-    // 3) Clear cover preview
-    if (coverInput) coverInput.value = "";
-    if (coverPreview) {
-      coverPreview.src = "";
-      coverPreview.style.display = "none";
-    }
+      // 3) Clear cover preview
+      if (coverInput) coverInput.value = "";
+      if (coverPreview) {
+        coverPreview.src = "";
+        coverPreview.style.display = "none";
+      }
 
-    // 4) Re-apply multi-location toggle rules to the now-reset defaults
-    if (typeof CGT.initMultiLocationToggles === "function") {
-      CGT.initMultiLocationToggles(form);
-    }
+      // 4) Re-apply multi-location toggle rules to the now-reset defaults
+      if (typeof CGT.initMultiLocationToggles === "function") {
+        CGT.initMultiLocationToggles(form);
+      }
 
-    // 5) Recompute stamp lookup based on cleared title/issue
-    updateStampLookup();
-  });
-}
-
+      // 5) Recompute stamp lookup based on cleared title/issue
+      updateStampLookup();
+    });
+  }
 
   /*-------------------------------------------------
    * Print handler
@@ -424,6 +439,9 @@ if (resetBtn) {
       window.print();
     });
   }
+
+  // Initial stamp state on load (after includes)
+  updateStampLookup();
 }
 
 /*-------------------------------------------------
@@ -434,4 +452,3 @@ if (window.CGT_INCLUDES_READY && typeof window.CGT_INCLUDES_READY.then === "func
 } else {
   document.addEventListener("DOMContentLoaded", CGT_bootstrapApp);
 }
-
