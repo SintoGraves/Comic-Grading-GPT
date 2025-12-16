@@ -17,61 +17,82 @@
   </div>
 
   <form id="grading-form">
-    <div include-html="partials/info-fields.html"></div>
+    <!-- PAGE 1: Info + Images + Value Stamp -->
+    <div class="cgt-page" data-page="info">
+      <div include-html="partials/info-fields.html"></div>
 
-    <fieldset>
-      <legend>Top Condition / Gem Mint Check</legend>
-      <label>
-        <input type="checkbox" id="gm_candidate" />
-        This copy looks absolutely perfect to you (Gem Mint 10.0 candidate if no discrepancies).
-      </label>
-    </fieldset>
+      <fieldset>
+        <legend>Top Condition / Gem Mint Check</legend>
+        <label>
+          <input type="checkbox" id="gm_candidate" />
+          This copy looks absolutely perfect to you (Gem Mint 10.0 candidate if no discrepancies).
+        </label>
+      </fieldset>
 
-    <fieldset>
-      <legend>Comic Image (Optional)</legend>
-      <label>
-        Front cover image:
-        <input type="file" id="cover_image" accept="image/*" />
-      </label>
-      <div id="cover-preview-wrapper">
-        <p class="hint" id="cover-preview-hint">
-          Optional: upload a photo/scan of the front cover. This will be shown on screen
-          and included with your printed report.
-        </p>
-        <img id="cover-preview" alt="Comic cover preview" />
-      </div>
-    </fieldset>
+      <fieldset>
+        <legend>Comic Image (Optional)</legend>
+        <label>
+          Front cover image:
+          <input type="file" id="cover_image" accept="image/*" />
+        </label>
+        <div id="cover-preview-wrapper">
+          <p class="hint" id="cover-preview-hint">
+            Optional: upload a photo/scan of the front cover. This will be shown on screen
+            and included with your printed report.
+          </p>
+          <img id="cover-preview" alt="Comic cover preview" />
+        </div>
+      </fieldset>
 
-    <div include-html="partials/value-stamp.html"></div>
+      <div include-html="partials/value-stamp.html"></div>
+    </div>
 
-    <div include-html="sections/bindery.html"></div>
-    <div include-html="sections/corners.html"></div>
-    <div include-html="sections/edges.html"></div>
-    <div include-html="sections/spine.html"></div>
+    <!-- PAGE 2: Bindery -->
+    <div class="cgt-page" data-page="bindery">
+      <div include-html="sections/bindery.html"></div>
+    </div>
 
-    <div include-html="partials/buttons.html"></div>
+    <!-- PAGE 3: Corners -->
+    <div class="cgt-page" data-page="corners">
+      <div include-html="sections/corners.html"></div>
+    </div>
+
+    <!-- PAGE 4: Edges -->
+    <div class="cgt-page" data-page="edges">
+      <div include-html="sections/edges.html"></div>
+    </div>
+
+    <!-- PAGE 5: Spine (planned/placeholder section) -->
+    <div class="cgt-page" data-page="spine">
+      <div include-html="sections/spine.html"></div>
+    </div>
+
+    <!-- PAGE 6: Results -->
+    <div class="cgt-page" data-page="results">
+      <section id="result" style="margin-top:1.5rem;"></section>
+      <div include-html="partials/buttons.html"></div>
+      <!-- Wizard jump links are injected here by ui/wizardNav.js -->
+    </div>
   </form>
 
-  <section id="result" style="margin-top:1.5rem;"></section>
-
-  <!-- Includes loader (as its own file) -->
-  <script defer src="ui/includes.js"></script>
+  <!-- Includes loader -->
+  <script src="ui/includes.js"></script>
 
   <!-- Data -->
-  <script defer src="data/valueStampIndex.js"></script>
+  <script src="data/valueStampIndex.js"></script>
 
   <!-- Grading logic -->
-  <script defer src="grading/scoringUtils.js"></script>
-  <script defer src="grading/scoreBindery.js"></script>
-  <script defer src="grading/scoreCorners.js"></script>
-  <script defer src="grading/scoreEdges.js"></script>
-  <script defer src="grading/scoreSpine.js"></script>
+  <script src="grading/scoringUtils.js"></script>
+  <script src="grading/scoreBindery.js"></script>
+  <script src="grading/scoreCorners.js"></script>
+  <script src="grading/scoreEdges.js"></script>
+  <script src="grading/scoreSpine.js"></script>
 
   <!-- UI -->
-  <script defer src="ui/multiLocation.js"></script>
+  <script src="ui/multiLocation.js"></script>
+  <script src="ui/wizardNav.js"></script>
 
   <!-- Main app -->
-  <script defer src="app.js"></script>
-
+  <script src="app.js"></script>
 </body>
 </html>
