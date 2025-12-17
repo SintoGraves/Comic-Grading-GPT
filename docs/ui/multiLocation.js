@@ -60,7 +60,7 @@ CGT.MULTI_LOCATION_RULES = [
 
   // EDGES — Staining/Soiling
   { base: "edge_soil_front", showWhen: ["light_dirt", "staining", "dirt_and_staining"] },
-  { base: "edge_soil_back",  showWhen: ["light_dirt", "staining", "dirt_and_staining"] }
+  { base: "edge_soil_back",  showWhen: ["light_dirt", "staining", "dirt_and_staining"] },
 
   // SPINE — Stress Lines
   { base: "spine_stress", showWhen: ["very_faint", "few_minor", "multiple_color_break"] },
