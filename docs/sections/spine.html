@@ -1,6 +1,172 @@
-<fieldset>
-  <legend>Spine</legend>
-  <p class="hint">
-    Spine grading will be added in a future version. For now, this section is a placeholder and always returns a perfect score.
+<section class="cgt-page" id="spine">
+
+  <h2 class="section-title">Spine</h2>
+  <p class="section-intro">
+    Evaluate the spine for structural and visual defects. All items default to 10.0 unless downgraded.
   </p>
-</fieldset>
+
+  <!-- =========================================================
+       Spine Stress Lines
+  ========================================================== -->
+  <h3 class="element-title">Spine Stress Lines</h3>
+
+  <div class="subelement-row">
+    <label class="choice">
+      <input type="radio" name="spine_stress" value="none" checked />
+      None
+    </label>
+    <label class="choice">
+      <input type="radio" name="spine_stress" value="very_faint" />
+      Very faint
+    </label>
+    <label class="choice">
+      <input type="radio" name="spine_stress" value="few_minor" />
+      A few minor lines
+    </label>
+    <label class="choice">
+      <input type="radio" name="spine_stress" value="multiple_color_break" />
+      Multiple with color break
+    </label>
+  </div>
+
+  <div class="subelement-row multi-location-row" id="spine_stress_multi_row">
+    <span class="subelement-label">Multiple locations?</span>
+    <label class="choice">
+      <input type="radio" name="spine_stress_multi" value="no" checked />
+      No
+    </label>
+    <label class="choice">
+      <input type="radio" name="spine_stress_multi" value="yes" />
+      Yes
+    </label>
+  </div>
+
+  <!-- =========================================================
+       Spine Roll
+  ========================================================== -->
+  <h3 class="element-title">Spine Roll</h3>
+
+  <div class="subelement-row">
+    <label class="choice">
+      <input type="radio" name="spine_roll" value="none" checked />
+      None
+    </label>
+    <label class="choice">
+      <input type="radio" name="spine_roll" value="slight_roll" />
+      Slight roll
+    </label>
+    <label class="choice">
+      <input type="radio" name="spine_roll" value="slight_fold" />
+      Slight fold
+    </label>
+    <label class="choice">
+      <input type="radio" name="spine_roll" value="severe_roll" />
+      Severe roll
+    </label>
+    <label class="choice">
+      <input type="radio" name="spine_roll" value="severe_fold" />
+      Severe fold
+    </label>
+  </div>
+
+  <!-- =========================================================
+       Spine Splits
+  ========================================================== -->
+  <h3 class="element-title">Spine Splits</h3>
+
+  <div class="subelement-row">
+    <label class="choice">
+      <input type="radio" name="spine_split" value="none" checked />
+      None
+    </label>
+    <label class="choice">
+      <input type="radio" name="spine_split" value="under_quarter" />
+      Under ¼ inch
+    </label>
+    <label class="choice">
+      <input type="radio" name="spine_split" value="half_to_two" />
+      ½ to 2 inches
+    </label>
+    <label class="choice">
+      <input type="radio" name="spine_split" value="over_two" />
+      More than 2 inches
+    </label>
+  </div>
+
+  <div class="subelement-row multi-location-row" id="spine_split_multi_row">
+    <span class="subelement-label">More than one location?</span>
+    <label class="choice">
+      <input type="radio" name="spine_split_multi" value="no" checked />
+      No
+    </label>
+    <label class="choice">
+      <input type="radio" name="spine_split_multi" value="yes" />
+      Yes
+    </label>
+  </div>
+
+  <!-- =========================================================
+       Surface Wear / Color Fading
+  ========================================================== -->
+  <h3 class="element-title">Surface Wear / Color Fading</h3>
+
+  <div class="subelement-row">
+    <label class="choice">
+      <input type="radio" name="spine_surface" value="minimal" checked />
+      Minimal or none
+    </label>
+    <label class="choice">
+      <input type="radio" name="spine_surface" value="noticeable" />
+      Noticeable wear / light scuffing
+    </label>
+    <label class="choice">
+      <input type="radio" name="spine_surface" value="heavy" />
+      Heavy wear / deep rubs / discoloration
+    </label>
+  </div>
+
+  <div class="subelement-row multi-location-row" id="spine_surface_multi_row">
+    <span class="subelement-label">More than one location?</span>
+    <label class="choice">
+      <input type="radio" name="spine_surface_multi" value="no" checked />
+      No
+    </label>
+    <label class="choice">
+      <input type="radio" name="spine_surface_multi" value="yes" />
+      Yes
+    </label>
+  </div>
+
+  <!-- =========================================================
+       Tears, Chips, or Pieces Missing
+  ========================================================== -->
+  <h3 class="element-title">Tears, Chips, or Pieces Missing</h3>
+
+  <div class="subelement-row">
+    <label class="choice">
+      <input type="radio" name="spine_tears" value="none" checked />
+      None
+    </label>
+    <label class="choice">
+      <input type="radio" name="spine_tears" value="tiny" />
+      Tiny tears (&lt;¼")
+    </label>
+    <label class="choice">
+      <input type="radio" name="spine_tears" value="chunks" />
+      Chunks missing or major tears
+    </label>
+  </div>
+
+  <div class="subelement-row multi-location-row" id="spine_tears_multi_row">
+    <span class="subelement-label">More than one location?</span>
+    <label class="choice">
+      <input type="radio" name="spine_tears_multi" value="no" checked />
+      No
+    </label>
+    <label class="choice">
+      <input type="radio" name="spine_tears_multi" value="yes" />
+      Yes
+    </label>
+  </div>
+
+</section>
