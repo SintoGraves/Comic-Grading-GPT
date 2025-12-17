@@ -61,6 +61,18 @@ CGT.MULTI_LOCATION_RULES = [
   // EDGES — Staining/Soiling
   { base: "edge_soil_front", showWhen: ["light_dirt", "staining", "dirt_and_staining"] },
   { base: "edge_soil_back",  showWhen: ["light_dirt", "staining", "dirt_and_staining"] }
+
+  // SPINE — Stress Lines
+  { base: "spine_stress", showWhen: ["very_faint", "few_minor", "multiple_color_break"] },
+
+  // SPINE — Splits
+  { base: "spine_split", showWhen: ["under_quarter", "half_to_two", "over_two"] },
+
+  // SPINE — Surface Wear / Color Fading
+  { base: "spine_surface", showWhen: ["noticeable", "heavy"] },
+
+  // SPINE — Tears / Chips / Pieces Missing
+  { base: "spine_tears", showWhen: ["tiny", "chunks"] },
 ];
 
 /*-------------------------------------------------
