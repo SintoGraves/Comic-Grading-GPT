@@ -72,7 +72,7 @@ CGT.MULTI_LOCATION_RULES = [
   { base: "spine_surface", showWhen: ["noticeable", "heavy"] },
 
   // SPINE — Tears / Chips / Pieces Missing
-  { base: "spine_tears", showWhen: ["tiny", "chunks"] },
+  { base: "spine_tears", showWhen: ["tiny", "chunks"] }
 ];
 
 /*-------------------------------------------------
