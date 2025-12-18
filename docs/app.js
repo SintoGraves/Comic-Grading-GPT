@@ -317,7 +317,11 @@ function CGT_bootstrapApp() {
       ? CGT.computeEdgesScore(form)
       : { finalScore: 10.0, baseScore: 10.0, penaltyTotal: 0.0, grade: CGT.pickGrade(CGT.GRADES, 10.0), elements: [], placeholder: true };
 
-    var sectionScores = [bindery.finalScore, corners.finalScore, edges.finalScore];
+    var spine = (typeof CGT.computeSpineScore === "function")
+      ? CGT.computeSpineScore(form)
+      : { finalScore: 10.0, baseScore: 10.0, penaltyTotal: 0.0, grade: CGT.pickGrade(CGT.GRADES, 10.0), elements: [], placeholder: true };
+  
+    var sectionScores = [bindery.finalScore, corners.finalScore, edges.finalScore, spine.finalScore];
     var overallScore = Math.min.apply(Math, sectionScores);
     var overallGrade = CGT.pickGrade(CGT.GRADES, overallScore);
 
