@@ -372,7 +372,18 @@ function CGT_bootstrapApp() {
             return '<li>' + e3.id + ': ' + e3.score.toFixed(1) + '</li>';
           }).join("") + '</ul>'
 
-      + '    <p><em>Note:</em> Spine, Pages, and Cover sections will be added later.</p>'
+      + '    <h3>Spine Section</h3>'
+      + '    <p><strong>Spine Grade:</strong> '
+      +        spine.grade.short + ' (' + spine.grade.label + ') – ' + spine.finalScore.toFixed(1) + '<br/>'
+      + '      <strong>Base score:</strong> ' + spine.baseScore.toFixed(1) + '<br/>'
+      + '      <strong>Total penalties:</strong> ' + spine.penaltyTotal.toFixed(1)
+      + '    </p>'
+      + '    <ul>' + spine.elements.map(function (e4) {
+            return '<li>' + e4.id + ': ' + e4.score.toFixed(1) + '</li>';
+          }).join("") + '</ul>'
+    
+
+      + '    <p><em>Note:</em> Pages and Cover sections will be added later.</p>'
       + '  </div>'
 
       + (coverSrc
