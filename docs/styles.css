@@ -357,6 +357,57 @@ button[type="reset"]:active,
   font-weight: 600;
 }
 
+/* -------------------------------------------------
+   Page color swatches (used in Pages section)
+------------------------------------------------- */
+.cgt-swatch {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 1px solid #999;
+  margin-right: 6px;
+  vertical-align: middle;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+/* Paper color reference swatches */
+.swatch-white {
+  background-color: #ffffff;
+}
+
+.swatch-offwhite-to-white {
+  background-color: #f7f4e8;
+}
+
+.swatch-offwhite {
+  background-color: #f1ecd9;
+}
+
+.swatch-cream-to-offwhite {
+  background-color: #efe4c8;
+}
+
+.swatch-cream {
+  background-color: #ead9b0;
+}
+
+.swatch-light-tan {
+  background-color: #d9c39b;
+}
+
+.swatch-tan {
+  background-color: #c7a16c;
+}
+
+.swatch-brown {
+  background-color: #a87a4a;
+}
+
+.swatch-brittle {
+  background-color: #8a6a40;
+}
+
 /* =========================
    MULTI-LOCATION ROW SAFETY
    ========================= */
