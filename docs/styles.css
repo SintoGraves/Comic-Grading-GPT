@@ -362,10 +362,11 @@ button[type="reset"]:active,
 ------------------------------------------------- */
 .cgt-swatch {
   display: inline-block;
-  width: 16px;
-  height: 16px;
+  width: 24px;
+  height: 24px;
   border: 1px solid #999;
-  margin-right: 6px;
+  border-radius: 3px;
+  margin-right: 8px;
   vertical-align: middle;
   cursor: pointer;
   box-sizing: border-box;
