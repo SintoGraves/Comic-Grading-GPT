@@ -126,9 +126,20 @@
       if (typeof s === "number" && !isNaN(s)) baseScore = Math.min(baseScore, s);
     }
 
-    // This section uses min-of-elements; no additional penalty ladder here
-    var penaltyTotal = 0.0;
+    // Use the same section finalization (penalty model) as Bindery if available
+    if (typeof CGT.finalizeSection === "function") {
+      return CGT.finalizeSection(elements);
+    }
+
+    // Fallback (defensive): min-of-elements only
+    var baseScore = 10.0;
+    for (var i = 0; i < elements.length; i++) {
+      var s = elements[i].score;
+      if (typeof s === "number" && !isNaN(s)) baseScore = Math.min(baseScore, s);
+    }
     var finalScore = baseScore;
+    var penaltyTotal = 10.0 - finalScore;
+    if (penaltyTotal < 0) penaltyTotal = 0;
 
     return {
       finalScore: finalScore,
@@ -137,6 +148,7 @@
       grade: pickGradeSafe(finalScore),
       elements: elements
     };
+
   };
 
   // Optional compatibility alias (non-breaking)
