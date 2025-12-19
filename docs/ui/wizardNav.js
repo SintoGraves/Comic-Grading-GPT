@@ -17,7 +17,7 @@
 
   var CGT = (window.CGT = window.CGT || {});
 
-  var PAGE_ORDER = ["info", "bindery", "corners", "edges", "spine", "results"];
+  var PAGE_ORDER = ["info", "bindery", "corners", "edges", "spine", "pages", "results"];
 
   function $(sel, root) {
     return (root || document).querySelector(sel);
@@ -94,7 +94,7 @@
 
     var idx = PAGE_ORDER.indexOf(key);
     var isFirst = idx <= 0;
-    var isLastBeforeResults = (key === "spine"); // last grading page for now
+    var isLastBeforeResults = (key === "pages"); // last grading page for now
 
     // Back
     if (!isFirst) {
