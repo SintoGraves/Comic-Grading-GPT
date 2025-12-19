@@ -72,7 +72,17 @@ CGT.MULTI_LOCATION_RULES = [
   { base: "spine_surface", showWhen: ["noticeable", "heavy"] },
 
   // SPINE — Tears / Chips / Pieces Missing
-  { base: "spine_tears", showWhen: ["tiny", "chunks"] }
+  { base: "spine_tears", showWhen: ["tiny", "chunks"] },
+
+  // PAGES — Stains/Soiling/Water Damage
+  { base: "pages_stains", showWhen: ["light_soiling", "fingerprints", "water_stains", "mold_mildew"] },
+
+  // PAGES — Tears and Chips
+  { base: "pages_tears", showWhen: ["tiny_edge_lt_quarter", "larger_tears_rips", "missing_corner_chunk", "affects_story_panel"] },
+
+  // PAGES — Markings or Writing
+  { base: "pages_marks", showWhen: ["small_pencil", "marker_heavy", "coloring"] }
+  
 ];
 
 /*-------------------------------------------------
