@@ -1,43 +1,215 @@
-<fieldset>
-  <legend>Pages</legend>
+<section id="pages-section" class="grade-section">
+  <h3 class="section-title">Pages</h3>
+  <p class="section-intro">
+    Evaluating the pages of a comic book is just as critical as examining the cover, spine, corners, and edges —
+    especially when determining higher grades. Even a flawless exterior can be downgraded by poor page quality or
+    structural damage inside.
+  </p>
 
-  <label>
-    Page color / paper quality:
-    <select name="pages_color">
-      <option value="white">White</option>
-      <option value="off_white">Off-white</option>
-      <option value="cream">Cream</option>
-      <option value="tan">Tan</option>
-      <option value="brown">Brown / brittle</option>
-    </select>
-  </label>
+  <!-- 1) Paper Color and Quality (compact, like spreadsheet) -->
+  <h4 class="element-title">Paper Color and Quality</h4>
 
-  <label>
-    Tears or missing pieces:
-    <select name="pages_tears">
-      <option value="none">None</option>
-      <option value="minor">Minor tears</option>
-      <option value="small_piece">Small piece missing</option>
-      <option value="large_piece">Large piece missing</option>
-      <option value="page_missing">Page missing</option>
-    </select>
-  </label>
+  <div class="subelement-row">
+    <span class="subelement-label">Color</span>
+    <div class="subelement-box">
+      <div class="subelement-desc">Paper Color</div>
 
-  <label>
-    Writing or marks on interior pages:
-    <select name="pages_marks">
-      <option value="none">None</option>
-      <option value="light">Light pencil/pen</option>
-      <option value="heavy">Heavy marks or coloring</option>
-    </select>
-  </label>
+      <!-- NOTE: data-sample-img paths are placeholders; update to your actual image paths -->
+      <label class="choice">
+        <input type="radio" name="pages_color" value="white" checked />
+        <span data-sample-img="images/samples/pages/white.png"
+              style="display:inline-block;width:16px;height:16px;border:1px solid #999;background:#fff;vertical-align:middle;margin-right:6px;"
+              title="Click to preview sample"></span>
+        White (10.0)
+      </label>
 
-  <label>
-    Centerfold condition:
-    <select name="pages_centerfold">
-      <option value="attached">Firmly attached</option>
-      <option value="loose">Loose at one staple</option>
-      <option value="detached">Detached at both staples</option>
-    </select>
-  </label>
-</fieldset>
+      <label class="choice">
+        <input type="radio" name="pages_color" value="offwhite_to_white" />
+        <span data-sample-img="images/samples/pages/offwhite_to_white.png"
+              style="display:inline-block;width:16px;height:16px;border:1px solid #999;background:#f7f4e8;vertical-align:middle;margin-right:6px;"
+              title="Click to preview sample"></span>
+        Off-White to White (9.5)
+      </label>
+
+      <label class="choice">
+        <input type="radio" name="pages_color" value="offwhite" />
+        <span data-sample-img="images/samples/pages/offwhite.png"
+              style="display:inline-block;width:16px;height:16px;border:1px solid #999;background:#f1ecd9;vertical-align:middle;margin-right:6px;"
+              title="Click to preview sample"></span>
+        Off-White (9.0)
+      </label>
+
+      <label class="choice">
+        <input type="radio" name="pages_color" value="cream_to_offwhite" />
+        <span data-sample-img="images/samples/pages/cream_to_offwhite.png"
+              style="display:inline-block;width:16px;height:16px;border:1px solid #999;background:#efe4c8;vertical-align:middle;margin-right:6px;"
+              title="Click to preview sample"></span>
+        Cream to Off-White (8.0)
+      </label>
+    </div>
+  </div>
+
+  <div class="subelement-row">
+    <span class="subelement-label">Color</span>
+    <div class="subelement-box">
+      <div class="subelement-desc">Paper Color</div>
+
+      <label class="choice">
+        <input type="radio" name="pages_color" value="cream" />
+        <span data-sample-img="images/samples/pages/cream.png"
+              style="display:inline-block;width:16px;height:16px;border:1px solid #999;background:#ead9b0;vertical-align:middle;margin-right:6px;"
+              title="Click to preview sample"></span>
+        Cream (7.5)
+      </label>
+
+      <label class="choice">
+        <input type="radio" name="pages_color" value="light_tan" />
+        <span data-sample-img="images/samples/pages/light_tan.png"
+              style="display:inline-block;width:16px;height:16px;border:1px solid #999;background:#d9c39b;vertical-align:middle;margin-right:6px;"
+              title="Click to preview sample"></span>
+        Light Tan (6.0)
+      </label>
+
+      <label class="choice">
+        <input type="radio" name="pages_color" value="tan" />
+        <span data-sample-img="images/samples/pages/tan.png"
+              style="display:inline-block;width:16px;height:16px;border:1px solid #999;background:#c7a16c;vertical-align:middle;margin-right:6px;"
+              title="Click to preview sample"></span>
+        Tan (5.0)
+      </label>
+
+      <label class="choice">
+        <input type="radio" name="pages_color" value="brown" />
+        <span data-sample-img="images/samples/pages/brown.png"
+              style="display:inline-block;width:16px;height:16px;border:1px solid #999;background:#a87a4a;vertical-align:middle;margin-right:6px;"
+              title="Click to preview sample"></span>
+        Brown (3.0)
+      </label>
+
+      <label class="choice">
+        <input type="radio" name="pages_color" value="brittle" />
+        <span data-sample-img="images/samples/pages/brittle.png"
+              style="display:inline-block;width:16px;height:16px;border:1px solid #999;background:#8a6a40;vertical-align:middle;margin-right:6px;"
+              title="Click to preview sample"></span>
+        Brittle (0.0)
+      </label>
+    </div>
+  </div>
+
+  <!-- 2) Stains / Soiling / Water Damage (multi-location) -->
+  <h4 class="element-title">Stains, Soiling, or Water Damage</h4>
+  <div class="element-note">
+    Check for foxing, water stains, fingerprints/smudges, or mold/mildew that affect interior page appearance.
+  </div>
+
+  <div class="subelement-row">
+    <span class="subelement-label">Stains/Soiling</span>
+    <div class="subelement-box">
+      <div class="subelement-desc">Stains, Soiling, or Water Damage</div>
+
+      <label class="choice"><input type="radio" name="pages_stains" value="none" checked /> None</label>
+      <label class="choice"><input type="radio" name="pages_stains" value="light_soiling" /> Light soiling</label>
+      <label class="choice"><input type="radio" name="pages_stains" value="fingerprints" /> Fingerprints / smudges</label>
+      <label class="choice"><input type="radio" name="pages_stains" value="water_stains" /> Water stains</label>
+      <label class="choice"><input type="radio" name="pages_stains" value="mold_mildew" /> Mold / mildew</label>
+    </div>
+  </div>
+
+  <div class="multi-location-row" id="pages_stains_multi_row">
+    <span class="multi-label">Is this occurring in more than one location?</span>
+    <label><input type="radio" name="pages_stains_multi" value="no" checked /> No</label>
+    <label><input type="radio" name="pages_stains_multi" value="yes" /> Yes</label>
+  </div>
+
+  <!-- 3) Tears and Chips (multi-location) -->
+  <h4 class="element-title">Tears and Chips</h4>
+
+  <div class="subelement-row">
+    <span class="subelement-label">Tears/Chips</span>
+    <div class="subelement-box">
+      <div class="subelement-desc">Tears and Chips</div>
+
+      <label class="choice"><input type="radio" name="pages_tears" value="none" checked /> None</label>
+      <label class="choice"><input type="radio" name="pages_tears" value="tiny_edge_lt_quarter" /> Tiny edge tears (&lt;¼")</label>
+      <label class="choice"><input type="radio" name="pages_tears" value="larger_tears_rips" /> Larger tears / interior rips</label>
+      <label class="choice"><input type="radio" name="pages_tears" value="missing_corner_chunk" /> Missing corner or chunk</label>
+      <label class="choice"><input type="radio" name="pages_tears" value="affects_story_panel" /> Tears affecting story panel</label>
+    </div>
+  </div>
+
+  <div class="multi-location-row" id="pages_tears_multi_row">
+    <span class="multi-label">Is this occurring in more than one location?</span>
+    <label><input type="radio" name="pages_tears_multi" value="no" checked /> No</label>
+    <label><input type="radio" name="pages_tears_multi" value="yes" /> Yes</label>
+  </div>
+
+  <!-- 4) Missing Page or Panel -->
+  <h4 class="element-title">Missing Page or Panel</h4>
+
+  <div class="subelement-row">
+    <span class="subelement-label">Completeness</span>
+    <div class="subelement-box">
+      <div class="subelement-desc">Missing Page or Panel</div>
+
+      <label class="choice"><input type="radio" name="pages_missing" value="complete" checked /> Complete book</label>
+      <label class="choice"><input type="radio" name="pages_missing" value="missing_ad_page" /> Missing one ad page</label>
+      <label class="choice"><input type="radio" name="pages_missing" value="clipped_coupons" /> Clipped coupons</label>
+      <label class="choice"><input type="radio" name="pages_missing" value="missing_story_page" /> Missing story page</label>
+    </div>
+  </div>
+
+  <!-- 5) Centerfold Condition -->
+  <h4 class="element-title">Centerfold Condition</h4>
+
+  <div class="subelement-row">
+    <span class="subelement-label">Centerfold</span>
+    <div class="subelement-box">
+      <div class="subelement-desc">Centerfold Condition</div>
+
+      <label class="choice"><input type="radio" name="pages_centerfold" value="attached" checked /> Fully attached</label>
+      <label class="choice"><input type="radio" name="pages_centerfold" value="detached_one" /> Detached at one staple</label>
+      <label class="choice"><input type="radio" name="pages_centerfold" value="detached_both" /> Detached at both staples</label>
+    </div>
+  </div>
+
+  <!-- 6) Markings or Writing (multi-location) -->
+  <h4 class="element-title">Markings or Writing</h4>
+  <div class="element-note">
+    Note pen/pencil/crayon marks, bleed-through, doodles, or coloring that affects readability or presentation.
+  </div>
+
+  <div class="subelement-row">
+    <span class="subelement-label">Markings</span>
+    <div class="subelement-box">
+      <div class="subelement-desc">Markings or Writing</div>
+
+      <label class="choice"><input type="radio" name="pages_marks" value="none" checked /> None</label>
+      <label class="choice"><input type="radio" name="pages_marks" value="small_pencil" /> Small pencil check marks</label>
+      <label class="choice"><input type="radio" name="pages_marks" value="marker_heavy" /> Marker or heavy marks</label>
+      <label class="choice"><input type="radio" name="pages_marks" value="coloring" /> Coloring</label>
+    </div>
+  </div>
+
+  <div class="multi-location-row" id="pages_marks_multi_row">
+    <span class="multi-label">Is this occurring in more than one location?</span>
+    <label><input type="radio" name="pages_marks_multi" value="no" checked /> No</label>
+    <label><input type="radio" name="pages_marks_multi" value="yes" /> Yes</label>
+  </div>
+
+  <!-- 7) Reading Wear and Creases -->
+  <h4 class="element-title">Reading Wear and Creases</h4>
+  <div class="element-note">
+    Assess dog-ears, folded corners, page creases/folds, and thumbing wear from reading/handling.
+  </div>
+
+  <div class="subelement-row">
+    <span class="subelement-label">Wear/Creases</span>
+    <div class="subelement-box">
+      <div class="subelement-desc">Reading Wear and Creases</div>
+
+      <label class="choice"><input type="radio" name="pages_wear" value="none" checked /> None</label>
+      <label class="choice"><input type="radio" name="pages_wear" value="minor" /> Minor wear</label>
+      <label class="choice"><input type="radio" name="pages_wear" value="heavy" /> Heavy wear</label>
+    </div>
+  </div>
+</section>
