@@ -320,8 +320,13 @@ function CGT_bootstrapApp() {
     var spine = (typeof CGT.computeSpineScore === "function")
       ? CGT.computeSpineScore(form)
       : { finalScore: 10.0, baseScore: 10.0, penaltyTotal: 0.0, grade: CGT.pickGrade(CGT.GRADES, 10.0), elements: [], placeholder: true };
+
+    var pages = (typeof CGT.computePagesScore === "function")
+      ? CGT.computePagesScore(form)
+      : { finalScore: 10.0, baseScore: 10.0, penaltyTotal: 0.0, grade: CGT.pickGrade(CGT.GRADES, 10.0), elements: [], placeholder: true };
+
   
-    var sectionScores = [bindery.finalScore, corners.finalScore, edges.finalScore, spine.finalScore];
+    var sectionScores = [bindery.finalScore, corners.finalScore, edges.finalScore, spine.finalScore, pages.finalScore];
     var overallScore = Math.min.apply(Math, sectionScores);
     var overallGrade = CGT.pickGrade(CGT.GRADES, overallScore);
 
@@ -381,9 +386,18 @@ function CGT_bootstrapApp() {
       + '    <ul>' + spine.elements.map(function (e4) {
             return '<li>' + e4.id + ': ' + e4.score.toFixed(1) + '</li>';
           }).join("") + '</ul>'
-    
+      
+      + '    <h3>Pages Section</h3>'
+      + '    <p><strong>Pages Grade:</strong> '
+      +        pages.grade.short + ' (' + pages.grade.label + ') – ' + pages.finalScore.toFixed(1) + '<br/>'
+      + '      <strong>Base score:</strong> ' + pages.baseScore.toFixed(1) + '<br/>'
+      + '      <strong>Total penalties:</strong> ' + pages.penaltyTotal.toFixed(1)
+      + '    </p>'
+      + '    <ul>' + pages.elements.map(function (e5) {
+            return '<li>' + e5.id + ': ' + e5.score.toFixed(1) + '</li>';
+          }).join("") + '</ul>'
 
-      + '    <p><em>Note:</em> Pages and Cover sections will be added later.</p>'
+      + '    <p><em>Note:</em> Cover section will be added later.</p>'
       + '  </div>'
 
       + (coverSrc
@@ -400,7 +414,7 @@ function CGT_bootstrapApp() {
     CGT.initWizardNav(form, {
       firstPageName: "info",
       resultsPageName: "results",
-      pageOrder: ["info", "bindery", "corners", "edges", "spine", "results"],
+      pageOrder: ["info", "bindery", "corners", "edges", "spine", "pages", "results"],
       onEnterResults: computeAndRenderResults
     });
   } else {
