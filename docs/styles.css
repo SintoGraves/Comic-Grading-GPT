@@ -362,8 +362,8 @@ button[type="reset"]:active,
 ------------------------------------------------- */
 .cgt-swatch {
   display: inline-block;
-  width: 24px;
-  height: 24px;
+  width: 26px;
+  height: 26px;
   border: 1px solid #999;
   border-radius: 3px;
   margin-right: 8px;
