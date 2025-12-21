@@ -94,7 +94,8 @@
 
     var idx = PAGE_ORDER.indexOf(key);
     var isFirst = idx <= 0;
-    var isLastBeforeResults = (key === "pages"); // last grading page for now
+    var lastBeforeResults = PAGE_ORDER[PAGE_ORDER.indexOf("results") - 1];
+    var isLastBeforeResults = (key === lastBeforeResults);
 
     // Back
     if (!isFirst) {
