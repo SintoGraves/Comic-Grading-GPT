@@ -325,8 +325,11 @@ function CGT_bootstrapApp() {
       ? CGT.computePagesScore(form)
       : { finalScore: 10.0, baseScore: 10.0, penaltyTotal: 0.0, grade: CGT.pickGrade(CGT.GRADES, 10.0), elements: [], placeholder: true };
 
-  
-    var sectionScores = [bindery.finalScore, corners.finalScore, edges.finalScore, spine.finalScore, pages.finalScore];
+    var cover = (typeof CGT.computeCoverScore === "function")
+      ? CGT.computeCoverScore(form)
+      : { finalScore: 10.0, baseScore: 10.0, penaltyTotal: 0.0, grade: CGT.pickGrade(CGT.GRADES, 10.0), elements: [], placeholder: true };
+
+    var sectionScores = [bindery.finalScore, corners.finalScore, edges.finalScore, spine.finalScore, pages.finalScore, cover.finalScore];
     var overallScore = Math.min.apply(Math, sectionScores);
     var overallGrade = CGT.pickGrade(CGT.GRADES, overallScore);
 
@@ -343,7 +346,7 @@ function CGT_bootstrapApp() {
       + '<div class="print-header-row">'
       + '  <div class="print-main-meta">'
       + '    <h2 class="print-book-title">' + displayHeading + '</h2>'
-      + '    <p><strong>Overall Grade (current build – Bindery, Corners &amp; Edges):</strong> '
+      + '    <p><strong>Overall Grade (current build – Bindery, Corners, Edges, Spine, Pages &amp; Cover):</strong> '
       +        overallGrade.short + ' (' + overallGrade.label + ') – numeric ' + overallScore.toFixed(1)
       + '    </p>'
 
@@ -397,7 +400,16 @@ function CGT_bootstrapApp() {
             return '<li>' + e5.id + ': ' + e5.score.toFixed(1) + '</li>';
           }).join("") + '</ul>'
 
-      + '    <p><em>Note:</em> Cover section will be added later.</p>'
+      + '    <h3>Cover Section</h3>'
+      + '    <p><strong>Cover Grade:</strong> '
+      +        cover.grade.short + ' (' + cover.grade.label + ') – ' + cover.finalScore.toFixed(1) + '<br/>'
+      + '      <strong>Base score:</strong> ' + cover.baseScore.toFixed(1) + '<br/>'
+      + '      <strong>Total penalties:</strong> ' + cover.penaltyTotal.toFixed(1)
+      + '    </p>'
+      + '    <ul>' + cover.elements.map(function (e6) {
+            return '<li>' + e6.id + ': ' + e6.score.toFixed(1) + '</li>';
+          }).join("") + '</ul>'  
+
       + '  </div>'
 
       + (coverSrc
@@ -414,7 +426,7 @@ function CGT_bootstrapApp() {
     CGT.initWizardNav(form, {
       firstPageName: "info",
       resultsPageName: "results",
-      pageOrder: ["info", "bindery", "corners", "edges", "spine", "pages", "results"],
+  pageOrder: ["info", "bindery", "corners", "edges", "spine", "pages", "cover", "results"],
       onEnterResults: computeAndRenderResults
     });
   } else {
