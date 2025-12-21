@@ -81,8 +81,23 @@ CGT.MULTI_LOCATION_RULES = [
   { base: "pages_tears", showWhen: ["tiny_edge_lt_quarter", "larger_tears_rips", "missing_corner_chunk", "affects_story_panel"] },
 
   // PAGES — Markings or Writing
-  { base: "pages_marks", showWhen: ["small_pencil", "marker_heavy", "coloring"] }
-  
+  { base: "pages_marks", showWhen: ["small_pencil", "marker_heavy", "coloring"] },
+
+    // COVER — Gloss / Surface (Front/Back)
+  { base: "cover_gloss_front", showWhen: ["light_scuff", "dull_rubbed", "creases_color_interrupt", "deep_abr_color_loss"] },
+  { base: "cover_gloss_back",  showWhen: ["light_scuff", "dull_rubbed", "creases_color_interrupt", "deep_abr_color_loss"] },
+
+  // COVER — Color / Ink (Front/Back)
+  { base: "cover_ink_front", showWhen: ["minor_fade", "heavy_fade"] },
+  { base: "cover_ink_back",  showWhen: ["minor_fade", "heavy_fade"] },
+
+  // COVER — Staining / Soiling (Front/Back)
+  { base: "cover_soil_front", showWhen: ["light_smudges", "mild_fingerprints", "heavy_oil", "mold_related"] },
+  { base: "cover_soil_back",  showWhen: ["light_smudges", "mild_fingerprints", "heavy_oil", "mold_related"] },
+
+  // COVER — Markings / Stickers (Front/Back)
+  { base: "cover_marks_front", showWhen: ["small_sticker_pen", "heavy_across_art"] },
+  { base: "cover_marks_back",  showWhen: ["small_sticker_pen", "heavy_across_art"] }
 ];
 
 /*-------------------------------------------------
