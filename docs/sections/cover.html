@@ -1,52 +1,175 @@
-<fieldset>
-  <legend>Cover</legend>
+<section id="cover-section" class="grade-section">
+  <h3 class="section-title">Cover</h3>
+  <p class="section-intro">
+    Evaluate the cover for gloss, color quality, staining/soiling, and markings. Creases/folds are scored under
+    Corners/Spine, tears/cuts under Edges, and alignment/centering under Bindery.
+  </p>
 
-  <label>
-    Gloss / surface wear:
-    <select name="cover_gloss">
-      <option value="none">None</option>
-      <option value="light">Light surface wear</option>
-      <option value="moderate">Moderate wear / dulling</option>
-      <option value="heavy">Heavy wear or full gloss loss</option>
-    </select>
-  </label>
+  <!-- =========================
+       A) Gloss and Surface Condition (Front / Back)
+  ========================== -->
+  <h4 class="element-title">Gloss and Surface Condition</h4>
 
-  <label>
-    Color breaks or creases:
-    <select name="cover_color_breaks">
-      <option value="none">None</option>
-      <option value="small">Small creases / breaks</option>
-      <option value="multiple">Multiple or long creases</option>
-      <option value="severe">Severe breaks throughout</option>
-    </select>
-  </label>
+  <div class="subelement-row">
+    <span class="subelement-label">Front</span>
+    <div class="subelement-box">
+      <div class="subelement-desc">Gloss / Surface (Front)</div>
 
-  <label>
-    Cover detachment:
-    <select name="cover_detached">
-      <option value="no">No</option>
-      <option value="one_staple">Detached at one staple</option>
-      <option value="both_staples">Detached at both staples</option>
-    </select>
-  </label>
+      <label class="choice"><input type="radio" name="cover_gloss_front" value="none" checked /> High gloss, no wear</label>
+      <label class="choice"><input type="radio" name="cover_gloss_front" value="light_scuff" /> Light scuffing / fingerprints / rubbing</label>
+      <label class="choice"><input type="radio" name="cover_gloss_front" value="dull_rubbed" /> Gloss dull or rubbed</label>
+      <label class="choice"><input type="radio" name="cover_gloss_front" value="creases_color_interrupt" /> Stress lines interrupt printed color</label>
+      <label class="choice"><input type="radio" name="cover_gloss_front" value="deep_abr_color_loss" /> Deep abrasions / color loss</label>
+    </div>
+  </div>
 
-  <label>
-    Writing, marks, or price stamps:
-    <select name="cover_writing">
-      <option value="none">None</option>
-      <option value="price_only">Only price stamp or date</option>
-      <option value="small_marks">Small writing or initials</option>
-      <option value="heavy">Heavy writing or coloring</option>
-    </select>
-  </label>
+  <div class="multi-location-row" id="cover_gloss_front_multi_row">
+    <span class="multi-label">Is this occurring in more than one location?</span>
+    <label><input type="radio" name="cover_gloss_front_multi" value="no" checked /> No</label>
+    <label><input type="radio" name="cover_gloss_front_multi" value="yes" /> Yes</label>
+  </div>
 
-  <label>
-    Cover tears or missing pieces:
-    <select name="cover_damage">
-      <option value="none">None</option>
-      <option value="small_tears">Small tears or chips</option>
-      <option value="large_tears">Large tears or missing corners</option>
-      <option value="severe">Severe damage / major parts missing</option>
-    </select>
-  </label>
-</fieldset>
+  <div class="subelement-row">
+    <span class="subelement-label">Back</span>
+    <div class="subelement-box">
+      <div class="subelement-desc">Gloss / Surface (Back)</div>
+
+      <label class="choice"><input type="radio" name="cover_gloss_back" value="none" checked /> High gloss, no wear</label>
+      <label class="choice"><input type="radio" name="cover_gloss_back" value="light_scuff" /> Light scuffing / fingerprints / rubbing</label>
+      <label class="choice"><input type="radio" name="cover_gloss_back" value="dull_rubbed" /> Gloss dull or rubbed</label>
+      <label class="choice"><input type="radio" name="cover_gloss_back" value="creases_color_interrupt" /> Stress lines interrupt printed color</label>
+      <label class="choice"><input type="radio" name="cover_gloss_back" value="deep_abr_color_loss" /> Deep abrasions / color loss</label>
+    </div>
+  </div>
+
+  <div class="multi-location-row" id="cover_gloss_back_multi_row">
+    <span class="multi-label">Is this occurring in more than one location?</span>
+    <label><input type="radio" name="cover_gloss_back_multi" value="no" checked /> No</label>
+    <label><input type="radio" name="cover_gloss_back_multi" value="yes" /> Yes</label>
+  </div>
+
+  <!-- =========================
+       B) Color and Ink Quality (Front / Back)
+  ========================== -->
+  <h4 class="element-title">Color and Ink Quality</h4>
+
+  <div class="subelement-row">
+    <span class="subelement-label">Front</span>
+    <div class="subelement-box">
+      <div class="subelement-desc">Color / Ink (Front)</div>
+
+      <label class="choice"><input type="radio" name="cover_ink_front" value="none" checked /> No fading / discoloration</label>
+      <label class="choice"><input type="radio" name="cover_ink_front" value="minor_fade" /> Minor fade</label>
+      <label class="choice"><input type="radio" name="cover_ink_front" value="heavy_fade" /> Sun shadows / heavy fade</label>
+    </div>
+  </div>
+
+  <div class="multi-location-row" id="cover_ink_front_multi_row">
+    <span class="multi-label">Is this occurring in more than one location?</span>
+    <label><input type="radio" name="cover_ink_front_multi" value="no" checked /> No</label>
+    <label><input type="radio" name="cover_ink_front_multi" value="yes" /> Yes</label>
+  </div>
+
+  <div class="subelement-row">
+    <span class="subelement-label">Back</span>
+    <div class="subelement-box">
+      <div class="subelement-desc">Color / Ink (Back)</div>
+
+      <label class="choice"><input type="radio" name="cover_ink_back" value="none" checked /> No fading / discoloration</label>
+      <label class="choice"><input type="radio" name="cover_ink_back" value="minor_fade" /> Minor fade</label>
+      <label class="choice"><input type="radio" name="cover_ink_back" value="heavy_fade" /> Sun shadows / heavy fade</label>
+    </div>
+  </div>
+
+  <div class="multi-location-row" id="cover_ink_back_multi_row">
+    <span class="multi-label">Is this occurring in more than one location?</span>
+    <label><input type="radio" name="cover_ink_back_multi" value="no" checked /> No</label>
+    <label><input type="radio" name="cover_ink_back_multi" value="yes" /> Yes</label>
+  </div>
+
+  <!-- =========================
+       C) Staining and Soiling (Front / Back)
+  ========================== -->
+  <h4 class="element-title">Staining and Soiling</h4>
+
+  <div class="subelement-row">
+    <span class="subelement-label">Front</span>
+    <div class="subelement-box">
+      <div class="subelement-desc">Staining / Soiling (Front)</div>
+
+      <label class="choice"><input type="radio" name="cover_soil_front" value="none" checked /> None</label>
+      <label class="choice"><input type="radio" name="cover_soil_front" value="light_smudges" /> Light smudges</label>
+      <label class="choice"><input type="radio" name="cover_soil_front" value="mild_fingerprints" /> Mild fingerprints / oil / moisture / foxing</label>
+      <label class="choice"><input type="radio" name="cover_soil_front" value="heavy_oil" /> Heavy oil / moisture / foxing</label>
+      <label class="choice"><input type="radio" name="cover_soil_front" value="mold_related" /> Mold-related soiling</label>
+    </div>
+  </div>
+
+  <div class="multi-location-row" id="cover_soil_front_multi_row">
+    <span class="multi-label">Is this occurring in more than one spot?</span>
+    <label><input type="radio" name="cover_soil_front_multi" value="no" checked /> No</label>
+    <label><input type="radio" name="cover_soil_front_multi" value="yes" /> Yes</label>
+  </div>
+
+  <div class="subelement-row">
+    <span class="subelement-label">Back</span>
+    <div class="subelement-box">
+      <div class="subelement-desc">Staining / Soiling (Back)</div>
+
+      <label class="choice"><input type="radio" name="cover_soil_back" value="none" checked /> None</label>
+      <label class="choice"><input type="radio" name="cover_soil_back" value="light_smudges" /> Light smudges</label>
+      <label class="choice"><input type="radio" name="cover_soil_back" value="mild_fingerprints" /> Mild fingerprints / oil / moisture / foxing</label>
+      <label class="choice"><input type="radio" name="cover_soil_back" value="heavy_oil" /> Heavy oil / moisture / foxing</label>
+      <label class="choice"><input type="radio" name="cover_soil_back" value="mold_related" /> Mold-related soiling</label>
+    </div>
+  </div>
+
+  <div class="multi-location-row" id="cover_soil_back_multi_row">
+    <span class="multi-label">Is this occurring in more than one spot?</span>
+    <label><input type="radio" name="cover_soil_back_multi" value="no" checked /> No</label>
+    <label><input type="radio" name="cover_soil_back_multi" value="yes" /> Yes</label>
+  </div>
+
+  <!-- =========================
+       D) Writing, Markings, and Stickers (Front / Back)
+  ========================== -->
+  <h4 class="element-title">Writing, Markings, and Stickers</h4>
+
+  <div class="subelement-row">
+    <span class="subelement-label">Front</span>
+    <div class="subelement-box">
+      <div class="subelement-desc">Markings / Stickers (Front)</div>
+
+      <label class="choice"><input type="radio" name="cover_marks_front" value="none" checked /> None</label>
+      <label class="choice"><input type="radio" name="cover_marks_front" value="small_no_art" /> Small, does not interfere with artwork (arrival dates / stamps / marks)</label>
+      <label class="choice"><input type="radio" name="cover_marks_front" value="large_interferes" /> Large and interferes with artwork</label>
+      <label class="choice"><input type="radio" name="cover_marks_front" value="small_sticker_pen" /> Small or removable sticker / pen / crayon</label>
+      <label class="choice"><input type="radio" name="cover_marks_front" value="heavy_across_art" /> Heavy or across art/logo</label>
+    </div>
+  </div>
+
+  <div class="multi-location-row" id="cover_marks_front_multi_row">
+    <span class="multi-label">Is this occurring in more than one spot?</span>
+    <label><input type="radio" name="cover_marks_front_multi" value="no" checked /> No</label>
+    <label><input type="radio" name="cover_marks_front_multi" value="yes" /> Yes</label>
+  </div>
+
+  <div class="subelement-row">
+    <span class="subelement-label">Back</span>
+    <div class="subelement-box">
+      <div class="subelement-desc">Markings / Stickers (Back)</div>
+
+      <label class="choice"><input type="radio" name="cover_marks_back" value="none" checked /> None</label>
+      <label class="choice"><input type="radio" name="cover_marks_back" value="small_no_art" /> Small, does not interfere with artwork (arrival dates / stamps / marks)</label>
+      <label class="choice"><input type="radio" name="cover_marks_back" value="large_interferes" /> Large and interferes with artwork</label>
+      <label class="choice"><input type="radio" name="cover_marks_back" value="small_sticker_pen" /> Small or removable sticker / pen / crayon</label>
+      <label class="choice"><input type="radio" name="cover_marks_back" value="heavy_across_art" /> Heavy or across art/logo</label>
+    </div>
+  </div>
+
+  <div class="multi-location-row" id="cover_marks_back_multi_row">
+    <span class="multi-label">Is this occurring in more than one spot?</span>
+    <label><input type="radio" name="cover_marks_back_multi" value="no" checked /> No</label>
+    <label><input type="radio" name="cover_marks_back_multi" value="yes" /> Yes</label>
+  </div>
+</section>
