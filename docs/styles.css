@@ -338,6 +338,12 @@ button[type="reset"]:active,
   display: none;
   margin: 0.25rem 0 0.6rem var(--left-col);
   font-size: 0.8rem;
+
+  /* light yellow highlight */
+  padding: 0.5rem 0.75rem;
+  background-color: #fff7cc;
+  border-left: 4px solid #e0b400;
+  border-radius: 4px;
 }
 
 .multi-location-row span.multi-label {
