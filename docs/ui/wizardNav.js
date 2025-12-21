@@ -17,7 +17,7 @@
 
   var CGT = (window.CGT = window.CGT || {});
 
-  var PAGE_ORDER = ["info", "bindery", "corners", "edges", "spine", "pages", "results"];
+  var PAGE_ORDER = ["info", "bindery", "corners", "edges", "spine", "pages", "cover", "results"];
 
   function $(sel, root) {
     return (root || document).querySelector(sel);
