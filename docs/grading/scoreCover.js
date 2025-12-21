@@ -106,23 +106,23 @@
   CGT.computeCoverScore = function computeCoverScore(form) {
     var elements = [];
 
-    var glossFront = scoreGloss(form, "front cover");
-    var glossBack  = scoreGloss(form, "back cover");
+    var glossFront = scoreGloss(form, "front");
+    var glossBack  = scoreGloss(form, "back");
     elements.push({ id: "cover_gloss_front", score: glossFront });
     elements.push({ id: "cover_gloss_back",  score: glossBack });
 
-    var inkFront = scoreInk(form, "front cover");
-    var inkBack  = scoreInk(form, "back cover");
+    var inkFront = scoreInk(form, "front");
+    var inkBack  = scoreInk(form, "back");
     elements.push({ id: "cover_ink_front", score: inkFront });
     elements.push({ id: "cover_ink_back",  score: inkBack });
 
-    var soilFront = scoreSoil(form, "front cover");
-    var soilBack  = scoreSoil(form, "back cover");
+    var soilFront = scoreSoil(form, "front");
+    var soilBack  = scoreSoil(form, "back");
     elements.push({ id: "cover_soil_front", score: soilFront });
     elements.push({ id: "cover_soil_back",  score: soilBack });
 
-    var marksFront = scoreMarks(form, "front cover");
-    var marksBack  = scoreMarks(form, "back cover");
+    var marksFront = scoreMarks(form, "front");
+    var marksBack  = scoreMarks(form, "back");
     elements.push({ id: "cover_marks_front", score: marksFront });
     elements.push({ id: "cover_marks_back",  score: marksBack });
 
