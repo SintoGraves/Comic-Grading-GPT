@@ -606,29 +606,33 @@ button[type="reset"]:active,
     visibility: visible !important;
   }
 
-  /* Ensure the print area is in normal flow and not clipped by any containers */
+  /* Put the report in the print flow and ensure it renders at the page origin */
   #result {
     display: block !important;
-    position: static !important;
+    position: absolute !important;   /* key reliability improvement */
+    left: 0 !important;
+    top: 0 !important;
+
+    width: 100% !important;
+    max-width: 100% !important;
+
     height: auto !important;
     overflow: visible !important;
-  }
 
-  /* Show only the report content, slightly smaller & tighter */
-  #result {
-    display: block !important;
-    max-width: 100%;
-    margin: 0;
+    /* Your existing print styling */
+    margin: 0 !important;
+    padding: 0 !important;
     font-size: 0.9rem;
     line-height: 1.25;
-    box-shadow: none;
-    border: none;
-    border-radius: 0;
-    padding: 0;
+    background: transparent !important;
+
+    box-shadow: none !important;
+    border: none !important;
+    border-radius: 0 !important;
   }
 
   .print-header-row {
-    display: flex;
+    display: flex !important;
     justify-content: space-between;
     align-items: flex-start;
     gap: 0.6rem;
@@ -684,6 +688,7 @@ button[type="reset"]:active,
     display: none !important;
   }
 }
+
 /* =========================
    DROPDOWN ROWS (for grading fields)
    ========================= */
