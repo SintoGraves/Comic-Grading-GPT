@@ -6,7 +6,7 @@
 var CGT = (window.CGT = window.CGT || {});
 
 /*-------------------------------------------------
- * Sample image click-to-preview overlay
+ * 1) Sample image click-to-preview overlay
  *-------------------------------------------------*/
 function CGT_initSampleClickPreview() {
   if (window.CGT && window.CGT.__sampleClickInit) return;
@@ -17,11 +17,11 @@ function CGT_initSampleClickPreview() {
   if (!overlay) {
     overlay = document.createElement("div");
     overlay.id = "sample-overlay";
-    overlay.innerHTML = ''
+    overlay.innerHTML = ""
       + '<div class="sample-overlay-inner">'
       + '  <img id="sample-overlay-img" alt="Grading example" />'
       + '  <button type="button" id="sample-overlay-close" aria-label="Close preview">Close</button>'
-      + '</div>';
+      + "</div>";
     document.body.appendChild(overlay);
   }
 
@@ -33,15 +33,18 @@ function CGT_initSampleClickPreview() {
     img.src = src;
     overlay.style.display = "flex";
   }
+
   function hide() {
     overlay.style.display = "none";
     img.src = "";
   }
 
   if (closeBtn) closeBtn.addEventListener("click", hide);
+
   overlay.addEventListener("click", function (e) {
     if (e.target === overlay) hide();
   });
+
   document.addEventListener("keydown", function (e) {
     if (e.key === "Escape") hide();
   });
@@ -57,12 +60,15 @@ function CGT_initSampleClickPreview() {
 }
 
 /*-------------------------------------------------
- * App bootstrap
+ * 2) App bootstrap
  *-------------------------------------------------*/
 function CGT_bootstrapApp() {
   var form = document.getElementById("grading-form");
   if (!form) return;
 
+  /*-------------------------------------------------
+   * 2A) DOM hooks
+   *-------------------------------------------------*/
   var resultDiv = document.getElementById("result");
   var resetBtn  = document.getElementById("reset-btn");
   var printBtn  = document.getElementById("print-btn");
@@ -74,20 +80,25 @@ function CGT_bootstrapApp() {
   var titleSuggestion = document.getElementById("title-suggestion");
 
   // Image inputs (Front, Back, Inside)
-  var coverInput       = document.getElementById("cover_image");
-  var coverPreview     = document.getElementById("cover-preview");
-  var backCoverInput   = document.getElementById("backcover_image");
-  var backCoverPreview = document.getElementById("backcover-preview");
-  var insidePageInput  = document.getElementById("insidepage_image");
-  var insidePagePreview= document.getElementById("insidepage-preview");
+  var coverInput        = document.getElementById("cover_image");
+  var coverPreview      = document.getElementById("cover-preview");
+  var backCoverInput    = document.getElementById("backcover_image");
+  var backCoverPreview  = document.getElementById("backcover-preview");
+  var insidePageInput   = document.getElementById("insidepage_image");
+  var insidePagePreview = document.getElementById("insidepage-preview");
 
-  // Init sample preview (text-triggered via [data-sample-img])
+  /*-------------------------------------------------
+   * 2B) Init sample overlay
+   *-------------------------------------------------*/
   CGT_initSampleClickPreview();
 
-  // READ LIVE (do not capture empty objects at bootstrap time)
+  /*-------------------------------------------------
+   * 2C) Live data accessors (avoid capturing empty objects at bootstrap time)
+   *-------------------------------------------------*/
   function getValueStampIndex() {
     return CGT.VALUE_STAMP_INDEX || {};
   }
+
   function getKnownTitles() {
     return CGT.KNOWN_TITLES || [];
   }
@@ -103,7 +114,7 @@ function CGT_bootstrapApp() {
   var stampApplies = false;
 
   /*-------------------------------------------------
-   * Utilities
+   * 3) Utilities
    *-------------------------------------------------*/
   function escapeHtml(s) {
     if (s == null) return "";
@@ -119,7 +130,6 @@ function CGT_bootstrapApp() {
     if (src && String(src).trim()) {
       return '<img src="' + src + '" alt="' + escapeHtml(altText) + '" />';
     }
-    // keep box height stable without adding heavy content
     return '<span style="font-size:0.85rem; color:#666;">No image provided</span>';
   }
 
@@ -127,25 +137,25 @@ function CGT_bootstrapApp() {
     var grade = obj && obj.grade ? obj.grade : { short: "—", label: "—" };
     var finalScore = (obj && typeof obj.finalScore === "number") ? obj.finalScore : 10.0;
 
-    // Keep the section body compact; you can tune later
     var items = (obj && Array.isArray(obj.elements)) ? obj.elements : [];
     var listHtml = items.length
       ? ('<ul>' + items.map(function (e) {
           var id = (e && e.id) ? e.id : "item";
           var sc = (e && typeof e.score === "number") ? e.score : 10.0;
-          return '<li>' + escapeHtml(id) + ': ' + Number(sc).toFixed(1) + '</li>';
-        }).join("") + '</ul>')
-      : '<ul><li>—</li></ul>';
+          return '<li>' + escapeHtml(id) + ": " + Number(sc).toFixed(1) + "</li>";
+        }).join("") + "</ul>")
+      : "<ul><li>—</li></ul>";
 
-    return ''
+    return ""
       + '<section class="report-section">'
-      + '  <h3>' + escapeHtml(label) + '</h3>'
+      + "  <h3>" + escapeHtml(label) + "</h3>"
       + '  <div style="margin:0 0 0.25rem;">'
-      + '    <strong>Section Grade:</strong> ' + escapeHtml(grade.short) + ' (' + escapeHtml(grade.label) + ')'
-      + '    – ' + Number(finalScore).toFixed(1)
-      + '  </div>'
+      + "    <strong>Section Grade:</strong> "
+      + escapeHtml(grade.short) + " (" + escapeHtml(grade.label) + ")"
+      + "    – " + Number(finalScore).toFixed(1)
+      + "  </div>"
       + listHtml
-      + '</section>';
+      + "</section>";
   }
 
   function waitForImagesIn(el) {
@@ -161,14 +171,14 @@ function CGT_bootstrapApp() {
   }
 
   /*-------------------------------------------------
-   * Multi-location toggles (RUN EARLY)
+   * 4) Multi-location toggles (RUN EARLY)
    *-------------------------------------------------*/
   if (typeof CGT.initMultiLocationToggles === "function") {
     CGT.initMultiLocationToggles(form);
   }
 
   /*-------------------------------------------------
-   * Title normalization & suggestion
+   * 5) Title normalization & suggestion
    *-------------------------------------------------*/
   function normalizeTitle(rawTitle) {
     if (!rawTitle) return "";
@@ -262,16 +272,15 @@ function CGT_bootstrapApp() {
     return { normalized: bestTitle, distance: bestDistance };
   }
 
+  /*-------------------------------------------------
+   * 6) Value stamp lookup (title + issue)
+   *-------------------------------------------------*/
   function makeStampKey(title, issue) {
     var normTitle = normalizeTitle(title);
-    var normIssue = String(issue).trim().toLowerCase();
-    normIssue = normIssue.replace(/^#/, "");
+    var normIssue = String(issue).trim().toLowerCase().replace(/^#/, "");
     return normTitle + "#" + normIssue;
   }
 
-  /*-------------------------------------------------
-   * Value stamp lookup (title + issue)
-   *-------------------------------------------------*/
   function updateStampLookup() {
     var title = titleInput ? titleInput.value.trim() : "";
     var issue = issueInput ? issueInput.value.trim() : "";
@@ -309,7 +318,7 @@ function CGT_bootstrapApp() {
   }
 
   /*-------------------------------------------------
-   * Title suggestion (Did you mean ... ?)
+   * 7) Title suggestion (Did you mean ... ?)
    *-------------------------------------------------*/
   if (titleInput && titleSuggestion) {
     var runTitleSuggestion = function () {
@@ -326,11 +335,11 @@ function CGT_bootstrapApp() {
       }
 
       var display = displayTitleFromNormalized(suggestion.normalized);
-      titleSuggestion.innerHTML = ''
-        + 'Did you mean: <strong>' + escapeHtml(display) + '</strong>? '
+      titleSuggestion.innerHTML = ""
+        + "Did you mean: <strong>" + escapeHtml(display) + "</strong>? "
         + '<button type="button" id="apply-title-suggestion-btn" style="margin-left:0.5rem; font-size:0.8rem;">'
-        + 'Use this'
-        + '</button>';
+        + "Use this"
+        + "</button>";
 
       var applyBtn = document.getElementById("apply-title-suggestion-btn");
       if (applyBtn) {
@@ -347,70 +356,32 @@ function CGT_bootstrapApp() {
   }
 
   /*-------------------------------------------------
-   * Front cover image upload preview
+   * 8) Image upload previews (Front / Back / Inside)
    *-------------------------------------------------*/
-  if (coverInput && coverPreview) {
-    coverInput.addEventListener("change", function (e) {
+  function wireImagePreview(fileInput, imgEl) {
+    if (!fileInput || !imgEl) return;
+    fileInput.addEventListener("change", function (e) {
       var file = e.target.files && e.target.files[0];
       if (!file) {
-        coverPreview.src = "";
-        coverPreview.style.display = "none";
+        imgEl.src = "";
+        imgEl.style.display = "none";
         return;
       }
-
       var reader = new FileReader();
       reader.onload = function (ev) {
-        coverPreview.src = ev.target.result;
-        coverPreview.style.display = "block";
+        imgEl.src = ev.target.result;
+        imgEl.style.display = "block";
       };
       reader.readAsDataURL(file);
     });
   }
 
-  /*-------------------------------------------------
-   * Back cover image upload preview
-   *-------------------------------------------------*/
-  if (backCoverInput && backCoverPreview) {
-    backCoverInput.addEventListener("change", function (e) {
-      var file = e.target.files && e.target.files[0];
-      if (!file) {
-        backCoverPreview.src = "";
-        backCoverPreview.style.display = "none";
-        return;
-      }
-
-      var reader = new FileReader();
-      reader.onload = function (ev) {
-        backCoverPreview.src = ev.target.result;
-        backCoverPreview.style.display = "block";
-      };
-      reader.readAsDataURL(file);
-    });
-  }
+  wireImagePreview(coverInput, coverPreview);
+  wireImagePreview(backCoverInput, backCoverPreview);
+  wireImagePreview(insidePageInput, insidePagePreview);
 
   /*-------------------------------------------------
-   * Inside page image upload preview
-   *-------------------------------------------------*/
-  if (insidePageInput && insidePagePreview) {
-    insidePageInput.addEventListener("change", function (e) {
-      var file = e.target.files && e.target.files[0];
-      if (!file) {
-        insidePagePreview.src = "";
-        insidePagePreview.style.display = "none";
-        return;
-      }
-
-      var reader = new FileReader();
-      reader.onload = function (ev) {
-        insidePagePreview.src = ev.target.result;
-        insidePagePreview.style.display = "block";
-      };
-      reader.readAsDataURL(file);
-    });
-  }
-
-  /*-------------------------------------------------
-   * Compute & render results (called by wizard and submit)
+   * 9) Compute & render results (called by wizard + submit + print)
    *-------------------------------------------------*/
   function computeAndRenderResults() {
     if (!resultDiv) return;
@@ -445,47 +416,45 @@ function CGT_bootstrapApp() {
     var overallScore = Math.min.apply(Math, sectionScores);
     var overallGrade = CGT.pickGrade(CGT.GRADES, overallScore);
 
-    // Optional comic identifier line (kept small; does not replace report title)
+    // Optional comic identifier line
     var titleText = titleInput ? titleInput.value.trim() : "";
     var issueText = issueInput ? issueInput.value.trim() : "";
     var comicLine = (titleText || issueText)
       ? (escapeHtml(titleText || "Unknown Title") + (issueText ? " #" + escapeHtml(issueText) : ""))
       : "";
 
-    // Image sources (from previews so they print)
+    // Image sources (from preview <img> tags so they print)
     var coverSrc = coverPreview ? (coverPreview.src || "") : "";
     var backSrc  = backCoverPreview ? (backCoverPreview.src || "") : "";
     var pageSrc  = insidePagePreview ? (insidePagePreview.src || "") : "";
 
-    resultDiv.innerHTML = ''
+    resultDiv.innerHTML = ""
       + '<div class="report">'
       + '  <div class="report-titleblock">'
       + '    <h1 class="report-title">Comic Book Grading Report</h1>'
       + '    <div class="report-grade">Overall Grade: '
-      +          escapeHtml(overallGrade.short) + ' (' + escapeHtml(overallGrade.label) + ')'
-      + '      – ' + Number(overallScore).toFixed(1)
-      + '    </div>'
-      + '  </div>'
+      +          escapeHtml(overallGrade.short) + " (" + escapeHtml(overallGrade.label) + ")"
+      + "      – " + Number(overallScore).toFixed(1)
+      + "    </div>"
+      + "  </div>"
       + (comicLine
-          ? '  <div style="margin:0 0 0.5rem; color:#555; font-weight:600;">' + comicLine + '</div>'
-          : ''
+          ? '  <div style="margin:0 0 0.5rem; color:#555; font-weight:600;">' + comicLine + "</div>"
+          : ""
         )
-
       + '  <div class="report-images">'
       + '    <figure class="report-image">'
-      + '      <figcaption>Front Cover</figcaption>'
-      + '      <div class="report-imgbox">' + safeImgOrPlaceholder(coverSrc, "Front cover image") + '</div>'
-      + '    </figure>'
+      + "      <figcaption>Front Cover</figcaption>"
+      + '      <div class="report-imgbox">' + safeImgOrPlaceholder(coverSrc, "Front cover image") + "</div>"
+      + "    </figure>"
       + '    <figure class="report-image">'
-      + '      <figcaption>Back Cover</figcaption>'
-      + '      <div class="report-imgbox">' + safeImgOrPlaceholder(backSrc, "Back cover image") + '</div>'
-      + '    </figure>'
+      + "      <figcaption>Back Cover</figcaption>"
+      + '      <div class="report-imgbox">' + safeImgOrPlaceholder(backSrc, "Back cover image") + "</div>"
+      + "    </figure>"
       + '    <figure class="report-image">'
-      + '      <figcaption>Inside Page</figcaption>'
-      + '      <div class="report-imgbox">' + safeImgOrPlaceholder(pageSrc, "Inside page image") + '</div>'
-      + '    </figure>'
-      + '  </div>'
-
+      + "      <figcaption>Inside Page</figcaption>"
+      + '      <div class="report-imgbox">' + safeImgOrPlaceholder(pageSrc, "Inside page image") + "</div>"
+      + "    </figure>"
+      + "  </div>"
       + '  <div class="report-sections">'
       +        buildSectionHtml("Bindery", bindery)
       +        buildSectionHtml("Corners", corners)
@@ -493,12 +462,12 @@ function CGT_bootstrapApp() {
       +        buildSectionHtml("Spine", spine)
       +        buildSectionHtml("Pages", pages)
       +        buildSectionHtml("Cover", cover)
-      + '  </div>'
-      + '</div>';
+      + "  </div>"
+      + "</div>";
   }
 
   /*-------------------------------------------------
-   * Wizard init (separate file)
+   * 10) Wizard init (separate file)
    *-------------------------------------------------*/
   if (typeof CGT.initWizardNav === "function") {
     CGT.initWizardNav(form, {
@@ -512,7 +481,7 @@ function CGT_bootstrapApp() {
   }
 
   /*-------------------------------------------------
-   * Submit: treat Enter as "go to results"
+   * 11) Submit: treat Enter as "go to results"
    *-------------------------------------------------*/
   form.addEventListener("submit", function (e) {
     e.preventDefault();
@@ -523,7 +492,7 @@ function CGT_bootstrapApp() {
   });
 
   /*-------------------------------------------------
-   * Reset handler
+   * 12) Reset handler
    *-------------------------------------------------*/
   if (resetBtn) {
     resetBtn.addEventListener("click", function () {
@@ -538,22 +507,13 @@ function CGT_bootstrapApp() {
 
       // Clear image inputs + previews
       if (coverInput) coverInput.value = "";
-      if (coverPreview) {
-        coverPreview.src = "";
-        coverPreview.style.display = "none";
-      }
+      if (coverPreview) { coverPreview.src = ""; coverPreview.style.display = "none"; }
 
       if (backCoverInput) backCoverInput.value = "";
-      if (backCoverPreview) {
-        backCoverPreview.src = "";
-        backCoverPreview.style.display = "none";
-      }
+      if (backCoverPreview) { backCoverPreview.src = ""; backCoverPreview.style.display = "none"; }
 
       if (insidePageInput) insidePageInput.value = "";
-      if (insidePagePreview) {
-        insidePagePreview.src = "";
-        insidePagePreview.style.display = "none";
-      }
+      if (insidePagePreview) { insidePagePreview.src = ""; insidePagePreview.style.display = "none"; }
 
       if (typeof CGT.initMultiLocationToggles === "function") {
         CGT.initMultiLocationToggles(form);
@@ -569,7 +529,7 @@ function CGT_bootstrapApp() {
   }
 
   /*-------------------------------------------------
-   * Print handler (regenerate, wait for images, then print)
+   * 13) Print handler (regenerate, wait for images, then print)
    *-------------------------------------------------*/
   if (printBtn && resultDiv) {
     printBtn.addEventListener("click", function () {
@@ -580,7 +540,6 @@ function CGT_bootstrapApp() {
         return;
       }
 
-      // Ensure any data-URL images are fully realized before printing
       waitForImagesIn(resultDiv).then(function () {
         requestAnimationFrame(function () {
           requestAnimationFrame(function () {
@@ -592,13 +551,13 @@ function CGT_bootstrapApp() {
   }
 
   /*-------------------------------------------------
-   * Initial stamp state
+   * 14) Initial stamp state
    *-------------------------------------------------*/
   updateStampLookup();
 }
 
 /*-------------------------------------------------
- * BOOTSTRAP GATE — RUN AFTER INCLUDES
+ * 15) BOOTSTRAP GATE — RUN AFTER INCLUDES
  *-------------------------------------------------*/
 if (window.CGT_INCLUDES_READY && typeof window.CGT_INCLUDES_READY.then === "function") {
   window.CGT_INCLUDES_READY.then(CGT_bootstrapApp);
