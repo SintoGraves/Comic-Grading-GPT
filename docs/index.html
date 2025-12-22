@@ -10,7 +10,7 @@
 <body>
   <div class="top-bar">
     <div class="title-block">
-      <h1>Comic Grading Beta .6 - In Editing Mode</h1>
+      <h1>Comic Grading Beta .8</h1>
       <p class="tagline">Quick visual grading helper – spine, cover, corners, and interior.</p>
     </div>
     <img src="images/sinto-graves-logo2.png" alt="Sinto Gra'Ves Comic Grading" class="logo" />
@@ -29,20 +29,48 @@
         </label>
       </fieldset>
 
-      <fieldset>
-        <legend>Comic Image (Optional)</legend>
-        <label>
-          Front cover image:
-          <input type="file" id="cover_image" accept="image/*" />
-        </label>
-        <div id="cover-preview-wrapper">
-          <p class="hint" id="cover-preview-hint">
-            Optional: upload a photo/scan of the front cover. This will be shown on screen
-            and included with your printed report.
-          </p>
-          <img id="cover-preview" alt="Comic cover preview" />
-        </div>
-      </fieldset>
+<fieldset>
+  <legend>Comic Images (Optional)</legend>
+
+  <label>
+    Front cover image:
+    <input type="file" id="cover_image" accept="image/*" />
+  </label>
+
+  <label>
+    Back cover image:
+    <input type="file" id="backcover_image" accept="image/*" />
+  </label>
+
+  <label>
+    Inside page image:
+    <input type="file" id="insidepage_image" accept="image/*" />
+  </label>
+
+  <div id="cover-preview-wrapper">
+    <p class="hint" id="cover-preview-hint">
+      Optional: upload photos/scans. These will be shown on screen and included with your printed report.
+    </p>
+
+    <div class="image-preview-grid">
+      <div class="image-preview-card">
+        <div class="image-preview-label">Front Cover</div>
+        <img id="cover-preview" alt="Front cover preview" />
+      </div>
+
+      <div class="image-preview-card">
+        <div class="image-preview-label">Back Cover</div>
+        <img id="backcover-preview" alt="Back cover preview" />
+      </div>
+
+      <div class="image-preview-card">
+        <div class="image-preview-label">Inside Page</div>
+        <img id="insidepage-preview" alt="Inside page preview" />
+      </div>
+    </div>
+  </div>
+</fieldset>
+
 
       <div include-html="partials/value-stamp.html"></div>
     </div>
