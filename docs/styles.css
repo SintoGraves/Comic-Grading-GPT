@@ -177,8 +177,8 @@ button[type="reset"]:active,
 
 /* Allow long radio labels to wrap and flow into two rows in the subelement box */
 .subelement-box .choice {
-  white-space: normal;          /* allow wrapping */
-  max-width: 310px;             /* forces wrap; tweak as needed */
+  white-space: normal;
+  max-width: 310px;
   line-height: 1.2;
 }
 
@@ -208,17 +208,24 @@ button[type="reset"]:active,
   vertical-align: middle;
 }
 
-/* Image preview (on-screen) */
+/* =========================
+   IMAGE UPLOAD PREVIEWS (ON SCREEN)
+   ========================= */
+
 #cover-preview-wrapper {
   margin-top: 0.75rem;
 }
 
-#cover-preview {
-  display: none; /* hidden until a file is selected */
+/* individual preview images (hidden until chosen) */
+#cover-preview,
+#backcover-preview,
+#insidepage-preview {
+  display: none;
   max-width: 100%;
   height: auto;
   border-radius: 6px;
   border: 1px solid #ccc;
+  background: #fff;
 }
 
 /* Optional: show the three previews in a row */
@@ -242,6 +249,15 @@ button[type="reset"]:active,
   margin-bottom: 0.4rem;
 }
 
+/* Keep all preview cards aligned even with different aspect ratios */
+.image-preview-grid img {
+  width: 100%;
+  height: 200px;           /* adjust later if desired */
+  object-fit: contain;
+  background: #fff;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+}
 
 /* =========================
    SAMPLE IMAGE PREVIEW
@@ -361,7 +377,6 @@ button[type="reset"]:active,
   margin: 0.25rem 0 0.6rem var(--left-col);
   font-size: 0.8rem;
 
-  /* light yellow highlight */
   padding: 0.5rem 0.75rem;
   background-color: #fff7cc;
   border-left: 4px solid #e0b400;
@@ -401,61 +416,32 @@ button[type="reset"]:active,
 }
 
 /* Paper color reference swatches */
-.swatch-white {
-  background-color: #ffffff;
-}
-
-.swatch-offwhite-to-white {
-  background-color: #f7f4e8;
-}
-
-.swatch-offwhite {
-  background-color: #f1ecd9;
-}
-
-.swatch-cream-to-offwhite {
-  background-color: #efe4c8;
-}
-
-.swatch-cream {
-  background-color: #ead9b0;
-}
-
-.swatch-light-tan {
-  background-color: #d9c39b;
-}
-
-.swatch-tan {
-  background-color: #c7a16c;
-}
-
-.swatch-brown {
-  background-color: #a87a4a;
-}
-
-.swatch-brittle {
-  background-color: #8a6a40;
-}
+.swatch-white { background-color: #ffffff; }
+.swatch-offwhite-to-white { background-color: #f7f4e8; }
+.swatch-offwhite { background-color: #f1ecd9; }
+.swatch-cream-to-offwhite { background-color: #efe4c8; }
+.swatch-cream { background-color: #ead9b0; }
+.swatch-light-tan { background-color: #d9c39b; }
+.swatch-tan { background-color: #c7a16c; }
+.swatch-brown { background-color: #a87a4a; }
+.swatch-brittle { background-color: #8a6a40; }
 
 /* =========================
    MULTI-LOCATION ROW SAFETY
    ========================= */
 
-/* When JS shows the row, it uses display:flex. Ensure flex looks correct. */
 .multi-location-row {
   align-items: center;
   gap: 0.6rem;
   flex-wrap: wrap;
 }
 
-/* Prevent the multi-row labels from inheriting block label spacing */
 .multi-location-row label {
   display: inline-flex;
   align-items: center;
   margin: 0 0.75rem 0 0;
 }
 
-/* Keep the question prompt inline and tidy */
 .multi-location-row .multi-label {
   display: inline-block;
   margin-right: 0.6rem;
@@ -474,9 +460,81 @@ button[type="reset"]:active,
 }
 
 /* =========================
-   PRINT HEADER LAYOUT
+   REPORT LAYOUT (RESULTS + PRINT)
    ========================= */
 
+.report-titleblock {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  margin-bottom: 0.6rem;
+}
+
+.report-title {
+  margin: 0;
+  font-size: 1.6rem;
+}
+
+.report-grade {
+  font-weight: 800;
+  font-size: 1.15rem;
+}
+
+.report-images {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin: 0.75rem 0 1rem;
+}
+
+.report-image {
+  margin: 0;
+}
+
+.report-image figcaption {
+  font-weight: 700;
+  font-size: 0.9rem;
+  margin-bottom: 0.35rem;
+}
+
+.report-imgbox {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  height: 220px; /* screen height; print overrides below */
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+}
+
+.report-imgbox img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.report-sections {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.9rem 1.1rem;
+}
+
+.report-section {
+  border-top: 1px solid var(--border);
+  padding-top: 0.5rem;
+}
+
+.report-section h3 {
+  margin: 0 0 0.35rem;
+  font-size: 1.05rem;
+}
+
+/* =========================
+   PRINT HEADER LAYOUT (LEGACY)
+   ========================= */
+/* Kept for compatibility with existing markup still using these classes */
 .print-header-row {
   display: flex;
   justify-content: space-between;
@@ -494,7 +552,6 @@ button[type="reset"]:active,
   font-size: 1.6rem;
 }
 
-/* 3x4" image box on the right */
 .print-cover-wrapper {
   width: 2.75in;
   height: 3.67in;
@@ -512,7 +569,6 @@ button[type="reset"]:active,
   object-fit: contain;
 }
 
-/* Notes / sections shared styles */
 .presentation-note {
   margin-top: 0.35rem;
 }
@@ -565,40 +621,32 @@ button[type="reset"]:active,
    ========================= */
 
 @media (max-width: 720px) {
-  :root {
-    --left-col: 0px;
-  }
+  :root { --left-col: 0px; }
 
   .top-bar {
     flex-direction: column;
     align-items: flex-start;
   }
 
-  .logo {
-    max-width: 140px;
-  }
+  .logo { max-width: 140px; }
 
   .subelement-row {
     flex-direction: column;
     align-items: stretch;
   }
 
-  .subelement-label {
-    width: 100%;
+  .subelement-label { width: 100%; }
+
+  .multi-location-row { margin-left: 0; }
+
+  /* Make preview grid stack nicely on mobile */
+  .image-preview-grid {
+    grid-template-columns: 1fr;
   }
 
-  .multi-location-row {
-    margin-left: 0;
-  }
-
-  .print-header-row {
-    flex-direction: column;
-  }
-
-  .print-cover-wrapper {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 3 / 4;
+  /* Report images stack on small screens */
+  .report-images {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -631,7 +679,7 @@ button[type="reset"]:active,
   /* Put the report in the print flow and ensure it renders at the page origin */
   #result {
     display: block !important;
-    position: absolute !important;   /* key reliability improvement */
+    position: absolute !important;
     left: 0 !important;
     top: 0 !important;
 
@@ -641,7 +689,6 @@ button[type="reset"]:active,
     height: auto !important;
     overflow: visible !important;
 
-    /* Your existing print styling */
     margin: 0 !important;
     padding: 0 !important;
     font-size: 0.9rem;
@@ -653,37 +700,55 @@ button[type="reset"]:active,
     border-radius: 0 !important;
   }
 
-  .print-header-row {
-    display: flex !important;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 0.6rem;
-    margin-bottom: 0.1in;
+  /* ---- New print report layout ---- */
+  .report-title {
+    font-size: 16pt !important;
+    margin: 0 !important;
   }
 
-  .print-main-meta {
-    flex: 1;
+  .report-grade {
+    font-size: 12pt !important;
   }
 
-  h2.print-book-title {
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin: 0 0 0.25rem;
+  .report-images {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr 1fr !important;
+    gap: 0.12in !important;
+    margin: 0.12in 0 0.18in !important;
   }
 
-  .print-cover-wrapper {
-    width: 2.75in;
-    height: 3.67in;
+  .report-image figcaption {
+    font-size: 9pt !important;
+    margin: 0 0 0.04in !important;
   }
 
-  .print-section-grades {
-    margin-top: 0.25in;
+  .report-imgbox {
+    height: 2.2in !important; /* adjust later to force 1 page */
+    border-radius: 0 !important;
+    border: 1px solid #999 !important;
   }
 
-  .print-section {
-    margin-top: 0.08in;
+  .report-sections {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 0.12in 0.18in !important;
   }
 
+  .report-section {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+    border-top: 1px solid #bbb !important;
+    padding-top: 0.06in !important;
+  }
+
+  .report-section h3 {
+    font-size: 10pt !important;
+    margin: 0 0 0.04in !important;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+
+  /* If you still have legacy print-section lists, keep them tight */
   .print-section h4 {
     font-size: 0.85rem;
     margin: 0 0 0.04in;
@@ -704,7 +769,7 @@ button[type="reset"]:active,
     margin-bottom: 0;
   }
 
-  /* Hide Internal Scores section (last h3 + its paragraph) */
+  /* Hide Internal Scores section (legacy rule) */
   #result h3:last-of-type,
   #result h3:last-of-type + p {
     display: none !important;
@@ -750,4 +815,3 @@ button[type="reset"]:active,
     max-width: 100%;
   }
 }
-
