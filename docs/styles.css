@@ -175,18 +175,6 @@ button[type="reset"]:active,
   box-shadow: 0 1px 0 var(--btn-gray-shadow);
 }
 
-/* Allow long radio labels to wrap and flow into two rows in the subelement box */
-.subelement-box .choice {
-  white-space: normal;
-  max-width: 310px;
-  line-height: 1.2;
-}
-
-/* Slightly tighter gap so two-row text doesn't balloon */
-.subelement-box {
-  gap: 0.8rem;
-}
-
 /* Action button row (Results page) */
 .form-buttons {
   display: flex;
@@ -195,17 +183,15 @@ button[type="reset"]:active,
   align-items: center;
 }
 
-/* =========================
-   SMALL UI BITS
-   ========================= */
+/* Allow long radio labels to wrap */
+.subelement-box .choice {
+  white-space: normal;
+  max-width: 310px;
+  line-height: 1.2;
+}
 
-.swatch {
-  display: inline-block;
-  width: 18px;
-  height: 18px;
-  border: 1px solid #555;
-  margin-left: 0.4rem;
-  vertical-align: middle;
+.subelement-box {
+  gap: 0.8rem;
 }
 
 /* =========================
@@ -216,7 +202,7 @@ button[type="reset"]:active,
   margin-top: 0.75rem;
 }
 
-/* individual preview images (hidden until chosen) */
+/* preview images (hidden until chosen) */
 #cover-preview,
 #backcover-preview,
 #insidepage-preview {
@@ -228,7 +214,6 @@ button[type="reset"]:active,
   background: #fff;
 }
 
-/* Optional: show the three previews in a row */
 .image-preview-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -249,10 +234,9 @@ button[type="reset"]:active,
   margin-bottom: 0.4rem;
 }
 
-/* Keep all preview cards aligned even with different aspect ratios */
 .image-preview-grid img {
   width: 100%;
-  height: 200px;           /* adjust later if desired */
+  height: 200px;
   object-fit: contain;
   background: #fff;
   border-radius: 6px;
@@ -260,8 +244,7 @@ button[type="reset"]:active,
 }
 
 /* =========================
-   SAMPLE IMAGE PREVIEW
-   (Click grading text to view example)
+   SAMPLE IMAGE PREVIEW OVERLAY
    ========================= */
 
 [data-sample-img] {
@@ -298,11 +281,8 @@ button[type="reset"]:active,
   margin-top: 0.5rem;
 }
 
-/* Touch devices: avoid misleading cursor */
 @media (hover: none) {
-  [data-sample-img] {
-    cursor: default;
-  }
+  [data-sample-img] { cursor: default; }
 }
 
 /* =========================
@@ -326,7 +306,6 @@ button[type="reset"]:active,
   margin-bottom: 0.8rem;
 }
 
-/* Element heading and small note */
 .element-title {
   font-size: 1.05rem;
   font-weight: 700;
@@ -338,7 +317,6 @@ button[type="reset"]:active,
   margin-bottom: 0.3rem;
 }
 
-/* Row: label left, boxed choices right */
 .subelement-row {
   display: flex;
   align-items: center;
@@ -352,7 +330,6 @@ button[type="reset"]:active,
   font-weight: 600;
 }
 
-/* Bounding box for descriptor + radios */
 .subelement-box {
   flex: 1;
   display: flex;
@@ -381,6 +358,10 @@ button[type="reset"]:active,
   background-color: #fff7cc;
   border-left: 4px solid #e0b400;
   border-radius: 4px;
+
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
 }
 
 .multi-location-row span.multi-label {
@@ -389,7 +370,9 @@ button[type="reset"]:active,
 }
 
 .multi-location-row label {
-  margin-right: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  margin: 0 0.75rem 0 0;
   white-space: nowrap;
   font-weight: 600;
 }
@@ -398,53 +381,6 @@ button[type="reset"]:active,
   white-space: nowrap;
   font-size: 0.95rem;
   font-weight: 600;
-}
-
-/* -------------------------------------------------
-   Page color swatches (used in Pages section)
-------------------------------------------------- */
-.cgt-swatch {
-  display: inline-block;
-  width: 26px;
-  height: 26px;
-  border: 1px solid #999;
-  border-radius: 3px;
-  margin-right: 8px;
-  vertical-align: middle;
-  cursor: pointer;
-  box-sizing: border-box;
-}
-
-/* Paper color reference swatches */
-.swatch-white { background-color: #ffffff; }
-.swatch-offwhite-to-white { background-color: #f7f4e8; }
-.swatch-offwhite { background-color: #f1ecd9; }
-.swatch-cream-to-offwhite { background-color: #efe4c8; }
-.swatch-cream { background-color: #ead9b0; }
-.swatch-light-tan { background-color: #d9c39b; }
-.swatch-tan { background-color: #c7a16c; }
-.swatch-brown { background-color: #a87a4a; }
-.swatch-brittle { background-color: #8a6a40; }
-
-/* =========================
-   MULTI-LOCATION ROW SAFETY
-   ========================= */
-
-.multi-location-row {
-  align-items: center;
-  gap: 0.6rem;
-  flex-wrap: wrap;
-}
-
-.multi-location-row label {
-  display: inline-flex;
-  align-items: center;
-  margin: 0 0.75rem 0 0;
-}
-
-.multi-location-row .multi-label {
-  display: inline-block;
-  margin-right: 0.6rem;
 }
 
 /* =========================
@@ -488,9 +424,7 @@ button[type="reset"]:active,
   margin: 0.75rem 0 1rem;
 }
 
-.report-image {
-  margin: 0;
-}
+.report-image { margin: 0; }
 
 .report-image figcaption {
   font-weight: 700;
@@ -501,7 +435,7 @@ button[type="reset"]:active,
 .report-imgbox {
   border: 1px solid #ccc;
   border-radius: 8px;
-  height: 220px; /* screen height; print overrides below */
+  height: 220px;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -530,7 +464,6 @@ button[type="reset"]:active,
   margin: 0 0 0.35rem;
   font-size: 1.05rem;
 }
-
 
 /* =========================
    WIZARD PAGES (SECTION PAGING)
@@ -568,536 +501,30 @@ button[type="reset"]:active,
 }
 
 /* =========================
-   MAIN LAYOUT
+   DROPDOWN ROWS (for grading fields)
    ========================= */
 
-:root {
-  --page-bg: #f5f5f7;
-  --card-bg: #ffffff;
-  --soft-blue: #eef3fb;
-
-  --text: #111;
-  --muted: #555;
-
-  --border: #ddd;
-  --border-strong: #8b9bb7;
-
-  --btn-blue-top: #4a90e2;
-  --btn-blue-bottom: #3572b0;
-  --btn-blue-shadow: #28527a;
-
-  --btn-gray-top: #bbbbbb;
-  --btn-gray-bottom: #999999;
-  --btn-gray-shadow: #6c6c6c;
-
-  --radius-card: 10px;
-  --radius-field: 8px;
-
-  --left-col: 260px; /* keep in sync with .multi-location-row indent */
-}
-
-body {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  max-width: 1150px;
-  margin: 2rem auto;
-  padding: 0 1rem;
-  line-height: 1.6;
-  background: var(--page-bg);
-  color: var(--text);
-}
-
-/* Top bar with logo on the right */
-.top-bar {
+.form-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin: 0.6rem 0;
   gap: 1rem;
-  margin-bottom: 1.5rem;
 }
 
-.title-block h1 {
-  margin: 0 0 0.25rem;
-}
-
-.title-block .tagline {
-  margin: 0;
-  font-size: 0.95rem;
-  color: var(--muted);
-}
-
-.logo {
-  max-width: 160px;
-  height: auto;
-}
-
-/* =========================
-   FORM CARD
-   ========================= */
-
-form#grading-form {
-  background: var(--card-bg);
-  border-radius: var(--radius-card);
-  padding: 1rem 1.25rem;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-}
-
-fieldset {
-  margin-top: 1rem;
-  padding: 1rem;
-  border-radius: var(--radius-field);
-  border: 1px solid var(--border);
-}
-
-legend {
-  font-weight: 700;
-}
-
-/* Basic form spacing */
-label {
-  display: block;
-  margin: 0.5rem 0 0.35rem;
-  font-weight: 600;
-}
-
-input[type="text"],
-input[type="number"],
-input[type="file"] {
-  display: block;
-  width: min(520px, 100%);
-  margin-top: 0.35rem;
-  padding: 0.5rem 0.6rem;
-  border: 1px solid #cfcfd6;
-  border-radius: 6px;
-  background: #fff;
-  font-size: 0.95rem;
-}
-
-input[type="text"]:focus,
-input[type="number"]:focus,
-input[type="file"]:focus {
-  outline: none;
-  border-color: #7aa7e2;
-  box-shadow: 0 0 0 3px rgba(74,144,226,0.18);
-}
-
-.hint {
-  color: #555;
-  font-size: 0.85rem;
-}
-
-/* =========================
-   BUTTONS (3D STYLE)
-   ========================= */
-
-button {
-  appearance: none;
-  border: none;
-  cursor: pointer;
-
-  padding: 0.55rem 1.1rem;
-  margin-top: 1rem;
-  margin-right: 0.5rem;
-
-  border-radius: 6px;
-  font-size: 0.95rem;
-  font-weight: 700;
-
-  background: linear-gradient(var(--btn-blue-top), var(--btn-blue-bottom));
-  color: #ffffff;
-  box-shadow: 0 4px 0 var(--btn-blue-shadow);
-
-  transition:
-    transform 0.08s ease-out,
-    box-shadow 0.08s ease-out,
-    filter 0.1s ease-out;
-}
-
-button:hover {
-  filter: brightness(1.05);
-  transform: translateY(-1px);
-  box-shadow: 0 5px 0 var(--btn-blue-shadow);
-}
-
-button:active {
-  transform: translateY(2px);
-  box-shadow: 0 1px 0 var(--btn-blue-shadow);
-}
-
-/* Secondary 3D style for Reset + Print */
-button[type="reset"],
-#print-btn {
-  background: linear-gradient(var(--btn-gray-top), var(--btn-gray-bottom));
-  color: #222;
-  box-shadow: 0 4px 0 var(--btn-gray-shadow);
-}
-
-button[type="reset"]:hover,
-#print-btn:hover {
-  filter: brightness(1.03);
-  transform: translateY(-1px);
-  box-shadow: 0 5px 0 var(--btn-gray-shadow);
-}
-
-button[type="reset"]:active,
-#print-btn:active {
-  transform: translateY(2px);
-  box-shadow: 0 1px 0 var(--btn-gray-shadow);
-}
-
-/* Allow long radio labels to wrap and flow into two rows in the subelement box */
-.subelement-box .choice {
-  white-space: normal;
-  max-width: 310px;
-  line-height: 1.2;
-}
-
-/* Slightly tighter gap so two-row text doesn't balloon */
-.subelement-box {
-  gap: 0.8rem;
-}
-
-/* Action button row (Results page) */
-.form-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  align-items: center;
-}
-
-/* =========================
-   SMALL UI BITS
-   ========================= */
-
-.swatch {
-  display: inline-block;
-  width: 18px;
-  height: 18px;
-  border: 1px solid #555;
-  margin-left: 0.4rem;
-  vertical-align: middle;
-}
-
-/* =========================
-   IMAGE UPLOAD PREVIEWS (ON SCREEN)
-   ========================= */
-
-#cover-preview-wrapper {
-  margin-top: 0.75rem;
-}
-
-/* individual preview images (hidden until chosen) */
-#cover-preview,
-#backcover-preview,
-#insidepage-preview {
-  display: none;
-  max-width: 100%;
-  height: auto;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  background: #fff;
-}
-
-/* Optional: show the three previews in a row */
-.image-preview-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.75rem;
-  margin-top: 0.75rem;
-}
-
-.image-preview-grid .image-preview-card {
-  background: #fff;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  padding: 0.5rem;
-}
-
-.image-preview-grid .image-preview-label {
-  font-weight: 700;
-  font-size: 0.9rem;
-  margin-bottom: 0.4rem;
-}
-
-/* Keep all preview cards aligned even with different aspect ratios */
-.image-preview-grid img {
-  width: 100%;
-  height: 200px;           /* adjust later if desired */
-  object-fit: contain;
-  background: #fff;
-  border-radius: 6px;
-  border: 1px solid #ddd;
-}
-
-/* =========================
-   SAMPLE IMAGE PREVIEW
-   (Click grading text to view example)
-   ========================= */
-
-[data-sample-img] {
-  cursor: help;
-  text-decoration: underline dotted;
-}
-
-#sample-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  padding: 1rem;
-  background: rgba(0, 0, 0, 0.75);
-  z-index: 9999;
-  align-items: center;
-  justify-content: center;
-}
-
-#sample-overlay .sample-overlay-inner {
-  max-width: 900px;
-  width: 100%;
-  background: #fff;
-  padding: 0.75rem;
-  border-radius: 10px;
-}
-
-#sample-overlay img {
-  width: 100%;
-  height: auto;
-  display: block;
-}
-
-#sample-overlay-close {
-  margin-top: 0.5rem;
-}
-
-/* Touch devices: avoid misleading cursor */
-@media (hover: none) {
-  [data-sample-img] {
-    cursor: default;
-  }
-}
-
-/* =========================
-   SECTION SHELL
-   ========================= */
-
-.grade-section {
-  margin: 1.5rem 0;
-  padding: 1rem 1.25rem;
-  background: var(--soft-blue);
-  border-radius: 12px;
-}
-
-.section-title {
-  margin-top: 0;
-  margin-bottom: 0.2rem;
-}
-
-.section-intro {
-  font-size: 0.9rem;
-  margin-bottom: 0.8rem;
-}
-
-/* Element heading and small note */
-.element-title {
-  font-size: 1.05rem;
-  font-weight: 700;
-  margin: 0.9rem 0 0.2rem;
-}
-
-.element-note {
-  font-size: 7pt;
-  margin-bottom: 0.3rem;
-}
-
-/* Row: label left, boxed choices right */
-.subelement-row {
-  display: flex;
-  align-items: center;
-  margin-bottom: 0.55rem;
-  gap: 0.75rem;
-}
-
-.subelement-label {
-  width: var(--left-col);
-  font-size: 0.95rem;
-  font-weight: 600;
-}
-
-/* Bounding box for descriptor + radios */
-.subelement-box {
+.form-row label {
   flex: 1;
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1.0rem;
-  border: 1px solid var(--border-strong);
-  border-radius: 6px;
-  background: #f7f9fc;
-  padding: 0.35rem 0.7rem;
-}
-
-.subelement-desc {
-  font-weight: 700;
-  margin-right: 0.4rem;
-  white-space: nowrap;
-}
-
-/* Follow-up row */
-.multi-location-row {
-  display: none;
-  margin: 0.25rem 0 0.6rem var(--left-col);
-  font-size: 0.8rem;
-
-  padding: 0.5rem 0.75rem;
-  background-color: #fff7cc;
-  border-left: 4px solid #e0b400;
-  border-radius: 4px;
-}
-
-.multi-location-row span.multi-label {
-  font-weight: 700;
-  margin-right: 0.75rem;
-}
-
-.multi-location-row label {
-  margin-right: 0.75rem;
-  white-space: nowrap;
   font-weight: 600;
 }
 
-.choice {
-  white-space: nowrap;
+.form-row select {
+  flex: 1;
+  max-width: 300px;
+  padding: 0.35rem 0.5rem;
   font-size: 0.95rem;
-  font-weight: 600;
-}
-
-/* -------------------------------------------------
-   Page color swatches (used in Pages section)
-------------------------------------------------- */
-.cgt-swatch {
-  display: inline-block;
-  width: 26px;
-  height: 26px;
-  border: 1px solid #999;
-  border-radius: 3px;
-  margin-right: 8px;
-  vertical-align: middle;
-  cursor: pointer;
-  box-sizing: border-box;
-}
-
-/* Paper color reference swatches */
-.swatch-white { background-color: #ffffff; }
-.swatch-offwhite-to-white { background-color: #f7f4e8; }
-.swatch-offwhite { background-color: #f1ecd9; }
-.swatch-cream-to-offwhite { background-color: #efe4c8; }
-.swatch-cream { background-color: #ead9b0; }
-.swatch-light-tan { background-color: #d9c39b; }
-.swatch-tan { background-color: #c7a16c; }
-.swatch-brown { background-color: #a87a4a; }
-.swatch-brittle { background-color: #8a6a40; }
-
-/* =========================
-   MULTI-LOCATION ROW SAFETY
-   ========================= */
-
-.multi-location-row {
-  align-items: center;
-  gap: 0.6rem;
-  flex-wrap: wrap;
-}
-
-.multi-location-row label {
-  display: inline-flex;
-  align-items: center;
-  margin: 0 0.75rem 0 0;
-}
-
-.multi-location-row .multi-label {
-  display: inline-block;
-  margin-right: 0.6rem;
-}
-
-/* =========================
-   RESULT CARD (ON SCREEN)
-   ========================= */
-
-#result {
-  background: var(--card-bg);
-  border-radius: var(--radius-card);
-  padding: 1rem 1.25rem;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-  border: 1px solid var(--border);
-}
-
-/* =========================
-   REPORT LAYOUT (RESULTS + PRINT)
-   ========================= */
-
-.report-titleblock {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 1rem;
-  margin-bottom: 0.6rem;
-}
-
-.report-title {
-  margin: 0;
-  font-size: 1.6rem;
-}
-
-.report-grade {
-  font-weight: 800;
-  font-size: 1.15rem;
-}
-
-.report-images {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.75rem;
-  margin: 0.75rem 0 1rem;
-}
-
-.report-image {
-  margin: 0;
-}
-
-.report-image figcaption {
-  font-weight: 700;
-  font-size: 0.9rem;
-  margin-bottom: 0.35rem;
-}
-
-.report-imgbox {
   border: 1px solid #ccc;
-  border-radius: 8px;
-  height: 220px; /* screen height; print overrides below */
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #fff;
-}
-
-.report-imgbox img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-}
-
-.report-sections {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.9rem 1.1rem;
-}
-
-.report-section {
-  border-top: 1px solid var(--border);
-  padding-top: 0.5rem;
-}
-
-.report-section h3 {
-  margin: 0 0 0.35rem;
-  font-size: 1.05rem;
+  border-radius: 6px;
+  background-color: #fff;
 }
 
 /* =========================
@@ -1120,17 +547,20 @@ button[type="reset"]:active,
   }
 
   .subelement-label { width: 100%; }
-
   .multi-location-row { margin-left: 0; }
 
-  /* Make preview grid stack nicely on mobile */
-  .image-preview-grid {
-    grid-template-columns: 1fr;
-  }
+  .image-preview-grid { grid-template-columns: 1fr; }
+  .report-images { grid-template-columns: 1fr; }
+}
 
-  /* Report images stack on small screens */
-  .report-images {
-    grid-template-columns: 1fr;
+@media (max-width: 600px) {
+  .form-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .form-row select {
+    width: 100%;
+    max-width: 100%;
   }
 }
 
@@ -1150,20 +580,15 @@ button[type="reset"]:active,
     background: #ffffff;
   }
 
-  /* Print isolation: hide everything, then reveal #result (and its children) */
-  body * {
-    visibility: hidden !important;
-  }
+  /* Print isolation: hide everything, then reveal #result */
+  body * { visibility: hidden !important; }
 
-  #result,
-  #result * {
-    visibility: visible !important;
-  }
+  #result, #result * { visibility: visible !important; }
 
-  /* Put the report in the print flow and ensure it renders at the page origin */
+  /* Anchor the report at the page origin */
   #result {
     display: block !important;
-    position: fixed !important;
+    position: fixed !important; /* if a browser misbehaves, switch to absolute */
     left: 0 !important;
     top: 0 !important;
 
@@ -1175,24 +600,18 @@ button[type="reset"]:active,
 
     margin: 0 !important;
     padding: 0 !important;
+
     font-size: 0.9rem;
     line-height: 1.25;
-    background: transparent !important;
 
+    background: transparent !important;
     box-shadow: none !important;
     border: none !important;
     border-radius: 0 !important;
   }
 
-  /* ---- New print report layout ---- */
-  .report-title {
-    font-size: 16pt !important;
-    margin: 0 !important;
-  }
-
-  .report-grade {
-    font-size: 12pt !important;
-  }
+  .report-title { font-size: 16pt !important; margin: 0 !important; }
+  .report-grade { font-size: 12pt !important; }
 
   .report-images {
     display: grid !important;
@@ -1207,7 +626,7 @@ button[type="reset"]:active,
   }
 
   .report-imgbox {
-    height: 2.2in !important; /* adjust later to force 1 page */
+    height: 2.2in !important;
     border-radius: 0 !important;
     border: 1px solid #999 !important;
   }
@@ -1230,181 +649,5 @@ button[type="reset"]:active,
     margin: 0 0 0.04in !important;
     text-transform: uppercase;
     letter-spacing: 0.02em;
-  }
-
-/* =========================
-   DROPDOWN ROWS (for grading fields)
-   ========================= */
-
-.form-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 0.6rem 0;
-  gap: 1rem;
-}
-
-.form-row label {
-  flex: 1;
-  font-weight: 600;
-}
-
-.form-row select {
-  flex: 1;
-  max-width: 300px;
-  padding: 0.35rem 0.5rem;
-  font-size: 0.95rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  background-color: #fff;
-}
-
-/* Mobile-friendly fallback */
-@media (max-width: 600px) {
-  .form-row {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .form-row select {
-    width: 100%;
-    max-width: 100%;
-  }
-}
-/* =========================
-   PRINT LAYOUT (TIGHT + ONE PAGE)
-   ========================= */
-
-@media print {
-  @page {
-    size: 8.5in 11in;
-    margin: 0.5in;
-  }
-
-  body {
-    margin: 0;
-    padding: 0;
-    background: #ffffff;
-  }
-
-  /* Print isolation: hide everything, then reveal #result (and its children) */
-  body * {
-    visibility: hidden !important;
-  }
-
-  #result,
-  #result * {
-    visibility: visible !important;
-  }
-
-  /* Put the report in the print flow and ensure it renders at the page origin */
-  #result {
-    display: block !important;
-    position: fixed !important;
-    left: 0 !important;
-    top: 0 !important;
-
-    width: 100% !important;
-    max-width: 100% !important;
-
-    height: auto !important;
-    overflow: visible !important;
-
-    margin: 0 !important;
-    padding: 0 !important;
-    font-size: 0.9rem;
-    line-height: 1.25;
-    background: transparent !important;
-
-    box-shadow: none !important;
-    border: none !important;
-    border-radius: 0 !important;
-  }
-
-  /* ---- New print report layout ---- */
-  .report-title {
-    font-size: 16pt !important;
-    margin: 0 !important;
-  }
-
-  .report-grade {
-    font-size: 12pt !important;
-  }
-
-  .report-images {
-    display: grid !important;
-    grid-template-columns: 1fr 1fr 1fr !important;
-    gap: 0.12in !important;
-    margin: 0.12in 0 0.18in !important;
-  }
-
-  .report-image figcaption {
-    font-size: 9pt !important;
-    margin: 0 0 0.04in !important;
-  }
-
-  .report-imgbox {
-    height: 2.2in !important; /* adjust later to force 1 page */
-    border-radius: 0 !important;
-    border: 1px solid #999 !important;
-  }
-
-  .report-sections {
-    display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
-    gap: 0.12in 0.18in !important;
-  }
-
-  .report-section {
-    break-inside: avoid !important;
-    page-break-inside: avoid !important;
-    border-top: 1px solid #bbb !important;
-    padding-top: 0.06in !important;
-  }
-
-  .report-section h3 {
-    font-size: 10pt !important;
-    margin: 0 0 0.04in !important;
-    text-transform: uppercase;
-    letter-spacing: 0.02em;
-  }
-
-/* =========================
-   DROPDOWN ROWS (for grading fields)
-   ========================= */
-
-.form-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 0.6rem 0;
-  gap: 1rem;
-}
-
-.form-row label {
-  flex: 1;
-  font-weight: 600;
-}
-
-.form-row select {
-  flex: 1;
-  max-width: 300px;
-  padding: 0.35rem 0.5rem;
-  font-size: 0.95rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  background-color: #fff;
-}
-
-/* Mobile-friendly fallback */
-@media (max-width: 600px) {
-  .form-row {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .form-row select {
-    width: 100%;
-    max-width: 100%;
   }
 }
