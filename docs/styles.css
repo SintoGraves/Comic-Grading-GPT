@@ -596,9 +596,22 @@ button[type="reset"]:active,
     background: #ffffff;
   }
 
-  /* Hide everything EXCEPT the report */
-  body > *:not(#result) {
-    display: none !important;
+  /* Print isolation: hide everything, then reveal #result (and its children) */
+  body * {
+    visibility: hidden !important;
+  }
+
+  #result,
+  #result * {
+    visibility: visible !important;
+  }
+
+  /* Ensure the print area is in normal flow and not clipped by any containers */
+  #result {
+    display: block !important;
+    position: static !important;
+    height: auto !important;
+    overflow: visible !important;
   }
 
   /* Show only the report content, slightly smaller & tighter */
