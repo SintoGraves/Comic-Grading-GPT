@@ -531,55 +531,6 @@ button[type="reset"]:active,
   font-size: 1.05rem;
 }
 
-/* =========================
-   PRINT HEADER LAYOUT (LEGACY)
-   ========================= */
-/* Kept for compatibility with existing markup still using these classes */
-.print-header-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 1rem;
-  margin-bottom: 0.25in;
-}
-
-.print-main-meta {
-  flex: 1;
-}
-
-.print-book-title {
-  margin: 0 0 0.35rem;
-  font-size: 1.6rem;
-}
-
-.print-cover-wrapper {
-  width: 2.75in;
-  height: 3.67in;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.print-cover {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-}
-
-.presentation-note {
-  margin-top: 0.35rem;
-}
-
-.print-section {
-  margin-top: 0.35rem;
-}
-
-.print-section h4 {
-  margin: 0 0 0.25rem;
-}
 
 /* =========================
    WIZARD PAGES (SECTION PAGING)
@@ -747,34 +698,6 @@ button[type="reset"]:active,
     text-transform: uppercase;
     letter-spacing: 0.02em;
   }
-
-  /* If you still have legacy print-section lists, keep them tight */
-  .print-section h4 {
-    font-size: 0.85rem;
-    margin: 0 0 0.04in;
-    padding: 0;
-  }
-
-  .print-section ul {
-    margin: 0.01in 0 0.06in 0.85rem;
-    padding-left: 0;
-  }
-
-  .print-section li {
-    font-size: 0.7rem;
-    margin: 0.01in 0;
-  }
-
-  .print-section:last-of-type {
-    margin-bottom: 0;
-  }
-
-  /* Hide Internal Scores section (legacy rule) */
-  #result h3:last-of-type,
-  #result h3:last-of-type + p {
-    display: none !important;
-  }
-}
 
 /* =========================
    DROPDOWN ROWS (for grading fields)
