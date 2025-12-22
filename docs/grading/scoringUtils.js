@@ -107,14 +107,6 @@ CGT.forceMultiDefaultNo = function forceMultiDefaultNo(form, multiName) {
  * 3) Penalty ladder and shared section finalizer
  *-------------------------------------------------*/
 
-CGT.penaltyForScore = function penaltyForScore(score) {
-  if (score >= 9.95) return 0.0;     // treat 10 as perfect
-  if (score >= 6.1 && score <= 9.9) return 0.1;
-  if (score >= 3.1 && score <= 6.0) return 0.5;
-  if (score >= 0.0 && score <= 3.0) return 1.0;
-  return 0.0;
-};
-
 CGT.finalizeSection = function finalizeSection(elements) {
   // Defensive: avoid Infinity/NaN if a section fails to build its elements list
   if (!Array.isArray(elements) || elements.length === 0) {
@@ -128,22 +120,46 @@ CGT.finalizeSection = function finalizeSection(elements) {
     };
   }
 
-  const baseScore = Math.min(...elements.map(e => e.score));
-
-  let penaltyTotal = 0;
-  for (const e of elements) {
-    if (e.score > baseScore) penaltyTotal += CGT.penaltyForScore(e.score);
+  // Base score = minimum element score
+  var baseScore = 10.0;
+  for (var i = 0; i < elements.length; i++) {
+    var s = elements[i].score;
+    if (typeof s === "number" && isFinite(s)) {
+      baseScore = Math.min(baseScore, s);
+    }
   }
 
-  let finalScore = baseScore - penaltyTotal;
+  // Penalties: count every OTHER degraded item (<10.0),
+  // including ties at the minimum, but ignore exactly one instance of the minimum
+  var penaltyTotal = 0.0;
+  var skippedOneBase = false;
+
+  for (var j = 0; j < elements.length; j++) {
+    var sj = elements[j].score;
+    if (!(typeof sj === "number" && isFinite(sj))) continue;
+
+    // Ignore perfect scores
+    if (sj >= 9.95) continue;
+
+    // Skip exactly one "baseScore" item (the worst defect that sets the base)
+    if (!skippedOneBase && sj === baseScore) {
+      skippedOneBase = true;
+      continue;
+    }
+
+    // Everything else degraded contributes penalty via ladder
+    penaltyTotal += CGT.penaltyForScore(sj);
+  }
+
+  var finalScore = baseScore - penaltyTotal;
   if (finalScore < 0.5) finalScore = 0.5;
   if (finalScore > 10.0) finalScore = 10.0;
 
   return {
-    finalScore,
-    baseScore,
-    penaltyTotal,
+    finalScore: finalScore,
+    baseScore: baseScore,
+    penaltyTotal: penaltyTotal,
     grade: CGT.pickGrade(CGT.GRADES, finalScore),
-    elements
+    elements: elements
   };
 };
