@@ -1232,34 +1232,6 @@ button[type="reset"]:active,
     letter-spacing: 0.02em;
   }
 
-  /* If you still have legacy print-section lists, keep them tight */
-  .print-section h4 {
-    font-size: 0.85rem;
-    margin: 0 0 0.04in;
-    padding: 0;
-  }
-
-  .print-section ul {
-    margin: 0.01in 0 0.06in 0.85rem;
-    padding-left: 0;
-  }
-
-  .print-section li {
-    font-size: 0.7rem;
-    margin: 0.01in 0;
-  }
-
-  .print-section:last-of-type {
-    margin-bottom: 0;
-  }
-
-  /* Hide Internal Scores section (legacy rule) */
-  #result h3:last-of-type,
-  #result h3:last-of-type + p {
-    display: none !important;
-  }
-}
-
 /* =========================
    DROPDOWN ROWS (for grading fields)
    ========================= */
