@@ -491,6 +491,21 @@ function CGT_bootstrapApp() {
     }
   });
 
+/*-------------------------------------------------
+ * 11a) Update Results handler (Results page only)
+ *-------------------------------------------------*/
+var updateBtn = document.getElementById("update-results-btn");
+if (updateBtn) {
+  updateBtn.addEventListener("click", function () {
+    computeAndRenderResults();
+
+    // Ensure we're on the results page (if user clicks while navigating)
+    if (CGT.wizard && typeof CGT.wizard.goTo === "function") {
+      CGT.wizard.goTo("results");
+    }
+  });
+}
+  
   /*-------------------------------------------------
    * 12) Reset handler
    *-------------------------------------------------*/
