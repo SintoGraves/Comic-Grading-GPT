@@ -1,10 +1,13 @@
 /*-------------------------------------------------
  * app.js — Comic Grading Tool (Beta)
- * Main entry (Bindery + Corners + Edges)
+ * Main entry (Bindery + Corners + Edges + Spine + Pages + Cover)
  * Namespace: window.CGT (aliased locally as CGT)
  *-------------------------------------------------*/
 var CGT = (window.CGT = window.CGT || {});
 
+/*-------------------------------------------------
+ * Sample image click-to-preview overlay
+ *-------------------------------------------------*/
 function CGT_initSampleClickPreview() {
   if (window.CGT && window.CGT.__sampleClickInit) return;
   if (window.CGT) window.CGT.__sampleClickInit = true;
@@ -53,6 +56,9 @@ function CGT_initSampleClickPreview() {
   });
 }
 
+/*-------------------------------------------------
+ * App bootstrap
+ *-------------------------------------------------*/
 function CGT_bootstrapApp() {
   var form = document.getElementById("grading-form");
   if (!form) return;
@@ -67,8 +73,13 @@ function CGT_bootstrapApp() {
   var stampHint       = document.getElementById("stamp-hint");
   var titleSuggestion = document.getElementById("title-suggestion");
 
-  var coverInput   = document.getElementById("cover_image");
-  var coverPreview = document.getElementById("cover-preview");
+  // Image inputs (Front, Back, Inside)
+  var coverInput       = document.getElementById("cover_image");
+  var coverPreview     = document.getElementById("cover-preview");
+  var backCoverInput   = document.getElementById("backcover_image");
+  var backCoverPreview = document.getElementById("backcover-preview");
+  var insidePageInput  = document.getElementById("insidepage_image");
+  var insidePagePreview= document.getElementById("insidepage-preview");
 
   // Init sample preview (text-triggered via [data-sample-img])
   CGT_initSampleClickPreview();
@@ -90,6 +101,64 @@ function CGT_bootstrapApp() {
   }
 
   var stampApplies = false;
+
+  /*-------------------------------------------------
+   * Utilities
+   *-------------------------------------------------*/
+  function escapeHtml(s) {
+    if (s == null) return "";
+    return String(s)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
+  function safeImgOrPlaceholder(src, altText) {
+    if (src && String(src).trim()) {
+      return '<img src="' + src + '" alt="' + escapeHtml(altText) + '" />';
+    }
+    // keep box height stable without adding heavy content
+    return '<span style="font-size:0.85rem; color:#666;">No image provided</span>';
+  }
+
+  function buildSectionHtml(label, obj) {
+    var grade = obj && obj.grade ? obj.grade : { short: "—", label: "—" };
+    var finalScore = (obj && typeof obj.finalScore === "number") ? obj.finalScore : 10.0;
+
+    // Keep the section body compact; you can tune later
+    var items = (obj && Array.isArray(obj.elements)) ? obj.elements : [];
+    var listHtml = items.length
+      ? ('<ul>' + items.map(function (e) {
+          var id = (e && e.id) ? e.id : "item";
+          var sc = (e && typeof e.score === "number") ? e.score : 10.0;
+          return '<li>' + escapeHtml(id) + ': ' + Number(sc).toFixed(1) + '</li>';
+        }).join("") + '</ul>')
+      : '<ul><li>—</li></ul>';
+
+    return ''
+      + '<section class="report-section">'
+      + '  <h3>' + escapeHtml(label) + '</h3>'
+      + '  <div style="margin:0 0 0.25rem;">'
+      + '    <strong>Section Grade:</strong> ' + escapeHtml(grade.short) + ' (' + escapeHtml(grade.label) + ')'
+      + '    – ' + Number(finalScore).toFixed(1)
+      + '  </div>'
+      + listHtml
+      + '</section>';
+  }
+
+  function waitForImagesIn(el) {
+    var imgs = Array.prototype.slice.call(el.querySelectorAll("img"));
+    var promises = imgs.map(function (img) {
+      if (img.complete && img.naturalWidth > 0) return Promise.resolve();
+      return new Promise(function (resolve) {
+        img.onload = function () { resolve(); };
+        img.onerror = function () { resolve(); };
+      });
+    });
+    return Promise.all(promises);
+  }
 
   /*-------------------------------------------------
    * Multi-location toggles (RUN EARLY)
@@ -258,7 +327,7 @@ function CGT_bootstrapApp() {
 
       var display = displayTitleFromNormalized(suggestion.normalized);
       titleSuggestion.innerHTML = ''
-        + 'Did you mean: <strong>' + display + '</strong>? '
+        + 'Did you mean: <strong>' + escapeHtml(display) + '</strong>? '
         + '<button type="button" id="apply-title-suggestion-btn" style="margin-left:0.5rem; font-size:0.8rem;">'
         + 'Use this'
         + '</button>';
@@ -278,7 +347,7 @@ function CGT_bootstrapApp() {
   }
 
   /*-------------------------------------------------
-   * Cover image upload preview
+   * Front cover image upload preview
    *-------------------------------------------------*/
   if (coverInput && coverPreview) {
     coverInput.addEventListener("change", function (e) {
@@ -293,6 +362,48 @@ function CGT_bootstrapApp() {
       reader.onload = function (ev) {
         coverPreview.src = ev.target.result;
         coverPreview.style.display = "block";
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  /*-------------------------------------------------
+   * Back cover image upload preview
+   *-------------------------------------------------*/
+  if (backCoverInput && backCoverPreview) {
+    backCoverInput.addEventListener("change", function (e) {
+      var file = e.target.files && e.target.files[0];
+      if (!file) {
+        backCoverPreview.src = "";
+        backCoverPreview.style.display = "none";
+        return;
+      }
+
+      var reader = new FileReader();
+      reader.onload = function (ev) {
+        backCoverPreview.src = ev.target.result;
+        backCoverPreview.style.display = "block";
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  /*-------------------------------------------------
+   * Inside page image upload preview
+   *-------------------------------------------------*/
+  if (insidePageInput && insidePagePreview) {
+    insidePageInput.addEventListener("change", function (e) {
+      var file = e.target.files && e.target.files[0];
+      if (!file) {
+        insidePagePreview.src = "";
+        insidePagePreview.style.display = "none";
+        return;
+      }
+
+      var reader = new FileReader();
+      reader.onload = function (ev) {
+        insidePagePreview.src = ev.target.result;
+        insidePagePreview.style.display = "block";
       };
       reader.readAsDataURL(file);
     });
@@ -329,93 +440,60 @@ function CGT_bootstrapApp() {
       ? CGT.computeCoverScore(form)
       : { finalScore: 10.0, baseScore: 10.0, penaltyTotal: 0.0, grade: CGT.pickGrade(CGT.GRADES, 10.0), elements: [], placeholder: true };
 
+    // Overall = minimum of section finals
     var sectionScores = [bindery.finalScore, corners.finalScore, edges.finalScore, spine.finalScore, pages.finalScore, cover.finalScore];
     var overallScore = Math.min.apply(Math, sectionScores);
     var overallGrade = CGT.pickGrade(CGT.GRADES, overallScore);
 
+    // Optional comic identifier line (kept small; does not replace report title)
     var titleText = titleInput ? titleInput.value.trim() : "";
     var issueText = issueInput ? issueInput.value.trim() : "";
+    var comicLine = (titleText || issueText)
+      ? (escapeHtml(titleText || "Unknown Title") + (issueText ? " #" + escapeHtml(issueText) : ""))
+      : "";
 
-    var displayHeading = (titleText || issueText)
-      ? (titleText || "Unknown Title") + (issueText ? " #" + issueText : "")
-      : "Comic Book Grading Report";
-
-    var coverSrc = coverPreview ? coverPreview.src : "";
+    // Image sources (from previews so they print)
+    var coverSrc = coverPreview ? (coverPreview.src || "") : "";
+    var backSrc  = backCoverPreview ? (backCoverPreview.src || "") : "";
+    var pageSrc  = insidePagePreview ? (insidePagePreview.src || "") : "";
 
     resultDiv.innerHTML = ''
-      + '<div class="print-header-row">'
-      + '  <div class="print-main-meta">'
-      + '    <h2 class="print-book-title">' + displayHeading + '</h2>'
-      + '    <p><strong>Overall Grade (current build – Bindery, Corners, Edges, Spine, Pages &amp; Cover):</strong> '
-      +        overallGrade.short + ' (' + overallGrade.label + ') – numeric ' + overallScore.toFixed(1)
-      + '    </p>'
-
-      + '    <h3>Bindery Section</h3>'
-      + '    <p><strong>Bindery Grade:</strong> '
-      +        bindery.grade.short + ' (' + bindery.grade.label + ') – ' + bindery.finalScore.toFixed(1) + '<br/>'
-      + '      <strong>Base score:</strong> ' + bindery.baseScore.toFixed(1) + '<br/>'
-      + '      <strong>Total penalties:</strong> ' + bindery.penaltyTotal.toFixed(1)
-      + '    </p>'
-      + '    <ul>' + bindery.elements.map(function (e) {
-            return '<li>' + e.id + ': ' + e.score.toFixed(1) + '</li>';
-          }).join("") + '</ul>'
-
-      + '    <h3>Corners Section</h3>'
-      + '    <p><strong>Corners Grade:</strong> '
-      +        corners.grade.short + ' (' + corners.grade.label + ') – ' + corners.finalScore.toFixed(1) + '<br/>'
-      + '      <strong>Base score:</strong> ' + corners.baseScore.toFixed(1) + '<br/>'
-      + '      <strong>Total penalties:</strong> ' + corners.penaltyTotal.toFixed(1)
-      + '    </p>'
-      + '    <ul>' + corners.elements.map(function (e2) {
-            return '<li>' + e2.id + ': ' + e2.score.toFixed(1) + '</li>';
-          }).join("") + '</ul>'
-
-      + '    <h3>Edges Section</h3>'
-      + '    <p><strong>Edges Grade:</strong> '
-      +        edges.grade.short + ' (' + edges.grade.label + ') – ' + edges.finalScore.toFixed(1) + '<br/>'
-      + '      <strong>Base score:</strong> ' + edges.baseScore.toFixed(1) + '<br/>'
-      + '      <strong>Total penalties:</strong> ' + edges.penaltyTotal.toFixed(1)
-      + '    </p>'
-      + '    <ul>' + edges.elements.map(function (e3) {
-            return '<li>' + e3.id + ': ' + e3.score.toFixed(1) + '</li>';
-          }).join("") + '</ul>'
-
-      + '    <h3>Spine Section</h3>'
-      + '    <p><strong>Spine Grade:</strong> '
-      +        spine.grade.short + ' (' + spine.grade.label + ') – ' + spine.finalScore.toFixed(1) + '<br/>'
-      + '      <strong>Base score:</strong> ' + spine.baseScore.toFixed(1) + '<br/>'
-      + '      <strong>Total penalties:</strong> ' + spine.penaltyTotal.toFixed(1)
-      + '    </p>'
-      + '    <ul>' + spine.elements.map(function (e4) {
-            return '<li>' + e4.id + ': ' + e4.score.toFixed(1) + '</li>';
-          }).join("") + '</ul>'
-      
-      + '    <h3>Pages Section</h3>'
-      + '    <p><strong>Pages Grade:</strong> '
-      +        pages.grade.short + ' (' + pages.grade.label + ') – ' + pages.finalScore.toFixed(1) + '<br/>'
-      + '      <strong>Base score:</strong> ' + pages.baseScore.toFixed(1) + '<br/>'
-      + '      <strong>Total penalties:</strong> ' + pages.penaltyTotal.toFixed(1)
-      + '    </p>'
-      + '    <ul>' + pages.elements.map(function (e5) {
-            return '<li>' + e5.id + ': ' + e5.score.toFixed(1) + '</li>';
-          }).join("") + '</ul>'
-
-      + '    <h3>Cover Section</h3>'
-      + '    <p><strong>Cover Grade:</strong> '
-      +        cover.grade.short + ' (' + cover.grade.label + ') – ' + cover.finalScore.toFixed(1) + '<br/>'
-      + '      <strong>Base score:</strong> ' + cover.baseScore.toFixed(1) + '<br/>'
-      + '      <strong>Total penalties:</strong> ' + cover.penaltyTotal.toFixed(1)
-      + '    </p>'
-      + '    <ul>' + cover.elements.map(function (e6) {
-            return '<li>' + e6.id + ': ' + e6.score.toFixed(1) + '</li>';
-          }).join("") + '</ul>'  
-
+      + '<div class="report">'
+      + '  <div class="report-titleblock">'
+      + '    <h1 class="report-title">Comic Book Grading Report</h1>'
+      + '    <div class="report-grade">Overall Grade: '
+      +          escapeHtml(overallGrade.short) + ' (' + escapeHtml(overallGrade.label) + ')'
+      + '      – ' + Number(overallScore).toFixed(1)
+      + '    </div>'
       + '  </div>'
-
-      + (coverSrc
-          ? '  <div class="print-cover-wrapper"><img class="print-cover" src="' + coverSrc + '" alt="Comic cover preview" /></div>'
+      + (comicLine
+          ? '  <div style="margin:0 0 0.5rem; color:#555; font-weight:600;">' + comicLine + '</div>'
           : ''
         )
+
+      + '  <div class="report-images">'
+      + '    <figure class="report-image">'
+      + '      <figcaption>Front Cover</figcaption>'
+      + '      <div class="report-imgbox">' + safeImgOrPlaceholder(coverSrc, "Front cover image") + '</div>'
+      + '    </figure>'
+      + '    <figure class="report-image">'
+      + '      <figcaption>Back Cover</figcaption>'
+      + '      <div class="report-imgbox">' + safeImgOrPlaceholder(backSrc, "Back cover image") + '</div>'
+      + '    </figure>'
+      + '    <figure class="report-image">'
+      + '      <figcaption>Inside Page</figcaption>'
+      + '      <div class="report-imgbox">' + safeImgOrPlaceholder(pageSrc, "Inside page image") + '</div>'
+      + '    </figure>'
+      + '  </div>'
+
+      + '  <div class="report-sections">'
+      +        buildSectionHtml("Bindery", bindery)
+      +        buildSectionHtml("Corners", corners)
+      +        buildSectionHtml("Edges", edges)
+      +        buildSectionHtml("Spine", spine)
+      +        buildSectionHtml("Pages", pages)
+      +        buildSectionHtml("Cover", cover)
+      + '  </div>'
       + '</div>';
   }
 
@@ -426,7 +504,7 @@ function CGT_bootstrapApp() {
     CGT.initWizardNav(form, {
       firstPageName: "info",
       resultsPageName: "results",
-  pageOrder: ["info", "bindery", "corners", "edges", "spine", "pages", "cover", "results"],
+      pageOrder: ["info", "bindery", "corners", "edges", "spine", "pages", "cover", "results"],
       onEnterResults: computeAndRenderResults
     });
   } else {
@@ -458,10 +536,23 @@ function CGT_bootstrapApp() {
 
       if (titleSuggestion) titleSuggestion.textContent = "";
 
+      // Clear image inputs + previews
       if (coverInput) coverInput.value = "";
       if (coverPreview) {
         coverPreview.src = "";
         coverPreview.style.display = "none";
+      }
+
+      if (backCoverInput) backCoverInput.value = "";
+      if (backCoverPreview) {
+        backCoverPreview.src = "";
+        backCoverPreview.style.display = "none";
+      }
+
+      if (insidePageInput) insidePageInput.value = "";
+      if (insidePagePreview) {
+        insidePagePreview.src = "";
+        insidePagePreview.style.display = "none";
       }
 
       if (typeof CGT.initMultiLocationToggles === "function") {
@@ -478,19 +569,31 @@ function CGT_bootstrapApp() {
   }
 
   /*-------------------------------------------------
-   * Print handler
+   * Print handler (regenerate, wait for images, then print)
    *-------------------------------------------------*/
   if (printBtn && resultDiv) {
     printBtn.addEventListener("click", function () {
+      computeAndRenderResults();
+
       if (!resultDiv.innerHTML || !resultDiv.innerHTML.trim()) {
         alert("Please view results first, then print the report.");
         return;
       }
-      window.print();
+
+      // Ensure any data-URL images are fully realized before printing
+      waitForImagesIn(resultDiv).then(function () {
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () {
+            window.print();
+          });
+        });
+      });
     });
   }
 
-  // Initial stamp state
+  /*-------------------------------------------------
+   * Initial stamp state
+   *-------------------------------------------------*/
   updateStampLookup();
 }
 
