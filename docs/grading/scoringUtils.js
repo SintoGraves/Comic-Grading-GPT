@@ -106,6 +106,16 @@ CGT.forceMultiDefaultNo = function forceMultiDefaultNo(form, multiName) {
 /*-------------------------------------------------
  * 3) Penalty ladder and shared section finalizer
  *-------------------------------------------------*/
+CGT.penaltyForScore = function penaltyForScore(score) {
+  // Defensive: normalize score
+  var s = (typeof score === "number" && isFinite(score)) ? score : 10.0;
+
+  if (s >= 9.95) return 0.0;               // treat 10 as perfect
+  if (s >= 6.1 && s <= 9.9) return 0.1;    // minor extra defect
+  if (s >= 3.1 && s <= 6.0) return 0.5;    // moderate extra defect
+  if (s >= 0.0 && s <= 3.0) return 1.0;    // severe extra defect
+  return 0.0;
+};
 
 CGT.finalizeSection = function finalizeSection(elements) {
   if (!Array.isArray(elements) || elements.length === 0) {
