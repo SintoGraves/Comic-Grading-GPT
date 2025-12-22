@@ -679,7 +679,7 @@ button[type="reset"]:active,
   /* Put the report in the print flow and ensure it renders at the page origin */
   #result {
     display: block !important;
-    position: absolute !important;
+    position: fixed !important;
     left: 0 !important;
     top: 0 !important;
 
