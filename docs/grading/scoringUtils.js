@@ -108,7 +108,6 @@ CGT.forceMultiDefaultNo = function forceMultiDefaultNo(form, multiName) {
  *-------------------------------------------------*/
 
 CGT.finalizeSection = function finalizeSection(elements) {
-  // Defensive: avoid Infinity/NaN if a section fails to build its elements list
   if (!Array.isArray(elements) || elements.length === 0) {
     return {
       finalScore: 10.0,
@@ -120,6 +119,10 @@ CGT.finalizeSection = function finalizeSection(elements) {
     };
   }
 
+  var penaltyFn = (typeof CGT.penaltyForScore === "function")
+    ? CGT.penaltyForScore
+    : function () { return 0.0; };
+
   // Base score = minimum element score
   var baseScore = 10.0;
   for (var i = 0; i < elements.length; i++) {
@@ -129,8 +132,8 @@ CGT.finalizeSection = function finalizeSection(elements) {
     }
   }
 
-  // Penalties: count every OTHER degraded item (<10.0),
-  // including ties at the minimum, but ignore exactly one instance of the minimum
+  // Penalties: every OTHER degraded item (<10.0), including ties at min,
+  // skipping exactly one instance of the minimum.
   var penaltyTotal = 0.0;
   var skippedOneBase = false;
 
@@ -138,17 +141,14 @@ CGT.finalizeSection = function finalizeSection(elements) {
     var sj = elements[j].score;
     if (!(typeof sj === "number" && isFinite(sj))) continue;
 
-    // Ignore perfect scores
     if (sj >= 9.95) continue;
 
-    // Skip exactly one "baseScore" item (the worst defect that sets the base)
     if (!skippedOneBase && sj === baseScore) {
       skippedOneBase = true;
       continue;
     }
 
-    // Everything else degraded contributes penalty via ladder
-    penaltyTotal += CGT.penaltyForScore(sj);
+    penaltyTotal += penaltyFn(sj);
   }
 
   var finalScore = baseScore - penaltyTotal;
