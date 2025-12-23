@@ -1,208 +1,185 @@
 /*-------------------------------------------------
  * ui/wizardNav.js
- * Wizard navigation for multi-page form sections
- * - No frameworks, no modules, plain JS
- * - Defensive: never hard-crash if markup changes
- *
- * Behavior:
- * - Pages are .cgt-page[data-page="..."]
- * - Shows one page at a time via .is-active
- * - Adds Back/Next controls on all non-results pages
- * - Last grading page shows "View Results"
- * - Results page shows NO wizard Next/Update button (avoids duplicate)
- * - Results page gets jump links to any page
+ * Wizard navigation for multi-page form
+ * Pages are div.cgt-page[data-page="..."]
+ * Namespace: window.CGT
  *-------------------------------------------------*/
 (function () {
-  "use strict";
-
   var CGT = (window.CGT = window.CGT || {});
 
-  var PAGE_ORDER = ["info", "bindery", "corners", "edges", "spine", "pages", "cover", "results"];
-
-  function $(sel, root) {
-    return (root || document).querySelector(sel);
-  }
-  function $all(sel, root) {
+  /*-------------------------------------------------
+   * Helpers
+   *-------------------------------------------------*/
+  function qsa(root, sel) {
     return Array.prototype.slice.call((root || document).querySelectorAll(sel));
   }
 
-  function getPages() {
-    return $all(".cgt-page[data-page]");
+  function byPageName(form, name) {
+    return form.querySelector('.cgt-page[data-page="' + name + '"]');
   }
 
-  function getPageByKey(key) {
-    return $('.cgt-page[data-page="' + key + '"]');
-  }
-
-  function setActivePage(key) {
-    var pages = getPages();
-    if (!pages.length) return;
-
-    pages.forEach(function (p) {
-      p.classList.toggle("is-active", p.getAttribute("data-page") === key);
-    });
-
-    // keep focus/scroll predictable
-    var active = getPageByKey(key);
-    if (active && typeof active.scrollIntoView === "function") {
-      active.scrollIntoView({ behavior: "smooth", block: "start" });
+  function setActivePage(form, name) {
+    var pages = qsa(form, ".cgt-page");
+    for (var i = 0; i < pages.length; i++) {
+      pages[i].classList.remove("is-active");
     }
+    var target = byPageName(form, name);
+    if (target) target.classList.add("is-active");
   }
 
-  function getActiveKey() {
-    var active = $(".cgt-page.is-active");
-    return active ? active.getAttribute("data-page") : null;
-  }
-
-  function ensureWizardShell(pageEl) {
-    if (!pageEl) return null;
-
-    var existing = $(".wizard-nav", pageEl);
-    if (existing) return existing;
-
-    var nav = document.createElement("div");
-    nav.className = "wizard-nav";
-    nav.innerHTML = [
-      '<div class="nav-left"></div>',
-      '<div class="nav-right"></div>'
-    ].join("");
-
-    pageEl.appendChild(nav);
+  function ensureNavShell(form) {
+    // We attach nav UI to the currently-active page each time
+    // but keep a single nav bar element.
+    var nav = form.querySelector(".wizard-nav");
+    if (!nav) {
+      nav = document.createElement("div");
+      nav.className = "wizard-nav";
+      nav.innerHTML = ''
+        + '<div class="nav-left">'
+        + '  <button type="button" class="wizard-prev">Previous</button>'
+        + '</div>'
+        + '<div class="nav-right">'
+        + '  <button type="button" class="wizard-next">Next</button>'
+        + '</div>';
+      form.appendChild(nav);
+    }
     return nav;
   }
 
-  function buildNavForPage(key) {
-    var pageEl = getPageByKey(key);
-    if (!pageEl) return;
+  function ensureJumpLinks(resultsPage) {
+    if (!resultsPage) return null;
 
-    // Results page: no wizard nav controls (prevents duplicate Update Results)
-    if (key === "results") {
-      var existing = $(".wizard-nav", pageEl);
-      if (existing) existing.remove();
-      return;
+    var jl = resultsPage.querySelector(".wizard-jumplinks");
+    if (!jl) {
+      jl = document.createElement("div");
+      jl.className = "wizard-jumplinks";
+      // links will be populated on init
+      resultsPage.appendChild(jl);
+    }
+    return jl;
+  }
+
+  /*-------------------------------------------------
+   * Public init
+   *-------------------------------------------------*/
+  CGT.initWizardNav = function initWizardNav(form, options) {
+    options = options || {};
+    var pageOrder = options.pageOrder || [];
+    var firstPage = options.firstPageName || (pageOrder[0] || "info");
+    var resultsPageName = options.resultsPageName || "results";
+    var onEnterResults = (typeof options.onEnterResults === "function") ? options.onEnterResults : null;
+
+    if (!form || !pageOrder.length) {
+      console.warn("[wizard] initWizardNav missing form or pageOrder");
+      return null;
     }
 
-    var nav = ensureWizardShell(pageEl);
-    if (!nav) return;
+    // show first page by default (unless one is already active)
+    var anyActive = form.querySelector(".cgt-page.is-active");
+    if (!anyActive) setActivePage(form, firstPage);
 
-    var left = $(".nav-left", nav);
-    var right = $(".nav-right", nav);
-    if (!left || !right) return;
+    var current = (function () {
+      var active = form.querySelector(".cgt-page.is-active");
+      if (!active) return firstPage;
+      return active.getAttribute("data-page") || firstPage;
+    })();
 
-    left.innerHTML = "";
-    right.innerHTML = "";
+    var nav = ensureNavShell(form);
+    var prevBtn = nav.querySelector(".wizard-prev");
+    var nextBtn = nav.querySelector(".wizard-next");
 
-    var idx = PAGE_ORDER.indexOf(key);
-    var isFirst = idx <= 0;
-    var lastBeforeResults = PAGE_ORDER[PAGE_ORDER.indexOf("results") - 1];
-    var isLastBeforeResults = (key === lastBeforeResults);
-
-    // Back
-    if (!isFirst) {
-      var backBtn = document.createElement("button");
-      backBtn.type = "button";
-      backBtn.textContent = "Back";
-      backBtn.addEventListener("click", function () {
-        var prevKey = PAGE_ORDER[Math.max(0, idx - 1)];
-        setActivePage(prevKey);
-        CGT._wizardActiveKey = prevKey;
-      });
-      left.appendChild(backBtn);
+    function indexOfPage(name) {
+      return pageOrder.indexOf(name);
     }
 
-    // Next / View Results
-    var nextBtn = document.createElement("button");
-    nextBtn.type = "button";
-    nextBtn.textContent = isLastBeforeResults ? "View Results" : "Next";
+    function updateButtons() {
+      var idx = indexOfPage(current);
+      var isFirst = (idx <= 0);
+      var isLast = (idx >= pageOrder.length - 1);
 
-    nextBtn.addEventListener("click", function () {
-      // If we're on spine, go to results AND compute once
-      if (isLastBeforeResults) {
-        setActivePage("results");
-        CGT._wizardActiveKey = "results";
+      if (prevBtn) prevBtn.disabled = isFirst;
 
-        // Trigger a compute/render by submitting the form programmatically
-        var form = $("#grading-form");
-        if (form) {
-          // requestSubmit preferred, fallback to dispatch submit event
-          if (typeof form.requestSubmit === "function") {
-            form.requestSubmit();
-          } else {
-            var evt = new Event("submit", { bubbles: true, cancelable: true });
-            form.dispatchEvent(evt);
-          }
-        }
-        return;
+      // On results page, "Next" doesn’t make sense
+      if (nextBtn) {
+        nextBtn.disabled = isLast;
+        nextBtn.style.display = (current === resultsPageName) ? "none" : "inline-block";
       }
 
-      // Normal next
-      var nextKey = PAGE_ORDER[Math.min(PAGE_ORDER.length - 1, idx + 1)];
-      setActivePage(nextKey);
-      CGT._wizardActiveKey = nextKey;
-    });
-
-    right.appendChild(nextBtn);
-  }
-
-  function buildJumpLinks() {
-    var resultsPage = getPageByKey("results");
-    if (!resultsPage) return;
-
-    // Remove existing if present (avoid duplicates on re-init)
-    var existing = $(".wizard-jumplinks", resultsPage);
-    if (existing) existing.remove();
-
-    var wrap = document.createElement("div");
-    wrap.className = "wizard-jumplinks";
-
-    var label = document.createElement("div");
-    label.textContent = "Jump to:";
-    label.style.fontWeight = "700";
-    label.style.marginBottom = "0.35rem";
-    wrap.appendChild(label);
-
-    PAGE_ORDER.forEach(function (key) {
-      var a = document.createElement("a");
-      a.href = "#";
-      a.textContent = key.charAt(0).toUpperCase() + key.slice(1);
-      a.addEventListener("click", function (e) {
-        e.preventDefault();
-        setActivePage(key);
-        CGT._wizardActiveKey = key;
-      });
-      wrap.appendChild(a);
-    });
-
-    resultsPage.appendChild(wrap);
-  }
-
-  CGT.initWizardNav = function initWizardNav() {
-    var pages = getPages();
-    if (!pages.length) return;
-
-    // Build nav for each page (removes nav on results)
-    PAGE_ORDER.forEach(buildNavForPage);
-
-    // Jump links on results
-    buildJumpLinks();
-
-    // Initial page
-    var initial = CGT._wizardActiveKey || "info";
-    setActivePage(initial);
-  };
-
-  // Auto-init after includes (preferred), fallback DOMContentLoaded
-  function safeInit() {
-    try {
-      CGT.initWizardNav();
-    } catch (e) {
-      console.warn("[wizardNav] init failed:", e);
+      // Move nav to bottom of current page for better UX
+      var currentEl = byPageName(form, current);
+      if (currentEl && nav.parentNode !== currentEl) {
+        currentEl.appendChild(nav);
+      }
     }
-  }
 
-  if (window.CGT_INCLUDES_READY && typeof window.CGT_INCLUDES_READY.then === "function") {
-    window.CGT_INCLUDES_READY.then(safeInit);
-  } else {
-    document.addEventListener("DOMContentLoaded", safeInit);
-  }
+    function goTo(name) {
+      if (indexOfPage(name) === -1) {
+        console.warn("[wizard] unknown page:", name);
+        return;
+      }
+      current = name;
+      setActivePage(form, name);
+
+      if (name === resultsPageName && onEnterResults) {
+        try { onEnterResults(); } catch (e) { console.warn("[wizard] onEnterResults error", e); }
+      }
+      updateButtons();
+    }
+
+    function next() {
+      var idx = indexOfPage(current);
+      if (idx === -1) return;
+      if (idx >= pageOrder.length - 1) return;
+      goTo(pageOrder[idx + 1]);
+    }
+
+    function prev() {
+      var idx = indexOfPage(current);
+      if (idx === -1) return;
+      if (idx <= 0) return;
+      goTo(pageOrder[idx - 1]);
+    }
+
+    if (prevBtn) prevBtn.addEventListener("click", prev);
+    if (nextBtn) nextBtn.addEventListener("click", next);
+
+    // Build results jump links
+    var resultsEl = byPageName(form, resultsPageName);
+    var jl = ensureJumpLinks(resultsEl);
+    if (jl) {
+      jl.innerHTML = pageOrder
+        .filter(function (p) { return p !== resultsPageName; })
+        .map(function (p) {
+          return '<a href="#" data-jump="' + p + '">' + p.charAt(0).toUpperCase() + p.slice(1) + '</a>';
+        })
+        .join(" ");
+
+      jl.addEventListener("click", function (e) {
+        var a = e.target && e.target.closest ? e.target.closest("a[data-jump]") : null;
+        if (!a) return;
+        e.preventDefault();
+        var target = a.getAttribute("data-jump");
+        if (target) goTo(target);
+      });
+    }
+
+    // Wizard object
+    var wizard = {
+      goTo: goTo,
+      next: next,
+      prev: prev,
+      getCurrent: function () { return current; }
+    };
+
+    // Persist global reference
+    CGT.wizard = wizard;
+
+    // initial button state + ensure results renders correctly if starting there
+    updateButtons();
+    if (current === resultsPageName && onEnterResults) {
+      try { onEnterResults(); } catch (e2) { console.warn("[wizard] onEnterResults error", e2); }
+    }
+
+    return wizard; // CRITICAL: now app.js sees the wizard
+  };
 })();
