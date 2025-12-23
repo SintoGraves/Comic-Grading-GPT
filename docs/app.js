@@ -470,25 +470,15 @@ function CGT_bootstrapApp() {
  * Wizard init (separate file)
  *-------------------------------------------------*/
 if (typeof CGT.initWizardNav === "function") {
-  var wiz = CGT.initWizardNav(form, {
+  CGT.wizard = CGT.initWizardNav(form, {
     firstPageName: "info",
     resultsPageName: "results",
     pageOrder: ["info", "bindery", "corners", "edges", "spine", "pages", "cover", "results"],
     onEnterResults: computeAndRenderResults
   });
-
-  // IMPORTANT: persist wizard reference for reset/submit handlers
-  if (wiz && typeof wiz.goTo === "function") {
-    CGT.wizard = wiz;
-  } else if (CGT.wizard && typeof CGT.wizard.goTo === "function") {
-    // already set by wizardNav.js; fine
-  } else {
-    console.warn("[wizard] initWizardNav returned no wizard object; reset will use fallback");
-  }
 } else {
   console.warn("[wizard] ui/wizardNav.js not loaded; pages will not navigate");
 }
-
  
 /*-------------------------------------------------
  * 11a) Update Results handler (Results page only)
