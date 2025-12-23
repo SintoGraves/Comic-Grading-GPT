@@ -507,16 +507,24 @@ if (updateBtn) {
 }
   
 /*-------------------------------------------------
- * 12) Reset handler (form-level so it always fires)
+ * 12) Reset handler (manual reset + go to info)
  *-------------------------------------------------*/
-form.addEventListener("reset", function () {
-  // Let the browser complete the reset first
-  setTimeout(function () {
+if (resetBtn) {
+  resetBtn.addEventListener("click", function (e) {
+    e.preventDefault();
+
+    // Reset inputs
+    form.reset();
+
+    // Clear stamp UI
     stampApplies = false;
     if (stampFieldset) stampFieldset.style.display = "none";
     if (stampHint) stampHint.textContent = "";
+
+    // Clear results
     if (resultDiv) resultDiv.innerHTML = "";
 
+    // Clear title suggestion
     if (titleSuggestion) titleSuggestion.textContent = "";
 
     // Clear image inputs + previews
@@ -538,25 +546,25 @@ form.addEventListener("reset", function () {
       insidePagePreview.style.display = "none";
     }
 
+    // Re-init multi-location toggles (resets dependent rows)
     if (typeof CGT.initMultiLocationToggles === "function") {
       CGT.initMultiLocationToggles(form);
     }
 
+    // Re-evaluate stamp state
     updateStampLookup();
 
-    // Return to first page
+    // Force navigation after DOM settles
     if (CGT.wizard && typeof CGT.wizard.goTo === "function") {
-      CGT.wizard.goTo("info");
+      requestAnimationFrame(function () {
+        CGT.wizard.goTo("info");
+      });
     } else {
-      console.warn("[reset] wizard not available; forcing to info with fallback");
-      // Fallback: force active page manually
-      var pages = form.querySelectorAll(".cgt-page");
-      pages.forEach(function (p) { p.classList.remove("is-active"); });
-      var info = form.querySelector('.cgt-page[data-page="info"]');
-      if (info) info.classList.add("is-active");
+      console.warn("[reset] wizard not available; cannot navigate to info");
     }
-  }, 0);
-});
+  });
+}
+
 
   /*-------------------------------------------------
    * 13) Print handler (regenerate, wait for images, then print)
