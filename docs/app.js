@@ -466,29 +466,29 @@ function CGT_bootstrapApp() {
       + "</div>";
   }
 
-  /*-------------------------------------------------
-   * 10) Wizard init (separate file)
-   *-------------------------------------------------*/
-  if (typeof CGT.initWizardNav === "function") {
-    CGT.initWizardNav(form, {
-      firstPageName: "info",
-      resultsPageName: "results",
-      pageOrder: ["info", "bindery", "corners", "edges", "spine", "pages", "cover", "results"],
-      onEnterResults: computeAndRenderResults
-    });
-  } else {
-    console.warn("[wizard] ui/wizardNav.js not loaded; pages will not navigate");
-  }
+/*-------------------------------------------------
+ * Wizard init (separate file)
+ *-------------------------------------------------*/
+if (typeof CGT.initWizardNav === "function") {
+  var wiz = CGT.initWizardNav(form, {
+    firstPageName: "info",
+    resultsPageName: "results",
+    pageOrder: ["info", "bindery", "corners", "edges", "spine", "pages", "cover", "results"],
+    onEnterResults: computeAndRenderResults
+  });
 
-  /*-------------------------------------------------
-   * 11) Submit: treat Enter as "go to results"
-   *-------------------------------------------------*/
-  form.addEventListener("submit", function (e) {
-    e.preventDefault();
-    computeAndRenderResults();
-    if (CGT.wizard && typeof CGT.wizard.goTo === "function") {
-      CGT.wizard.goTo("results");
-    }
+  // IMPORTANT: persist wizard reference for reset/submit handlers
+  if (wiz && typeof wiz.goTo === "function") {
+    CGT.wizard = wiz;
+  } else if (CGT.wizard && typeof CGT.wizard.goTo === "function") {
+    // already set by wizardNav.js; fine
+  } else {
+    console.warn("[wizard] initWizardNav returned no wizard object; reset will use fallback");
+  }
+} else {
+  console.warn("[wizard] ui/wizardNav.js not loaded; pages will not navigate");
+}
+
   });
 
 /*-------------------------------------------------
