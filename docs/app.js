@@ -506,42 +506,57 @@ if (updateBtn) {
   });
 }
   
-  /*-------------------------------------------------
-   * 12) Reset handler
-   *-------------------------------------------------*/
-  if (resetBtn) {
-    resetBtn.addEventListener("click", function () {
-      form.reset();
+/*-------------------------------------------------
+ * 12) Reset handler (form-level so it always fires)
+ *-------------------------------------------------*/
+form.addEventListener("reset", function () {
+  // Let the browser complete the reset first
+  setTimeout(function () {
+    stampApplies = false;
+    if (stampFieldset) stampFieldset.style.display = "none";
+    if (stampHint) stampHint.textContent = "";
+    if (resultDiv) resultDiv.innerHTML = "";
 
-      stampApplies = false;
-      if (stampFieldset) stampFieldset.style.display = "none";
-      if (stampHint) stampHint.textContent = "";
-      if (resultDiv) resultDiv.innerHTML = "";
+    if (titleSuggestion) titleSuggestion.textContent = "";
 
-      if (titleSuggestion) titleSuggestion.textContent = "";
+    // Clear image inputs + previews
+    if (coverInput) coverInput.value = "";
+    if (coverPreview) {
+      coverPreview.src = "";
+      coverPreview.style.display = "none";
+    }
 
-      // Clear image inputs + previews
-      if (coverInput) coverInput.value = "";
-      if (coverPreview) { coverPreview.src = ""; coverPreview.style.display = "none"; }
+    if (backCoverInput) backCoverInput.value = "";
+    if (backCoverPreview) {
+      backCoverPreview.src = "";
+      backCoverPreview.style.display = "none";
+    }
 
-      if (backCoverInput) backCoverInput.value = "";
-      if (backCoverPreview) { backCoverPreview.src = ""; backCoverPreview.style.display = "none"; }
+    if (insidePageInput) insidePageInput.value = "";
+    if (insidePagePreview) {
+      insidePagePreview.src = "";
+      insidePagePreview.style.display = "none";
+    }
 
-      if (insidePageInput) insidePageInput.value = "";
-      if (insidePagePreview) { insidePagePreview.src = ""; insidePagePreview.style.display = "none"; }
+    if (typeof CGT.initMultiLocationToggles === "function") {
+      CGT.initMultiLocationToggles(form);
+    }
 
-      if (typeof CGT.initMultiLocationToggles === "function") {
-        CGT.initMultiLocationToggles(form);
-      }
+    updateStampLookup();
 
-      updateStampLookup();
-
-      // Return to first page
-      if (CGT.wizard && typeof CGT.wizard.goTo === "function") {
-        CGT.wizard.goTo("info");
-      }
-    });
-  }
+    // Return to first page
+    if (CGT.wizard && typeof CGT.wizard.goTo === "function") {
+      CGT.wizard.goTo("info");
+    } else {
+      console.warn("[reset] wizard not available; forcing to info with fallback");
+      // Fallback: force active page manually
+      var pages = form.querySelectorAll(".cgt-page");
+      pages.forEach(function (p) { p.classList.remove("is-active"); });
+      var info = form.querySelector('.cgt-page[data-page="info"]');
+      if (info) info.classList.add("is-active");
+    }
+  }, 0);
+});
 
   /*-------------------------------------------------
    * 13) Print handler (regenerate, wait for images, then print)
