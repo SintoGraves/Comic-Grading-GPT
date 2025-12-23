@@ -489,8 +489,6 @@ if (typeof CGT.initWizardNav === "function") {
   console.warn("[wizard] ui/wizardNav.js not loaded; pages will not navigate");
 }
 
-  });
-
 /*-------------------------------------------------
  * 11a) Update Results handler (Results page only)
  *-------------------------------------------------*/
